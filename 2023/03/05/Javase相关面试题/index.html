@@ -1,0 +1,459 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Javase相关面试题 | 梦落芳华</title><meta name="author" content="beckoningcoco"><meta name="copyright" content="beckoningcoco"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="什么是 JVM? 为什么称 Java 为跨平台的编程语言? Java 虚拟机(Java Virtual Machine)是可以执行 Java 字节码的虚拟机，每个 Java 源文件将被编译成字节码文件，然后在 JVM 中执行。Java 之所以被设计成可以在任意的平台运行，而不需要重写或者在不同的平台下重新编译，这些都要归功于 Java 虚拟机(JVM),因为JVM 非常了解特定的指令的长度以及底层">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javase相关面试题">
+<meta property="og:url" content="http://example.com/2023/03/05/Javase%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/index.html">
+<meta property="og:site_name" content="梦落芳华">
+<meta property="og:description" content="什么是 JVM? 为什么称 Java 为跨平台的编程语言? Java 虚拟机(Java Virtual Machine)是可以执行 Java 字节码的虚拟机，每个 Java 源文件将被编译成字节码文件，然后在 JVM 中执行。Java 之所以被设计成可以在任意的平台运行，而不需要重写或者在不同的平台下重新编译，这些都要归功于 Java 虚拟机(JVM),因为JVM 非常了解特定的指令的长度以及底层">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://w.wallhaven.cc/full/p9/wallhaven-p9op59.jpg">
+<meta property="article:published_time" content="2023-03-05T02:35:02.000Z">
+<meta property="article:modified_time" content="2023-03-06T05:40:21.072Z">
+<meta property="article:author" content="beckoningcoco">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://w.wallhaven.cc/full/p9/wallhaven-p9op59.jpg"><link rel="shortcut icon" href="/img/%E5%A4%B4%E5%83%8F.png"><link rel="canonical" href="http://example.com/2023/03/05/Javase%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Javase相关面试题',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-06 13:40:21'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://w.wallhaven.cc/full/p9/wallhaven-p9op59.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">梦落芳华</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Javase相关面试题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-05T02:35:02.000Z" title="发表于 2023-03-05 10:35:02">2023-03-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-06T05:40:21.072Z" title="更新于 2023-03-06 13:40:21">2023-03-06</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Javase相关面试题"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="什么是-JVM-为什么称-Java-为跨平台的编程语言"><a href="#什么是-JVM-为什么称-Java-为跨平台的编程语言" class="headerlink" title="什么是 JVM? 为什么称 Java 为跨平台的编程语言?"></a>什么是 JVM? 为什么称 Java 为跨平台的编程语言?</h1><ul>
+<li>Java 虚拟机(Java Virtual Machine)是可以执行 Java 字节码的虚拟机，每个 Java 源文<br>件将被编译成字节码文件，然后在 JVM 中执行。Java 之所以被设计成可以在任意的平台运<br>行，而不需要重写或者在不同的平台下重新编译，这些都要归功于 Java 虚拟机(JVM),因为<br>JVM 非常了解特定的指令的长度以及底层硬件平台的特殊性。</li>
+</ul>
+<h1 id="JDK-和-JRE-之间的差异是什么？"><a href="#JDK-和-JRE-之间的差异是什么？" class="headerlink" title="JDK 和 JRE 之间的差异是什么？"></a>JDK 和 JRE 之间的差异是什么？</h1><ul>
+<li>Java 运行环境(Java Runtime Enviroment) 是运行 Java 程序的基本的 Java 虚拟机，包<br>括执行 applet 的浏览器插件。JDK (Java Development Kit) 是为了开发，编译和执行 Java<br>应用程序，针对 Java 的全功能的软件开发包，包含了 JRE，编译器和工具(比如<br>说 JavaDoc 和 Java Debugger)。</li>
+<li><img src="/2023/03/05/Javase%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/image-20230305112029836.png" alt="image-20230305112029836"></li>
+</ul>
+<h1 id="“static”-关键字是什么意思？在-Java-里可以-override-private-或-static-的方法吗？"><a href="#“static”-关键字是什么意思？在-Java-里可以-override-private-或-static-的方法吗？" class="headerlink" title="“static” 关键字是什么意思？在 Java 里可以 override private 或 static 的方法吗？"></a>“static” 关键字是什么意思？在 Java 里可以 override private 或 static 的方法吗？</h1><ul>
+<li>static 关键字表示，访问这个成员变量或方法时，不必获取它属于的类的实例。<br>Java 里的 static 方法不能被 override，因为 override 的机制是运行时(runtime)的动态<br>绑定，而 static 方法是在编译时静态绑定的。static 方法并不与任何类的具体实例有关，<br>因此无法应用继承的概念。</li>
+</ul>
+<h1 id="在静态方法里可以访问非静态变量吗"><a href="#在静态方法里可以访问非静态变量吗" class="headerlink" title="在静态方法里可以访问非静态变量吗?"></a>在静态方法里可以访问非静态变量吗?</h1><ul>
+<li>Java 中的 static 变量归相应的类所有，它的值对于类的所有实例都是相同的。static<br>变量是在 JVM 加载类的时候初始化的。如果代码试图访问非静态的变量，而且不是通过类<br>的实例去访问，编译器会报错，因为这些非静态变量还没有被创建呢，并且它们没有与实<br>例相关联。</li>
+</ul>
+<h1 id="八种基本数据类型？-自动装箱和自动拆箱？"><a href="#八种基本数据类型？-自动装箱和自动拆箱？" class="headerlink" title="八种基本数据类型？ 自动装箱和自动拆箱？"></a>八种基本数据类型？ 自动装箱和自动拆箱？</h1><ul>
+<li>Java 支持哪些数据类型？什么是 Autoboxing 和 Unboxing？<br>Java 语言支持的 8 个基本数据类型如下：<br>byte<br>short<br>int<br>long<br>float<br>double<br>boolean<br>char<br>Autoboxing 是指在基本数据类型和对应的包装(wrapper)类之间 Java 编译器所做的自<br>动转换。例如，编译器将 int 转换为 Integer，将 double 转换为 Double ，等等。逆向的<br>转换称为 unboxing。</li>
+</ul>
+<h1 id="在-Java-中什么是方法的-Override-覆盖-和-Overload-重载"><a href="#在-Java-中什么是方法的-Override-覆盖-和-Overload-重载" class="headerlink" title="在 Java 中什么是方法的 Override(覆盖) 和 Overload(重载)?"></a>在 Java 中什么是方法的 Override(覆盖) 和 Overload(重载)?</h1><ul>
+<li>Java 中方法的 overload 发生的条件是，同一个类里，有两个或以上的方法名称完全相同，<br>但参数列表不同。另一方面，方法的 override 是指，子类重定义了父类里的同一个方法。<br>Override 的方法必须方法名、参数列表和返回类型都完全相同。Override 的方法不会限制<br>原方法的访问权限。</li>
+</ul>
+<h1 id="谈一谈对面向对象的理解"><a href="#谈一谈对面向对象的理解" class="headerlink" title="谈一谈对面向对象的理解"></a>谈一谈对面向对象的理解</h1><ul>
+<li><p>面向对象就是把一个对象抽象为一个类去看待，具体的就是把一个对象的静态特征和动态特征抽象成属性和方法。而我们的程序之间就是一个个类之间的通信交流。</p>
+</li>
+<li><p>面向对象的特征分为三类：封装，继承，多态。</p>
+<ul>
+<li><p>封装隐蔽了对象所有的不需要对外暴露的细节，除了一些需要对外暴露的函数或者数据以外，这样就使得对象内部细节的变动与外部脱离，只依靠接口通信，大大降低了编程的难度。就好比，你今天吃了啥饭？ 米饭。但是具体怎么吃的，不需要告诉别人。</p>
+</li>
+<li><p>继承，从父类那里获得非私有的方法和属性，并根据自己的需要，作出相应的改变&#x2F;扩展。通过继承，使我们新建一个类变得更加容易，因为我们把获得父类方法和属性的工作完全交给了编译器去做。</p>
+</li>
+<li><p>多态，由于继承和实现过程中，编译器的运行时动态绑定，产生了多态效果。基于对象所属类的不同，外部对同一个方法的调用，实际执行的逻辑不同。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">父类类型 变量名 = <span class="keyword">new</span> 子类对象 ;</span><br><span class="line">变量名.方法名();</span><br></pre></td></tr></table></figure>
+
+<p>无法调用子类特有的功能</p>
+</li>
+</ul>
+</li>
+<li><p>父类引用指向对象 ：参考 <a target="_blank" rel="noopener" href="https://blog.csdn.net/Allen_forv/article/details/80771650">(35条消息) JAVA父类引用指向子类对象_Allen_forv的博客-CSDN博客</a></p>
+</li>
+</ul>
+<h1 id="x3D-x3D-和-equals-的区别"><a href="#x3D-x3D-和-equals-的区别" class="headerlink" title="&#x3D;&#x3D; 和 equals 的区别"></a>&#x3D;&#x3D; 和 equals 的区别</h1><ul>
+<li><p>&#x3D;&#x3D;对比的是栈中的值，基本数据类型是变量值，引用类型是堆中内存对象的地址<br>父类类型 变量名 &#x3D; new 子类对象 ;<br>变量名.方法名();equals：object中默认也是采用&#x3D;&#x3D;比较，通常会重写</p>
+</li>
+<li><p>重写过程：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">	</span><br><span class="line">	String name;</span><br><span class="line">	Integer id;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">		<span class="comment">// 首先判断传进来的obj是否是调用equals方法对象的this本身，提高判断效率</span></span><br><span class="line">		<span class="keyword">if</span> (obj == <span class="built_in">this</span>) &#123;<span class="keyword">return</span> <span class="literal">true</span>;&#125;</span><br><span class="line">		<span class="comment">// 判断传进来的obj是否是null，提高判断效率</span></span><br><span class="line">		<span class="keyword">if</span> (obj == <span class="literal">null</span>) &#123;<span class="keyword">return</span> <span class="literal">false</span>;&#125;</span><br><span class="line">		<span class="comment">// 判断传进来的obj是否是User对象，防止出现类型转换的异常</span></span><br><span class="line">		<span class="keyword">if</span> (obj <span class="keyword">instanceof</span> User) &#123;</span><br><span class="line">			<span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> (User) obj;</span><br><span class="line">			<span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="built_in">this</span>.name.equals(user.name) &amp;&amp; <span class="built_in">this</span>.id == user.id;</span><br><span class="line">			<span class="keyword">return</span> flag;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 如果没有走类型判断语句说明两个比较的对象它们的类型都不一样，结果就是false了</span></span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;	</span><br><span class="line">     ....<span class="comment">//get\set 方法</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="hashCode与equals"><a href="#hashCode与equals" class="headerlink" title="hashCode与equals"></a>hashCode与equals</h1><ul>
+<li>hashCode介绍：<br>hashCode() 的作用是获取哈希码，也称为散列码；它实际上是返回一个int整数。这个哈希码的作用是<br>确定该对象在哈希表中的索引位置。hashCode() 定义在JDK的Object.java中，Java中的任何类都包含有<br>hashCode() 函数。<br>散列表存储的是键值对(key-value)，它的特点是：能根据“键”快速的检索出对应的“值”。这其中就利用<br>到了散列码！（可以快速找到所需要的对象）<br>为什么要有hashCode：</li>
+<li>以“HashSet如何检查重复”为例子来说明为什么要有hashCode：<br>对象加入HashSet时，HashSet会先计算对象的hashcode值来判断对象加入的位置，看该位置是否有<br>值，如果没有、HashSet会假设对象没有重复出现。但是如果发现有值，这时会调用equals（）方法来<br>检查两个对象是否真的相同。如果两者相同，HashSet就不会让其加入操作成功。如果不同的话，就会<br>重新散列到其他位置。这样就大大减少了equals的次数，相应就大大提高了执行速度。</li>
+<li>如果两个对象相等，则hashcode一定也是相同的<br>两个对象相等,对两个对象分别调用equals方法都返回true<br>两个对象有相同的hashcode值，它们也不一定是相等的<br>因此，equals方法被覆盖过，则hashCode方法也必须被覆盖<br>hashCode()的默认行为是对堆上的对象产生独特值。如果没有重写hashCode()，则该class的两个<br>对象无论如何都不会相等（即使这两个对象指向相同的数据）</li>
+</ul>
+<h1 id="final"><a href="#final" class="headerlink" title="final"></a>final</h1><p>最终的<br>修饰类：表示类不可被继承<br>修饰方法：表示方法不可被子类覆盖，但是可以重载<br>修饰变量：表示变量一旦被赋值就不可以更改它的值。<br>（1）修饰成员变量<br>如果final修饰的是类变量，只能在静态初始化块中指定初始值或者声明该类变量时指定初始值。<br>如果final修饰的是成员变量，可以在非静态初始化块、声明该变量或者构造器中执行初始值。<br>（2）修饰局部变量<br>系统不会为局部变量进行初始化，局部变量必须由程序员显示初始化。因此使用final修饰局部变量时，<br>即可以在定义时指定默认值（后面的代码不能对变量再赋值），也可以不指定默认值，而在后面的代码<br>中对final变量赋初值（仅一次）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FinalVar</span> &#123;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> <span class="number">0</span>;<span class="comment">//再声明的时候就需要赋值 或者静态代码块赋值</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">static&#123;</span></span><br><span class="line"><span class="comment">a = 0;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">final</span> <span class="type">int</span> <span class="variable">b</span> <span class="operator">=</span> <span class="number">0</span>;<span class="comment">//再声明的时候就需要赋值 或者代码块中赋值 或者构造器赋值（3）修饰基本类型数据和引用类型数据</span></span><br><span class="line"><span class="comment">/*如果是基本数据类型的变量，则其数值一旦在初始化之后便不能更改；</span></span><br><span class="line"><span class="comment">如果是引用类型的变量，则在对其初始化之后便不能再让其指向另一个对象。但是引用的值是可变</span></span><br><span class="line"><span class="comment">的。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">b = 0;</span></span><br><span class="line"><span class="comment">&#125;*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line"><span class="keyword">final</span> <span class="type">int</span> localA; <span class="comment">//局部变量只声明没有初始化，不会报错,与final无关。</span></span><br><span class="line">localA = <span class="number">0</span>;<span class="comment">//在使用之前一定要赋值</span></span><br><span class="line"><span class="comment">//localA = 1; 但是不允许第二次赋值</span></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>（3）修饰基本类型数据和引用类型数据<br>如果是基本数据类型的变量，则其数值一旦在初始化之后便不能更改；<br>如果是引用类型的变量，则在对其初始化之后便不能再让其指向另一个对象。但是引用的值是可变<br>的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FinalReferenceTest</span>&#123;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line"><span class="keyword">final</span> <span class="type">int</span>[] iArr=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line">iArr[<span class="number">2</span>]=-<span class="number">3</span>;<span class="comment">//合法</span></span><br><span class="line">iArr=<span class="literal">null</span>;<span class="comment">//非法，对iArr不能重新赋值</span></span><br><span class="line"><span class="keyword">final</span> <span class="type">Person</span> <span class="variable">p</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="number">25</span>);</span><br><span class="line">p.setAge(<span class="number">24</span>);<span class="comment">//合法</span></span><br><span class="line">p=<span class="literal">null</span>;<span class="comment">//非法</span></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="为什么局部内部类和匿名内部类只能访问局部final变量？"><a href="#为什么局部内部类和匿名内部类只能访问局部final变量？" class="headerlink" title="为什么局部内部类和匿名内部类只能访问局部final变量？"></a>为什么局部内部类和匿名内部类只能访问局部final变量？</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">OutClass</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="type">int</span> <span class="variable">age</span> <span class="operator">=</span> <span class="number">12</span>;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">outPrint</span><span class="params">(<span class="keyword">final</span> <span class="type">int</span> x)</span> &#123;</span><br><span class="line">                <span class="keyword">class</span> <span class="title class_">InClass</span> &#123;</span><br><span class="line">                        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">InPrint</span><span class="params">()</span> &#123;</span><br><span class="line">                                System.out.println(x);</span><br><span class="line">                                System.out.println(age);</span><br><span class="line">                        &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">InClass</span>().InPrint();</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//这里有一个外部类 OuterClass 和一个内部类 InClass，内部类访问了外部类的一个方法中的一个局部变量 x，在这里，x 必须是 final 的，否则会报错:</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>首先需要知道的一点是: 内部类和外部类是处于同一个级别的，内部类不会因为定义在方法中就会随着<br>方法的执行完毕就被销毁。</li>
+<li>这里就会产生问题：当外部类的方法结束时，局部变量就会被销毁了，但是内部类对象可能还存在(只有<br>没有人再引用它时，才会死亡)。这里就出现了一个矛盾：内部类对象访问了一个不存在的变量。为了解<br>决这个问题，就将局部变量复制了一份作为内部类的成员变量，这样当局部变量死亡后，内部类仍可以<br>访问它，实际访问的是局部变量的”copy”。这样就好像延长了局部变量的生命周期</li>
+<li>将局部变量复制为内部类的成员变量时，必须保证这两个变量是一样的，也就是如果我们在内部类中修<br>改了成员变量，方法中的局部变量也得跟着改变，怎么解决问题呢？</li>
+<li>就将局部变量设置为final，对它初始化后，我就不让你再去修改这个变量，就保证了内部类的成员变量<br>和方法的局部变量的一致性。这实际上也是一种妥协。使得局部变量与内部类内建立的拷贝保持一致。</li>
+</ul>
+<h1 id="String、StringBuffer、StringBuilder"><a href="#String、StringBuffer、StringBuilder" class="headerlink" title="String、StringBuffer、StringBuilder"></a>String、StringBuffer、StringBuilder</h1><p>String是final修饰的，不可变，每次操作都会产生新的String对象<br>StringBuffer和StringBuilder都是在原对象上操作<br>StringBuffer是线程安全的，StringBuilder线程不安全的<br>StringBuffer方法都是synchronized修饰的<br>性能：StringBuilder &gt; StringBuffer &gt; String<br>场景：经常需要改变字符串内容时使用后面两个<br>优先使用StringBuilder，多线程使用共享变量时使用StringBuffer</p>
+<h1 id="重载和重写的区别"><a href="#重载和重写的区别" class="headerlink" title="重载和重写的区别"></a>重载和重写的区别</h1><p><strong>重载：</strong> 发生在同一个类中，方法名必须相同，参数类型不同、个数不同、顺序不同，方法返回值和访问<br>修饰符可以不同，发生在编译时。<br><strong>重写：</strong> 发生在父子类中，方法名、参数列表必须相同，返回值范围小于等于父类，抛出的异常范围小于<br>等于父类，访问修饰符范围大于等于父类；如果父类方法访问修饰符为private则子类就不能重写该方<br>法。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a,String b)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">add</span><span class="params">(<span class="type">int</span> a,String b)</span>  </span><br><span class="line"><span class="comment">//编译报错 虽然他们的返回值类型不同，但是，方法的重载并不能靠返回值类型/权限修饰符的不同来界定。</span></span><br><span class="line">    <span class="comment">//所以在编译上，这两个方法，方法名，参数列表完全相同，还是会认为是同一个方法。</span></span><br></pre></td></tr></table></figure>
+
+<p>参考 博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/wintershii/article/details/80558739">(35条消息) Java—重写与重载的区别_重写和重载的区别_wintershii的博客-CSDN博客</a></p>
+<p><strong>重写 总结：</strong><br>1.发生在父类与子类之间<br>2.方法名，参数列表，返回类型（除过子类中方法的返回类型是父类中返回类型的子类）必须相同<br>3.访问修饰符的限制一定要大于被重写方法的访问修饰符（public&gt;protected&gt;default&gt;private)<br>4.重写方法一定不能抛出新的检查异常或者比被重写方法申明更加宽泛的检查型异常</p>
+<p><strong>重载 总结：</strong><br>1.重载Overload是一个类中多态性的一种表现<br>2.重载要求同名方法的参数列表不同(参数类型，参数个数甚至是参数顺序)<br>3.重载的时候，返回值类型可以相同也可以不相同。无法以返回型别作为重载函数的区分标准</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">面试时，问：重载（Overload）和重写（Override）的区别？</span><br><span class="line">------------------------------------------------------</span><br><span class="line">答：方法的重载和重写都是实现多态的方式，区别在于前者实现的是编译时的多态性，而后者实现的是运行时的多态性。重载发生在一个类中，同名的方法如果有不同的参数列表（参数类型不同、参数个数不同或者二者都不同）则视为重载；重写发生在子类与父类之间，重写要求子类被重写方法与父类被重写方法有相同的参数列表，有兼容的返回类型，比父类被重写方法更好访问，不能比父类被重写方法声明更多的异常（里氏代换原则）。重载对返回类型没有特殊的要求，不能根据返回类型进行区分。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="接口和抽象类的区别"><a href="#接口和抽象类的区别" class="headerlink" title="接口和抽象类的区别"></a>接口和抽象类的区别</h1><p>参考 博客 ：<a target="_blank" rel="noopener" href="https://changshao.blog.csdn.net/article/details/105852473?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-105852473-blog-108003610.pc_relevant_recovery_v2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-105852473-blog-108003610.pc_relevant_recovery_v2&utm_relevant_index=2">(35条消息) 抽象类和接口的区别，详细理解，基础很重要_怎么理解抽象类和接口_长勺的博客-CSDN博客</a></p>
+<ul>
+<li><p>抽象类（abstract class）和接口（Interface）是Java语言中对于抽象类定义进行支持的两种机制，二者具有很大的相似性，甚至可以相互替换，其实，两者之间还是有很大的区别的。</p>
+</li>
+<li><p>什么是抽象类？</p>
+<ul>
+<li><strong>如果一个类中没有包含足够的信息来描绘一个具体的对象，这样的类就是抽象类。</strong></li>
+</ul>
+</li>
+<li><p>为什么要有抽象类？</p>
+<ul>
+<li><p>在面向对象领域，抽象类主要用来进行类型隐藏。我们可以<strong>构造出一个固定的一组行为的抽象描述，但是这组行为却能够有任意个可能的具体实现方式</strong>。</p>
+</li>
+<li><p>比如说，我们规定了一个行为，动物都要吃东西，可是不同的动物吃的东西不一样，猫吃鱼，狗吃肉，我们很难在动物这个类中规定除具体的eat()方法。那不妨将其定义成一个抽象类，具体的方法实现，交给它的子类去实现重写好了。</p>
+</li>
+</ul>
+</li>
+<li><p>如何对抽象类进行定义？</p>
+<ul>
+<li>抽象类（abstract class）和 接口（Interface）在Java语言中都是用来进行抽象类定义的两种主要方法</li>
+</ul>
+</li>
+</ul>
+<h2 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h2><ul>
+<li><p>定义：包含抽象方法的的类是abstract class</p>
+<blockquote>
+<p>用abstract关键字修饰</p>
+</blockquote>
+</li>
+<li><p>作用：abstract class是为了把相同的东西提取出来,<strong>即代码复用</strong></p>
+</li>
+<li><p>使用abstract class语法规定</p>
+</li>
+</ul>
+<p>特点：</p>
+<ol>
+<li>抽象类要用 abstract 关键字修饰，只能通过子类对其实例化。（抽象类本身是不能被实例化的）</li>
+<li>子类继承抽象类后，要实现所有的抽象方法。</li>
+<li>含抽象方法的一定是抽象类，但是，抽象类不一定含有抽象方法。</li>
+<li>抽象类就是让子类去继承的。</li>
+</ol>
+<h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><ul>
+<li><p>定义：比abstract class更加抽象，是一种特殊的abstract class</p>
+<blockquote>
+<p>用Interface关键字修饰</p>
+</blockquote>
+</li>
+<li><p>作用：Interface是为了把程序模块进行固化的契约,是<strong>为了降低偶合</strong></p>
+</li>
+<li><p>使用Interface的语法规定</p>
+</li>
+</ul>
+<p>特点：</p>
+<ol>
+<li>使用 interface 修饰。</li>
+<li>接口中所有方法都是抽象的，可以被abstract修饰，也可以省略。</li>
+<li>接口中所有方法都是被public修饰的，可以不写，但是不能用其他权限修饰符。</li>
+<li>接口中的属性必须是全局常量 public static final ，可以省略不写。</li>
+<li>接口同样不能实例化。</li>
+</ol>
+<h2 id="二者的区别"><a href="#二者的区别" class="headerlink" title="二者的区别"></a>二者的区别</h2><p><img src="/2023/03/05/Javase%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/image-20230305151057742.png" alt="image-20230305151057742"></p>
+<h1 id="List和Set的区别"><a href="#List和Set的区别" class="headerlink" title="List和Set的区别"></a>List和Set的区别</h1><p>参考博客：<a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv8559112/">List和Set之间的区别！ - 哔哩哔哩 (bilibili.com)</a></p>
+<p>List：<br>（1）ArrayList：底层数据结构是数组，查询快，增删慢，线程不安全，效率高，可以存储重复元素<br>（2）LinkedList 底层数据结构是链表，查询慢，增删快，线程不安全，效率高，可以存储重复元素<br>（3）Vector:底层数据结构是数组，查询快，增删慢，线程安全，效率低，可以存储重复元素 </p>
+<p>Set：<br>(1**)HashSet底层数据结构采用哈希表实现，元素无序且唯一，线程不安全，效率高，可以存储null元素，元素的唯一性是靠所存储元素类型是否重写hashCode()和equals()方法来保证的，如果没有重写这两个方法，则无法保证元素的唯一性。**</p>
+<p>具体实现唯一性的比较过程：存储元素首先会使用hash()算法函数生成一个int类型hashCode散列值，然后已经的所存储的元素的hashCode值比较，如果hashCode不相等，则所存储的两个对象一定不相等，此时存储当前的新的hashCode值处的元素对象；如果hashCode相等，存储元素的对象还是不一定相等，此时会调用equals()方法判断两个对象的内容是否相等，如果内容相等，那么就是同一个对象，无需存储；如果比较的内容不相等，那么就是不同的对象，就该存储了，此时就要采用哈希的解决地址冲突算法，在当前hashCode值处类似一个新的链表， 在同一个hashCode值的后面存储存储不同的对象，这样就保证了元素的唯一性。</p>
+<p>Set的实现类的集合对象中不能够有重复元素，HashSet也一样他是使用了一种标识来确定元素的不重复，HashSet用一种算法来保证HashSet中的元素是不重复的， HashSet采用哈希算法，底层用数组存储数据。默认初始化容量16，加载因子0.75。</p>
+<p>Object类中的hashCode()的方法是所有子类都会继承这个方法，这个方法会用Hash算法算出一个Hash（哈希）码值返回，HashSet会用Hash码值去和数组长度取模， 模（这个模就是对象要存放在数组中的位置）相同时才会判断数组中的元素和要加入的对象的内容是否相同，如果不同才会添加进去。</p>
+<p>(2)<strong>LinkedHashSet底层数据结构采用链表和哈希表共同实现，链表保证了元素的顺序与存储顺序一致，哈希表保证了元素的唯一性。线程不安全，效率高。</strong></p>
+<p>(3)<strong>TreeSet底层数据结构采用二叉树来实现，元素唯一且已经排好序；唯一性同样需要重写hashCode和equals()方法</strong>，二叉树结构保证了元素的有序性。根据构造方法不同，分为自然排序（无参构造）和比较器排序（有参构造），自然排序要求元素必须实现Compareable接口，并重写里面的compareTo()方法，元素通过比较返回的int值来判断排序序列，返回0说明两个对象相同，不需要存储；比较器排需要在TreeSet初始化是时候传入一个实现Comparator接口的比较器对象，或者采用匿名内部类的方式new一个Comparator对象，重写里面的compare()方法；</p>
+<p>（4）小结：Set具有与Collection完全一样的接口，因此没有任何额外的功能，不像前面有两个不同的List。实际上Set就是Collection,只 是行为不同。(这是继承与多态思想的典型应用：表现不同的行为。)Set不保存重复的元素。<br>Set 存入Set的每个元素都必须是唯一的，因为Set不保存重复元素。加入Set的元素必须定义equals()方法以确保对象的唯一性。Set与Collection有完全一样的接口。Set接口不保证维护元素的次序。</p>
+<p><strong>List和Set总结：</strong><br>（1）、List,Set都是继承自Collection接口，Map则不是<br>（2）、List特点：元素有放入顺序，元素可重复 ，Set特点：元素无放入顺序，元素不可重复，重复元素会覆盖掉，（注意：元素虽然无放入顺序，但是元素在set中的位置是有该元素的HashCode决定的，其位置其实是固定的，加入Set 的Object必须定义equals()方法 ，另外list支持for循环，也就是通过下标来遍历，也可以用迭代器，但是set只能用迭代，因为他无序，无法用下标来取得想要的值。）<br>（3）.Set和List对比：<br>Set：检索元素效率低下，删除和插入效率高，插入和删除不会引起元素位置改变。<br>List：和数组类似，List可以动态增长，查找元素效率高，插入删除元素效率低，因为会引起其他元素位置改变。<br>（4）、ArrayList与LinkedList的区别和适用场景</p>
+<p>Arraylist：<br>优点：ArrayList是实现了基于动态数组的数据结构,因为地址连续，一旦数据存储好了，查询操作效率会比较高（在内存里是连着放的）。<br>缺点：因为地址连续， ArrayList要移动数据,所以插入和删除操作效率比较低。</p>
+<p>LinkedList：<br>优点：LinkedList基于链表的数据结构,地址是任意的，所以在开辟内存空间的时候不需要等一个连续的地址，对于新增和删除操作add和remove，LinedList比较占优势。LinkedList 适用于要头尾操作或插入指定位置的场景<br>缺点：因为LinkedList要移动指针,所以查询操作性能比较低。 </p>
+<h1 id="ArrayList与LinkedList的区别"><a href="#ArrayList与LinkedList的区别" class="headerlink" title="ArrayList与LinkedList的区别"></a>ArrayList与LinkedList的区别</h1><ol>
+<li>ArrayList的实现是基于数组来实现的，LinkedList的基于双向链表来实现。这两个数据结构的逻辑关系是不一样，当然物理存储的方式也会是不一样。 </li>
+<li>LinkedList比ArrayList更占内存，因为LinkedList的节点除了存储数据，还存储了两个引用，一个指向前一个元素，一个指向后一个元素。</li>
+<li>对于随机访问，ArrayList要优于LinkedList。</li>
+<li>对于插入和删除操作，LinkedList优于ArrayList。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ArrayList：基于动态数组，连续内存存储，适合下标访问（随机访问），扩容机制：因为数组长度固</span><br><span class="line">定，超出长度存数据时需要新建数组，然后将老数组的数据拷贝到新数组，如果不是尾部插入数据还会</span><br><span class="line">涉及到元素的移动（往后复制一份，插入新元素），使用尾插法并指定初始容量可以极大提升性能、甚</span><br><span class="line">至超过linkedList（需要创建大量的node对象）</span><br><span class="line">LinkedList：基于链表，可以存储在分散的内存中，适合做数据插入及删除操作，不适合查询：需要逐</span><br><span class="line">一遍历</span><br><span class="line">遍历LinkedList必须使用iterator不能使用for循环，因为每次for循环体内通过get(i)取得某一元素时都需</span><br><span class="line">要对list重新进行遍历，性能消耗极大。</span><br><span class="line">另外不要试图使用indexOf等返回元素索引，并利用其进行遍历，使用indexlOf对list进行了遍历，当结</span><br><span class="line">果为空时会遍历整个列表。</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="HashMap和HashTable有什么区别？其底层实现是什么？"><a href="#HashMap和HashTable有什么区别？其底层实现是什么？" class="headerlink" title="HashMap和HashTable有什么区别？其底层实现是什么？"></a>HashMap和HashTable有什么区别？其底层实现是什么？</h1><ul>
+<li>区别 ：<br>（1）HashMap方法没有synchronized修饰，线程非安全，HashTable线程安全；<br>（2）HashMap允许key和value为null，而HashTable不允许</li>
+<li><strong>底层实现：数组+链表实现</strong><ol>
+<li>jdk8开始链表高度到8、数组长度超过64，链表转变为红黑树，元素以内部类Node节点存在</li>
+<li>计算key的hash值，二次hash然后对数组长度取模，对应到数组下标，</li>
+<li>如果没有产生hash冲突(下标位置没有元素)，则直接创建Node存入数组，</li>
+<li>如果产生hash冲突，先进行equal比较，相同则取代该元素，不同，则判断链表高度插入链表，链</li>
+<li>表高度达到8，并且数组长度到64则转变为红黑树，长度低于6则将红黑树转回链表</li>
+<li>key为null，存在下标0的位置</li>
+</ol>
+</li>
+</ul>
+<h1 id="什么是字节码？采用字节码的好处是什么？"><a href="#什么是字节码？采用字节码的好处是什么？" class="headerlink" title="什么是字节码？采用字节码的好处是什么？"></a>什么是字节码？采用字节码的好处是什么？</h1><p>**java中的编译器和解释器：</p>
+<p>Java中引入了虚拟机的概念，即在机器和编译程序之间加入了一层抽象的虚拟的机器。这台虚拟的机器<br>在任何平台上都提供给编译程序一个的共同的接口。<br>编译程序只需要面向虚拟机，生成虚拟机能够理解的代码，然后由解释器来将虚拟机代码转换为特定系<br>统的机器码执行。在Java中，这种<strong>供虚拟机理解的代码叫做 字节码</strong>（即扩展名为 .class的文件），它不<br>面向任何特定的处理器，只面向虚拟机。<br>每一种平台的解释器是不同的，但是实现的虚拟机是相同的。Java源程序经过编译器编译后变成字节<br>码，字节码由虚拟机解释执行，虚拟机将每一条要执行的字节码送给解释器，解释器将其翻译成特定机<br>器上的机器码，然后在特定的机器上运行。这也就是解释了Java的编译与解释并存的特点。<br><strong>Java源代码—-&gt;编译器—-&gt;jvm可执行的Java字节码(即虚拟指令)—-&gt;jvm—-&gt;jvm中解释器—–&gt;机器可执</strong><br><strong>行的二进制机器码—-&gt;程序运行。</strong></p>
+<p><strong>采用字节码的好处：</strong><br>Java语言通过字节码的方式，在一定程度上解决了传统解释型语言执行效率低的问题，同时又保留了解<br>释型语言可移植的特点。所以Java程序运行时比较高效，而且，由于字节码并不专对一种特定的机器，<br>因此，<strong>Java程序无须重新编译便可在多种不同的计算机上运行。</strong></p>
+<h1 id="Java中的异常体系"><a href="#Java中的异常体系" class="headerlink" title="Java中的异常体系"></a>Java中的异常体系</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Java中的所有异常都来自顶级父类Throwable。</span><br><span class="line">Throwable下有两个子类Exception和Error。</span><br><span class="line">Error是程序无法处理的错误，一旦出现这个错误，则程序将被迫停止运行。</span><br><span class="line">Exception不会导致程序停止，又分为两个部分RunTimeException运行时异常和CheckedException检</span><br><span class="line">查异常。</span><br><span class="line">RunTimeException常常发生在程序运行过程中，会导致程序当前线程执行失败。CheckedException常</span><br><span class="line">常发生在程序编译过程中，会导致程序编译不通过。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Error-和-Exception-区别是什么？"><a href="#Error-和-Exception-区别是什么？" class="headerlink" title="Error 和 Exception 区别是什么？"></a>Error 和 Exception 区别是什么？</h2><ul>
+<li>Error 类型的错误通常为虚拟机相关错误，如系统崩溃，内存不足，堆栈溢出等，编译器不会对这<br>类错误进行检测，JAVA 应用程序也不应对这类错误进行捕获，一旦这类错误发生，通常应用程序<br>会被终止，仅靠应用程序本身无法恢复；</li>
+<li>Exception 类的错误是可以在应用程序中进行捕获并处理的，通常遇到这种错误，应对其进行处<br>理，使应用程序可以继续正常运行。</li>
+</ul>
+<h2 id="运行时异常和一般异常-受检异常-区别是什么？"><a href="#运行时异常和一般异常-受检异常-区别是什么？" class="headerlink" title="运行时异常和一般异常(受检异常)区别是什么？"></a>运行时异常和一般异常(受检异常)区别是什么？</h2><ul>
+<li>运行时异常包括 RuntimeException 类及其子类，表示 JVM 在运行期间可能出现的异常。 Java 编译器不会检查运行时异常。</li>
+<li>受检异常是Exception 中除 RuntimeException 及其子类之外的异常。 Java 编译器会检查受检异常。RuntimeException异常和受检异常之间的区别：是否强制要求调用者必须处理此异常，如果强制要求调用者必须进行处理，那么就使用受检异常，否则就选择非受检异常(RuntimeException)。一般来讲，如果没有特殊的要求，我们建议使用RuntimeException异常。</li>
+</ul>
+<h2 id="JVM-是如何处理异常的？"><a href="#JVM-是如何处理异常的？" class="headerlink" title="JVM 是如何处理异常的？"></a>JVM 是如何处理异常的？</h2><ul>
+<li>在一个方法中如果发生异常，这个方法会创建一个异常对象，并转交给 JVM，该异常对象包含异<br>常名称，异常描述以及异常发生时应用程序的状态。创建异常对象并转交给 JVM 的过程称为抛出<br>异常。可能有一系列的方法调用，最终才进入抛出异常的方法，这一系列方法调用的有序列表叫做<br>调用栈。</li>
+<li>JVM 会顺着调用栈去查找看是否有可以处理异常的代码，如果有，则调用异常处理代码。当 JVM<br>发现可以处理异常的代码时，会把发生的异常传递给它。如果 JVM 没有找到可以处理该异常的代<br>码块，JVM 就会将该异常转交给默认的异常处理器（默认处理器为 JVM 的一部分），默认异常处<br>理器打印出异常信息并终止应用程序。</li>
+</ul>
+<h2 id="throw-和-throws-的区别是什么？"><a href="#throw-和-throws-的区别是什么？" class="headerlink" title="throw 和 throws 的区别是什么？"></a>throw 和 throws 的区别是什么？</h2><ul>
+<li>Java 中的异常处理除了包括捕获异常和处理异常之外，还包括声明异常和拋出异常，可以通过<br>throws 关键字在方法上声明该方法要拋出的异常，或者在方法内部通过 throw 拋出异常对象。</li>
+</ul>
+<p><strong>throws 关键字和 throw 关键字在使用上的几点区别如下：</strong></p>
+<ul>
+<li>throw 关键字用在方法内部，只能用于抛出一种异常，用来抛出方法或代码块中的异常，受查异常<br>和非受查异常都可以被抛出。<br>throws 关键字用在方法声明上，可以抛出多个异常，用来标识该方法可能抛出的异常列表。一个<br>方法用 throws 标识了可能抛出的异常列表，调用该方法的方法中必须包含可处理异常的代码，否<br>则也要在方法签名中用 throws 关键字声明相应的异常。</li>
+</ul>
+<h2 id="final、finally、finalize-有什么区别？"><a href="#final、finally、finalize-有什么区别？" class="headerlink" title="final、finally、finalize 有什么区别？"></a>final、finally、finalize 有什么区别？</h2><ul>
+<li><p>final可以修饰类、变量、方法，修饰类表示该类不能被继承、修饰方法表示该方法不能被重写、<br>修饰变量表示该变量是一个常量不能被重新赋值。</p>
+</li>
+<li><p>finally一般作用在try-catch代码块中，在处理异常的时候，通常我们将一定要执行的代码方法<br>finally代码块中，表示不管是否出现异常，该代码块都会执行，一般用来存放一些关闭资源的代码</p>
+</li>
+<li><p>finalize是一个方法，属于Object类的一个方法，而Object类是所有类的父类，Java 中允许使用<br>finalize()方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。</p>
+</li>
+</ul>
+<h2 id="try-catch-finally-中哪个部分可以省略？"><a href="#try-catch-finally-中哪个部分可以省略？" class="headerlink" title="try-catch-finally 中哪个部分可以省略？"></a>try-catch-finally 中哪个部分可以省略？</h2><ul>
+<li><p>答：catch 可以省略<br>原因</p>
+</li>
+<li><p>更为严格的说法其实是：</p>
+</li>
+<li><p>try只适合处理运行时异常，try+catch适合处理运行时异常+普通异常。<br>也就是说，如果你只用try去处理普通异常却不加以catch处理，编译是通不过的，因为编译器硬性<br>规定，普通异常如果选择捕获，则必须用catch显示声明以便进一步处理。而运行时异常在编译时<br>没有如此规定，所以catch可以省略，你加上catch编译器也觉得无可厚非。<br>理论上，编译器看任何代码都不顺眼，都觉得可能有潜在的问题，所以你即使对所有代码加上<br>try，代码在运行期时也只不过是在正常运行的基础上加一层皮。但是你一旦对一段代码加上try，<br>就等于显示地承诺编译器，对这段代码可能抛出的异常进行捕获而非向上抛出处理。如果是普通异<br>常，编译器要求必须用catch捕获以便进一步处理；如果运行时异常，捕获然后丢弃并且+finally扫<br>尾处理，或者加上catch捕获以便进一步处理。<br>至于加上finally，则是在不管有没捕获异常，都要进行的“扫尾”处理。</p>
+</li>
+</ul>
+<h2 id="try-catch-finally-中，如果-catch-中-return-了，finally-还会执行吗？"><a href="#try-catch-finally-中，如果-catch-中-return-了，finally-还会执行吗？" class="headerlink" title="try-catch-finally 中，如果 catch 中 return 了，finally 还会执行吗？"></a>try-catch-finally 中，如果 catch 中 return 了，finally 还会执行吗？</h2><ul>
+<li>答：会执行，在 return 前执行。</li>
+<li>注意：在 finally 中改变返回值的做法是不好的，因为如果存在 finally 代码块，try中的 return 语<br>句不会立马返回调用者，而是记录下返回值待 finally 代码块执行完毕之后再向调用者返回其值，<br>然后如果在 finally 中修改了返回值，就会返回修改后的值。显然，在 finally 中返回或者修改返回<br>值会对程序造成很大的困扰，C#中直接用编译错误的方式来阻止程序员干这种龌龊的事情，Java<br>中也可以通过提升编译器的语法检查级别来产生警告或错误</li>
+</ul>
+<h2 id="常见的-RuntimeException-有哪些？"><a href="#常见的-RuntimeException-有哪些？" class="headerlink" title="常见的 RuntimeException 有哪些？"></a>常见的 RuntimeException 有哪些？</h2><ul>
+<li>ClassCastException(类转换异常)</li>
+<li>IndexOutOfBoundsException(数组越界)</li>
+<li>NullPointerException(空指针)</li>
+<li>ArrayStoreException(数据存储异常，操作数组时类型不一致)</li>
+<li>还有IO操作的BufferOverflowException异常</li>
+</ul>
+<h2 id="Java常见异常有哪些"><a href="#Java常见异常有哪些" class="headerlink" title="Java常见异常有哪些"></a>Java常见异常有哪些</h2><ul>
+<li>java.lang.IllegalAccessError：违法访问错误。当一个应用试图访问、修改某个类的域（Field）或<br>者调用其方法，但是又违反域或方法的可见性声明，则抛出该异常。</li>
+<li>java.lang.InstantiationError：实例化错误。当一个应用试图通过Java的new操作符构造一个抽象<br>类或者接口时抛出该异常.</li>
+<li>java.lang.OutOfMemoryError：内存不足错误。当可用内存不足以让Java虚拟机分配给一个对象<br>时抛出该错误。</li>
+<li>java.lang.StackOverflowError：堆栈溢出错误。当一个应用递归调用的层次太深而导致堆栈溢出<br>或者陷入死循环时抛出该错误。</li>
+<li>java.lang.ClassCastException：类造型异常。假设有类A和B（A不是B的父类或子类），O是A的<br>实例，那么当强制将O构造为类B的实例时抛出该异常。该异常经常被称为强制类型转换异常。</li>
+<li>java.lang.ClassNotFoundException：找不到类异常。当应用试图根据字符串形式的类名构造类，<br>而在遍历CLASSPAH之后找不到对应名称的class文件时，抛出该异常。</li>
+<li>java.lang.ArithmeticException：算术条件异常。譬如：整数除零等。</li>
+<li>java.lang.ArrayIndexOutOfBoundsException：数组索引越界异常。当对数组的索引值为负数或<br>大于等于数组大小时抛出。</li>
+<li>java.lang.IndexOutOfBoundsException：索引越界异常。当访问某个序列的索引值小于0或大于<br>等于序列大小时，抛出该异常。</li>
+<li>java.lang.InstantiationException：实例化异常。当试图通过newInstance()方法创建某个类的实<br>例，而该类是一个抽象类或接口时，抛出该异常。</li>
+<li>java.lang.NoSuchFieldException：属性不存在异常。当访问某个类的不存在的属性时抛出该异<br>常。</li>
+<li>java.lang.NoSuchMethodException：方法不存在异常。当访问某个类的不存在的方法时抛出该<br>异常。-</li>
+<li>java.lang.NullPointerException：空指针异常。当应用试图在要求使用对象的地方使用了null时，<br>抛出该异常。譬如：调用null对象的实例方法、访问null对象的属性、计算null对象的长度、使用<br>throw语句抛出null等等。</li>
+<li>java.lang.NumberFormatException：数字格式异常。当试图将一个String转换为指定的数字类<br>型，而该字符串确不满足数字类型要求的格式时，抛出该异常。</li>
+<li>java.lang.StringIndexOutOfBoundsException：字符串索引越界异常。当使用索引值访问某个字<br>符串中的字符，而该索引值小于0或大于等于序列大小时，抛出该异常。</li>
+</ul>
+<h1 id="java中的-类加载器以及双亲委派模型"><a href="#java中的-类加载器以及双亲委派模型" class="headerlink" title="java中的 类加载器以及双亲委派模型"></a>java中的 类加载器以及双亲委派模型</h1><p><strong>JDK自带有三个类加载器：bootstrap ClassLoader、ExtClassLoader、AppClassLoader。</strong><br><strong>BootStrapClassLoader</strong>是ExtClassLoader的父类加载器，默认负责加载%JAVA_HOME%lib下的jar包和<br>class文件。<br><strong>ExtClassLoader</strong>是AppClassLoader的父类加载器，负责加载%JAVA_HOME%&#x2F;lib&#x2F;ext文件夹下的jar包和<br>class类。<br><strong>AppClassLoader</strong>是自定义类加载器的父类，负责加载classpath下的类文件。系统类加载器，线程上下<br>文加载器<br>继承ClassLoader实现自定义类加载器</p>
+<h3 id="双亲委托模型"><a href="#双亲委托模型" class="headerlink" title="双亲委托模型"></a>双亲委托模型</h3><p><strong><img src="/2023/03/05/Javase%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/image-20230306133755816.png" alt="image-20230306133755816"></strong></p>
+<p><strong>双亲委派模型的好处：</strong><br>主要是为了安全性，避免用户自己编写的类动态替换 Java的一些核心类，比如 String。<br>同时也避免了类的重复加载，因为 JVM中区分不同类，不仅仅是根据类名，相同的 class文件被不<br>同的 ClassLoader加载就是不同的两个类</p>
+<h1 id="GC如何判断对象可以被回收"><a href="#GC如何判断对象可以被回收" class="headerlink" title="GC如何判断对象可以被回收"></a>GC如何判断对象可以被回收</h1></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">beckoningcoco</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/03/05/Javase%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/">http://example.com/2023/03/05/Javase相关面试题/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">梦落芳华</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://w.wallhaven.cc/full/p9/wallhaven-p9op59.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/03/05/%E5%89%8D%E7%AB%AF-for%E5%BE%AA%E7%8E%AF%E4%B8%8E-onclick%E4%BA%8B%E4%BB%B6%E5%BC%95%E8%B5%B7%E7%9A%84%E9%97%AE%E9%A2%98/"><img class="prev-cover" src="https://w.wallhaven.cc/full/zy/wallhaven-zypzdj.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">前端-for循环与 onclick事件引起的问题</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/01/JavaSE%E8%BF%9B%E9%98%B6/"><img class="next-cover" src="https://w.wallhaven.cc/full/zy/wallhaven-zypj7v.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">JavaSE进阶</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">beckoningcoco</div><div class="author-info__description">世界好吵，让我帮你捂耳朵吧</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/beckoningcoco"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/beckoningcoco" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:995587764@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的blog！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-JVM-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%A7%B0-Java-%E4%B8%BA%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%9A%84%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">什么是 JVM? 为什么称 Java 为跨平台的编程语言?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#JDK-%E5%92%8C-JRE-%E4%B9%8B%E9%97%B4%E7%9A%84%E5%B7%AE%E5%BC%82%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">JDK 和 JRE 之间的差异是什么？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E2%80%9Cstatic%E2%80%9D-%E5%85%B3%E9%94%AE%E5%AD%97%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F%E5%9C%A8-Java-%E9%87%8C%E5%8F%AF%E4%BB%A5-override-private-%E6%88%96-static-%E7%9A%84%E6%96%B9%E6%B3%95%E5%90%97%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">“static” 关键字是什么意思？在 Java 里可以 override private 或 static 的方法吗？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%E9%87%8C%E5%8F%AF%E4%BB%A5%E8%AE%BF%E9%97%AE%E9%9D%9E%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F%E5%90%97"><span class="toc-number">4.</span> <span class="toc-text">在静态方法里可以访问非静态变量吗?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AB%E7%A7%8D%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%EF%BC%9F-%E8%87%AA%E5%8A%A8%E8%A3%85%E7%AE%B1%E5%92%8C%E8%87%AA%E5%8A%A8%E6%8B%86%E7%AE%B1%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">八种基本数据类型？ 自动装箱和自动拆箱？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8-Java-%E4%B8%AD%E4%BB%80%E4%B9%88%E6%98%AF%E6%96%B9%E6%B3%95%E7%9A%84-Override-%E8%A6%86%E7%9B%96-%E5%92%8C-Overload-%E9%87%8D%E8%BD%BD"><span class="toc-number">6.</span> <span class="toc-text">在 Java 中什么是方法的 Override(覆盖) 和 Overload(重载)?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B0%88%E4%B8%80%E8%B0%88%E5%AF%B9%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%90%86%E8%A7%A3"><span class="toc-number">7.</span> <span class="toc-text">谈一谈对面向对象的理解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#x3D-x3D-%E5%92%8C-equals-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">8.</span> <span class="toc-text">&#x3D;&#x3D; 和 equals 的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#hashCode%E4%B8%8Eequals"><span class="toc-number">9.</span> <span class="toc-text">hashCode与equals</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#final"><span class="toc-number">10.</span> <span class="toc-text">final</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%B1%80%E9%83%A8%E5%86%85%E9%83%A8%E7%B1%BB%E5%92%8C%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E5%8F%AA%E8%83%BD%E8%AE%BF%E9%97%AE%E5%B1%80%E9%83%A8final%E5%8F%98%E9%87%8F%EF%BC%9F"><span class="toc-number">10.1.</span> <span class="toc-text">为什么局部内部类和匿名内部类只能访问局部final变量？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#String%E3%80%81StringBuffer%E3%80%81StringBuilder"><span class="toc-number">11.</span> <span class="toc-text">String、StringBuffer、StringBuilder</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%87%8D%E8%BD%BD%E5%92%8C%E9%87%8D%E5%86%99%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">12.</span> <span class="toc-text">重载和重写的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">13.</span> <span class="toc-text">接口和抽象类的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%BD%E8%B1%A1%E7%B1%BB"><span class="toc-number">13.1.</span> <span class="toc-text">抽象类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3"><span class="toc-number">13.2.</span> <span class="toc-text">接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E8%80%85%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">13.3.</span> <span class="toc-text">二者的区别</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#List%E5%92%8CSet%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">14.</span> <span class="toc-text">List和Set的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ArrayList%E4%B8%8ELinkedList%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">15.</span> <span class="toc-text">ArrayList与LinkedList的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashMap%E5%92%8CHashTable%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E5%85%B6%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">16.</span> <span class="toc-text">HashMap和HashTable有什么区别？其底层实现是什么？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%AD%97%E8%8A%82%E7%A0%81%EF%BC%9F%E9%87%87%E7%94%A8%E5%AD%97%E8%8A%82%E7%A0%81%E7%9A%84%E5%A5%BD%E5%A4%84%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">17.</span> <span class="toc-text">什么是字节码？采用字节码的好处是什么？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E4%BD%93%E7%B3%BB"><span class="toc-number">18.</span> <span class="toc-text">Java中的异常体系</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Error-%E5%92%8C-Exception-%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">18.1.</span> <span class="toc-text">Error 和 Exception 区别是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BC%82%E5%B8%B8%E5%92%8C%E4%B8%80%E8%88%AC%E5%BC%82%E5%B8%B8-%E5%8F%97%E6%A3%80%E5%BC%82%E5%B8%B8-%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">18.2.</span> <span class="toc-text">运行时异常和一般异常(受检异常)区别是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JVM-%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%BC%82%E5%B8%B8%E7%9A%84%EF%BC%9F"><span class="toc-number">18.3.</span> <span class="toc-text">JVM 是如何处理异常的？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#throw-%E5%92%8C-throws-%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">18.4.</span> <span class="toc-text">throw 和 throws 的区别是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#final%E3%80%81finally%E3%80%81finalize-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">18.5.</span> <span class="toc-text">final、finally、finalize 有什么区别？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#try-catch-finally-%E4%B8%AD%E5%93%AA%E4%B8%AA%E9%83%A8%E5%88%86%E5%8F%AF%E4%BB%A5%E7%9C%81%E7%95%A5%EF%BC%9F"><span class="toc-number">18.6.</span> <span class="toc-text">try-catch-finally 中哪个部分可以省略？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#try-catch-finally-%E4%B8%AD%EF%BC%8C%E5%A6%82%E6%9E%9C-catch-%E4%B8%AD-return-%E4%BA%86%EF%BC%8Cfinally-%E8%BF%98%E4%BC%9A%E6%89%A7%E8%A1%8C%E5%90%97%EF%BC%9F"><span class="toc-number">18.7.</span> <span class="toc-text">try-catch-finally 中，如果 catch 中 return 了，finally 还会执行吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84-RuntimeException-%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F"><span class="toc-number">18.8.</span> <span class="toc-text">常见的 RuntimeException 有哪些？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="toc-number">18.9.</span> <span class="toc-text">Java常见异常有哪些</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#java%E4%B8%AD%E7%9A%84-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E4%BB%A5%E5%8F%8A%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B"><span class="toc-number">19.</span> <span class="toc-text">java中的 类加载器以及双亲委派模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%89%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">19.0.1.</span> <span class="toc-text">双亲委托模型</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GC%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E5%AF%B9%E8%B1%A1%E5%8F%AF%E4%BB%A5%E8%A2%AB%E5%9B%9E%E6%94%B6"><span class="toc-number">20.</span> <span class="toc-text">GC如何判断对象可以被回收</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/03/06/Java%E4%B8%AD%E7%9A%84GC%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6/" title="Java中的GC垃圾回收机制"><img src="https://w.wallhaven.cc/full/9m/wallhaven-9mwko1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java中的GC垃圾回收机制"/></a><div class="content"><a class="title" href="/2023/03/06/Java%E4%B8%AD%E7%9A%84GC%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6/" title="Java中的GC垃圾回收机制">Java中的GC垃圾回收机制</a><time datetime="2023-03-06T05:47:05.000Z" title="发表于 2023-03-06 13:47:05">2023-03-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/06/Java%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/" title="Java中的类加载器"><img src="https://w.wallhaven.cc/full/2y/wallhaven-2yzgoy.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java中的类加载器"/></a><div class="content"><a class="title" href="/2023/03/06/Java%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/" title="Java中的类加载器">Java中的类加载器</a><time datetime="2023-03-06T02:25:35.000Z" title="发表于 2023-03-06 10:25:35">2023-03-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/05/%E5%89%8D%E7%AB%AF-for%E5%BE%AA%E7%8E%AF%E4%B8%8E-onclick%E4%BA%8B%E4%BB%B6%E5%BC%95%E8%B5%B7%E7%9A%84%E9%97%AE%E9%A2%98/" title="前端-for循环与 onclick事件引起的问题"><img src="https://w.wallhaven.cc/full/zy/wallhaven-zypzdj.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端-for循环与 onclick事件引起的问题"/></a><div class="content"><a class="title" href="/2023/03/05/%E5%89%8D%E7%AB%AF-for%E5%BE%AA%E7%8E%AF%E4%B8%8E-onclick%E4%BA%8B%E4%BB%B6%E5%BC%95%E8%B5%B7%E7%9A%84%E9%97%AE%E9%A2%98/" title="前端-for循环与 onclick事件引起的问题">前端-for循环与 onclick事件引起的问题</a><time datetime="2023-03-05T12:50:13.000Z" title="发表于 2023-03-05 20:50:13">2023-03-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/05/Javase%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/" title="Javase相关面试题"><img src="https://w.wallhaven.cc/full/p9/wallhaven-p9op59.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Javase相关面试题"/></a><div class="content"><a class="title" href="/2023/03/05/Javase%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/" title="Javase相关面试题">Javase相关面试题</a><time datetime="2023-03-05T02:35:02.000Z" title="发表于 2023-03-05 10:35:02">2023-03-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/01/JavaSE%E8%BF%9B%E9%98%B6/" title="JavaSE进阶"><img src="https://w.wallhaven.cc/full/zy/wallhaven-zypj7v.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaSE进阶"/></a><div class="content"><a class="title" href="/2023/03/01/JavaSE%E8%BF%9B%E9%98%B6/" title="JavaSE进阶">JavaSE进阶</a><time datetime="2023-03-01T06:03:56.000Z" title="发表于 2023-03-01 14:03:56">2023-03-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By beckoningcoco</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
