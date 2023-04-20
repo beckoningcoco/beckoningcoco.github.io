@@ -1,0 +1,542 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>spring中的bean的ioc流程 | 梦落芳华</title><meta name="author" content="beckoningcoco"><meta name="copyright" content="beckoningcoco"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="什么是IOC？假如说，对象A依赖对象B，那么我们在人为创建对象A的时候，必须也要创建一个B对象才行。 这样看起来，A对象和B对象严重耦合了。 那么我们想，我们能不能借助一个容器，让这个容器帮助我们管理所有的对象，我们需要什么对象就去容器里面拿，至于对象之间是否相互依赖，对象如何创建，全部由容器在内部完成，我们程序员无需关心，这样就叫做控制反转。 也就是说，原本我们自己创建对象A和对象B，但是引入I">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring中的bean的ioc流程">
+<meta property="og:url" content="http://example.com/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="梦落芳华">
+<meta property="og:description" content="什么是IOC？假如说，对象A依赖对象B，那么我们在人为创建对象A的时候，必须也要创建一个B对象才行。 这样看起来，A对象和B对象严重耦合了。 那么我们想，我们能不能借助一个容器，让这个容器帮助我们管理所有的对象，我们需要什么对象就去容器里面拿，至于对象之间是否相互依赖，对象如何创建，全部由容器在内部完成，我们程序员无需关心，这样就叫做控制反转。 也就是说，原本我们自己创建对象A和对象B，但是引入I">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-57owz8.png">
+<meta property="article:published_time" content="2023-03-27T08:50:23.000Z">
+<meta property="article:modified_time" content="2023-04-08T15:04:17.063Z">
+<meta property="article:author" content="beckoningcoco">
+<meta property="article:tag" content="spring面试题">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-57owz8.png"><link rel="shortcut icon" href="/img/%E5%A4%B4%E5%83%8F.png"><link rel="canonical" href="http://example.com/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'spring中的bean的ioc流程',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-08 23:04:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/readPercent.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-57owz8.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">梦落芳华</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">spring中的bean的ioc流程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-27T08:50:23.000Z" title="发表于 2023-03-27 16:50:23">2023-03-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-08T15:04:17.063Z" title="更新于 2023-04-08 23:04:17">2023-04-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8D%9A%E6%96%87/">博文</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="spring中的bean的ioc流程"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="什么是IOC？"><a href="#什么是IOC？" class="headerlink" title="什么是IOC？"></a>什么是IOC？</h2><p>假如说，对象A依赖对象B，那么我们在人为创建对象A的时候，必须也要创建一个B对象才行。</p>
+<p>这样看起来，A对象和B对象严重耦合了。</p>
+<p>那么我们想，我们能不能借助一个容器，让这个容器帮助我们管理所有的对象，我们需要什么对象就去容器里面拿，至于对象之间是否相互依赖，对象如何创建，全部由容器在内部完成，我们程序员无需关心，这样就叫做控制反转。</p>
+<p>也就是说，原本我们自己创建对象A和对象B，但是引入IOC容器之后，我们只需要向容器索要A对象就好了，IOC容器会自动把对象A所依赖的所有对象帮助我们创建出来。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.IOC理论提出的观点大体是这样的：借助于“第三方”实现具有依赖关的对象之间的解耦。</span><br><span class="line"></span><br><span class="line">2.对象A获得依赖对象B的过程,由主动行为变为了被动行为，控制权颠倒过来了，这就是“控制反转”这个名称的由来。</span><br><span class="line"></span><br><span class="line">3.既然IOC是控制反转，那么到底是“哪些方面的控制被反转了呢？”，经过详细地分析和论证后，他得出了答案：“获得依赖对象的过程被反转了”。</span><br><span class="line"></span><br><span class="line">4.所谓依赖注入，就是由IOC容器在运行期间，动态地将某种依赖关系注入到对象之中。</span><br></pre></td></tr></table></figure>
+
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/ivan820819/article/details/79744797">(44条消息) 浅谈IOC–说清楚IOC是什么_ivan820819的博客-CSDN博客</a></p>
+<h2 id="IOC的加载流程-x2F-控制流程到底是怎样的呢？"><a href="#IOC的加载流程-x2F-控制流程到底是怎样的呢？" class="headerlink" title="IOC的加载流程&#x2F;控制流程到底是怎样的呢？"></a>IOC的加载流程&#x2F;控制流程到底是怎样的呢？</h2><p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230327170726388.png" alt="image-20230327170726388"></p>
+<p>ps: ioc 流程图</p>
+<h2 id="第一部分"><a href="#第一部分" class="headerlink" title="第一部分"></a>第一部分</h2><ul>
+<li><p>IOC的加载着重关注两个地方（或者说是两个阶段）</p>
+<ul>
+<li>Bean对象的注册</li>
+<li>Bean对象的创建</li>
+</ul>
+<p>或者：</p>
+<ul>
+<li>容器启动阶段</li>
+<li>对象创建阶段</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230327171005238.png" alt="image-20230327171005238"></p>
+<h2 id="关于Bean对象的注册（容器启动阶段）"><a href="#关于Bean对象的注册（容器启动阶段）" class="headerlink" title="关于Bean对象的注册（容器启动阶段）"></a>关于Bean对象的注册（容器启动阶段）</h2><ul>
+<li>首先，我们写好配置文件或者配置类，或者注解@Component系列….这样一来，我们就有了概念Bean</li>
+<li>之后，Spring会扫描读取这些配置文件信息，将所有的Bean（概念上）对象的信息，封装进一个 BeanDefinition对象中去！</li>
+<li>Bean会有很多个，所以BeanDefinition对象也会有很多个，这个时候，我们就会把这么多的BeanDefinition对象放进一个Map集合之中存储，键为bean的name，值为BeanDefinition对象地址值。</li>
+<li>接下来，spring会循环遍历出所有的BeanDefinition对象，取出Bean的相关信息，交给Bean工厂去创建Bean对象。</li>
+</ul>
+<h3 id="什么是BeanDefinition？"><a href="#什么是BeanDefinition？" class="headerlink" title="什么是BeanDefinition？"></a>什么是BeanDefinition？</h3><p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230327174232793.png" alt="image-20230327174232793"></p>
+<p>这是BeanDefinition的继承关系图</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.BeanDefinition：读取定义Bean的所有信息，方柏霓后续创建Bean的时候进行传输，spring的顶层接口</span><br><span class="line"></span><br><span class="line">2.定义的BeanDefinition对象们保存在一个</span><br><span class="line">Map集合中</span><br><span class="line"></span><br><span class="line">3.BeanDefinition中存储着哪些信息？</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230327174832657.png" alt="image-20230327174832657"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">其中一些特别说明:</span><br><span class="line"></span><br><span class="line">Name</span><br><span class="line">Bean 的名称或者ID, 也有其它称谓如 Bean的识别符,</span><br><span class="line"></span><br><span class="line">Scope</span><br><span class="line">Bean 的作用域（如：singleton、prototype 等）, 默认是singleton也就是单例模式</span><br><span class="line"></span><br><span class="line">Constructor</span><br><span class="line">arguments Bean 构造器参数（用于依赖注入）, 正常 POJO类 是有默认构造器的, 这种比较简单.</span><br><span class="line">但如果是引用一些jar中的类, 没有默认构造器, 就需要用这个来帮我们初始化类.</span><br><span class="line"></span><br><span class="line">Properties</span><br><span class="line">Bean 属性设置（用于依赖注入）, 就是参数注入(Setter注入)</span><br><span class="line"></span><br><span class="line">Autowiring mode</span><br><span class="line">Bean 自动绑定模式（如：通过名称byName）</span><br><span class="line"></span><br><span class="line">Lazy initialization mode</span><br><span class="line">Bean 延迟初始化模式（延迟和非延迟）, 延迟初始化可以有效的减少容器启动的时间</span><br><span class="line"></span><br><span class="line">Initialization method</span><br><span class="line">Bean 初始化回调方法名称</span><br><span class="line"></span><br><span class="line">Destruction method</span><br><span class="line">Bean 销毁回调方法名称</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/sunforraining/article/details/116163529">(44条消息) spring-core-4-32 | BeanDefinition元信息：除了Bean名称和类名，还有哪些Bean元信息值得关注?_beandefinitionbuilder 设置bean属性_sunforraining的博客-CSDN博客</a></p>
+<h2 id="关于对象的创建（对象创建阶段）"><a href="#关于对象的创建（对象创建阶段）" class="headerlink" title="关于对象的创建（对象创建阶段）"></a>关于对象的创建（对象创建阶段）</h2><p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230327175038680.png" alt="image-20230327175038680"></p>
+<h3 id="那就要谈一谈Bean的生命周期了"><a href="#那就要谈一谈Bean的生命周期了" class="headerlink" title="那就要谈一谈Bean的生命周期了~"></a>那就要谈一谈Bean的生命周期了~</h3><p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230327175403175.png" alt="image-20230327175403175"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bean的生命周期，大致分为 五步，细致能分为 十步</span><br></pre></td></tr></table></figure>
+
+<h3 id="Bean生命周期-五步"><a href="#Bean生命周期-五步" class="headerlink" title="Bean生命周期 五步"></a>Bean生命周期 五步</h3><ul>
+<li>Bean 对象实例化</li>
+<li>属性注入</li>
+<li>Bean对象初始化</li>
+<li>Bean对象的使用</li>
+<li>Bean对象的销毁</li>
+</ul>
+<h3 id="Bean生命周期-十步"><a href="#Bean生命周期-十步" class="headerlink" title="Bean生命周期 十步"></a>Bean生命周期 十步</h3><ol>
+<li><p>Bean 对象实例化</p>
+</li>
+<li><p>属性注入</p>
+</li>
+<li><p>检查是否实现了Aware相关接口，调用有关方法</p>
+</li>
+<li><p>Bean后置处理器 执行Before方法</p>
+</li>
+<li><p>检查是否实现了InitializingBean接口，并调用相关方法</p>
+</li>
+<li><p>Bean对象初始化</p>
+</li>
+<li><p>Bean后置处理器 执行After方法</p>
+</li>
+<li><p>Bean对象的使用</p>
+</li>
+<li><p>是否实现DisposableBean 接口，调用其中的 destroy方法执行。</p>
+</li>
+<li><p>Bean对象的销毁</p>
+</li>
+</ol>
+<h3 id="第一步，Bean的实例化"><a href="#第一步，Bean的实例化" class="headerlink" title="第一步，Bean的实例化"></a>第一步，Bean的实例化</h3><h4 id="三种方式"><a href="#三种方式" class="headerlink" title="三种方式"></a>三种方式</h4><ol>
+<li><p>利用类的全限定名 通过反射，调用无参构造创建对象</p>
+<ul>
+<li>没有无参，用有参！</li>
+<li>有无参有有参，则调用无参</li>
+<li>没有无参，多个有参，则报错，因为spring也不知道该用哪个有参构造。</li>
+</ul>
+</li>
+<li><p>利用静态工厂方法</p>
+</li>
+<li><p>利用非静态工厂方法</p>
+<p>这里我们统称为工厂方法吧。</p>
+<p>具体的工厂方法的做法，</p>
+<ol>
+<li>xml 的bean标签配置，有factory-method属性</li>
+<li>@Bean</li>
+<li>FactoryBean的getObject（）方法</li>
+</ol>
+<p>​</p>
+</li>
+</ol>
+<h4 id="FactoryBean-和-BeanFactory的区别？"><a href="#FactoryBean-和-BeanFactory的区别？" class="headerlink" title="FactoryBean 和 BeanFactory的区别？"></a>FactoryBean 和 BeanFactory的区别？</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">BeanFactory是个bean 工厂，是一个工厂类(接口)， 它负责生产和管理bean的一个工厂</span><br><span class="line">是ioc 容器最底层的接口，是个ioc容器，是spring用来管理和装配普通bean的ioc容器（这些bean成为普通bean）。</span><br><span class="line"></span><br><span class="line">FactoryBean是个bean，在IOC容器的基础上给Bean的实现加上了一个简单工厂模式和装饰模式，是一个可以生产对象和装饰对象的工厂bean，由spring管理后，生产的对象是由getObject()方法决定的（从容器中获取到的对象不是</span><br><span class="line">“ FactoryBeanTest ” 对象）。</span><br><span class="line"></span><br><span class="line">BeanFactory是一个老板，FactoryBean是一个打工仔</span><br></pre></td></tr></table></figure>
+
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_38361347/article/details/92852611">(44条消息) Spring FactoryBean和BeanFactory 区别_factorybean和beanfactory的区别_tizzybepeacejoy的博客-CSDN博客</a></p>
+<h4 id="上面提到了BeanFactory，那么我们再看看BeanFactory和ApplicationContext的关系吧。"><a href="#上面提到了BeanFactory，那么我们再看看BeanFactory和ApplicationContext的关系吧。" class="headerlink" title="上面提到了BeanFactory，那么我们再看看BeanFactory和ApplicationContext的关系吧。"></a>上面提到了BeanFactory，那么我们再看看BeanFactory和ApplicationContext的关系吧。</h4><p>1）<strong>获取beanFactory和ApplicationContext方式不同</strong></p>
+<p>BeanFactory beanFactory&#x3D;new XmlBeanFactory(new ClassPathResource(“applicationContext.xml”));<br>beanFactory.getBean(“mybean”);&#x2F;&#x2F;得到bean<br>ApplicationContext ac&#x3D;new ClassPathXmlApplicationContext(“com&#x2F;bean&#x2F;factory&#x2F;spring.xml”);<br>Students student1&#x3D;ac.getBean(“student”);</p>
+<p>2）<strong>都可以获取bean,获取bean存在的区别:</strong></p>
+<p>BeanFactory在初始化容器时，并没有实例化Bean，直到第一次访问某个Bean时才实例化目标Bean。<br>ApplicationContext会在初始化应用上下文时就实例化所有单实例的Bean。</p>
+<p>3）<strong>对BeanPostProcessor中的方法调用方式不同。</strong></p>
+<p>若使用BeanFactory，则必须要显示的调用其addBeanPostProcessor()方法进行注册，参数为BeanPostProcessor实现类的实例,并进行手动调用。<br>如果是使用ApplicationContext，那么容器会在配置文件在中自动寻找实现了BeanPostProcessor接口的Bean，然后自动注册，我们要做的只是配置一个BeanPostProcessor实现类的Bean就可以了。</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/h2604396739/article/details/84403990">(44条消息) beanFactory和ApplicationContext的区别和关系_xmlapplicationcontext 和beanfactory的关系_深山猿的博客-CSDN博客</a></p>
+<h3 id="第二步，属性注入"><a href="#第二步，属性注入" class="headerlink" title="第二步，属性注入"></a>第二步，属性注入</h3><h4 id="xml方式三种"><a href="#xml方式三种" class="headerlink" title="xml方式三种"></a>xml方式三种</h4><ol>
+<li><p>Set注入</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 一、set方法注入属性--&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- 1、配置对象的创建--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;book&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.Keafmd.spring5.Book&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 2、使用property完成属性注入</span></span><br><span class="line"><span class="comment">            name：类里面的属性名称</span></span><br><span class="line"><span class="comment">            value：向属性中注入的值</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;bname&quot;</span> <span class="attr">value</span>=<span class="string">&quot;书名&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;bauthor&quot;</span> <span class="attr">value</span>=<span class="string">&quot;作者&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!--  向属性注入null值--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--&lt;property name=&quot;address&quot; &gt;</span></span><br><span class="line"><span class="comment">            &lt;null/&gt;</span></span><br><span class="line"><span class="comment">        &lt;/property&gt;--&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!--属性值包含特殊符号</span></span><br><span class="line"><span class="comment">            1.把&lt;&gt;进行转义</span></span><br><span class="line"><span class="comment">            2.把带特殊符号的内容写到CDATA</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        </span><br><span class="line">		<span class="comment">&lt;!-- &lt;property name=&quot;address&quot; value=&quot;&amp;lt;&amp;lt;北京&amp;gt;&amp;gt;&quot;&gt;&lt;/property&gt; --&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;address&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>&lt;![CDATA[&lt;&lt;北京&gt;&gt;]]&gt;<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>有参构造注入</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--二、有参构造注入属性--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;orders&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.Keafmd.spring5.Orders&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;oname&quot;</span> <span class="attr">value</span>=<span class="string">&quot;电脑&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;address&quot;</span> <span class="attr">value</span>=<span class="string">&quot;China&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>P名称空间注入</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:p</span>=<span class="string">&quot;http://www.springframework.org/schema/p&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--三、p名称空间注入属性--&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;book&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.Keafmd.spring5.Book&quot;</span> <span class="attr">p:bname</span>=<span class="string">&quot;书名XXX&quot;</span> <span class="attr">p:bauthor</span>=<span class="string">&quot;作者XXX&quot;</span> <span class="attr">p:address</span>=<span class="string">&quot;地址XXX&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="注解方式"><a href="#注解方式" class="headerlink" title="注解方式"></a>注解方式</h4><ul>
+<li><p>首先开启组件扫描</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="string"><span class="tag">                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--开启组件扫描--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.Keafmd&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">context:component-scan</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+</li>
+<li><p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230327200517924.png" alt="image-20230327200517924"></p>
+</li>
+</ul>
+<p>注意：@Resource 先按byName寻找bean，没有再byType寻找bean</p>
+<h4 id="非常常见的一个面试题：解决循环依赖问题"><a href="#非常常见的一个面试题：解决循环依赖问题" class="headerlink" title="非常常见的一个面试题：解决循环依赖问题"></a>非常常见的一个面试题：解决循环依赖问题</h4><p><strong>答：三级缓存技术</strong></p>
+<p>解析：</p>
+<p>我们先来设想这样一个情景，</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328210044941.png" alt="image-20230328210044941"></p>
+<p>当我们在创建对象A的时候，需要注入一个对象B，但是在创建对象B的时候，也需要注入一个对象A，这样就出现问题了。</p>
+<p>对象A和对象B相互依赖，谁也完成不了创建，这就是<strong>循环依赖问题</strong></p>
+<p>让我们简单回顾一下Bean的生命周期。（这里就拿对象A的创建举例子）</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328210811892.png" alt="image-20230328210811892"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. 将对象A进行实例化  ---&gt; 拿到一个早期对象，我们叫做A的普通对象</span><br><span class="line">2. 进行属性注入 ----&gt; 到单例池中寻找对象B，结果找不到 ----&gt; 创建对象B</span><br><span class="line">------------------------------------</span><br><span class="line">       对象B的生命周期 </span><br><span class="line">       2.1 对象实例化 ---&gt; 普通对象B</span><br><span class="line">       2.2 属性注入对象A ---&gt; 单例池寻找对象A ---&gt; 找不到，创建Aservice（至此，发生循环依赖！！！！！）</span><br><span class="line">       2.3 填充其他属性 ---&gt; 无法执行</span><br><span class="line">       2.4 其他步骤（包括Aop） ---&gt; 无法执行</span><br><span class="line">       2.5 加入到单例池中 ---&gt; 无法执行</span><br><span class="line">-------------------------------------</span><br><span class="line">3.填充其他属性 ---&gt; 无法执行</span><br><span class="line">4.其他步骤 ---&gt; 无法执行</span><br><span class="line">5.加入单例池 ---&gt; 无法执行</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ps: </span><br><span class="line">什么是单例池：</span><br><span class="line"></span><br><span class="line">单例Bean指向的对象是同一个。实现这一点是由于底层为Map结构。以beanName为key，Bean对象为value。这个Map就被称为单例池。该Map存放的是单例Bean对象。如果创建的是多例Bean，那么在创建Bean对象的过程中就不需要放入单例池。</span><br></pre></td></tr></table></figure>
+
+<p>好了，看到上面，发生了循环依赖的情况，但是Spring帮助我们解决了这个问题！ 那就是三级缓存技术。</p>
+<p>三级缓存，实际上就是三个Map 集合</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">第一级缓存  单例池   singletonObjects</span><br><span class="line"> </span><br><span class="line">第二级缓存          earlySingleObjects</span><br><span class="line"></span><br><span class="line">第三级缓存          singletonFactories</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在进行三级缓存技术的讲解，我们先回顾刚才的过程：</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328213825623.png" alt="image-20230328213825623"></p>
+<p>于是乎，我们想到，在对象的实例化之后，我们将这个早期对象的基本信息存入到一个Map集合之中去。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. 将对象A进行实例化  ---&gt; 拿到一个早期对象，我们叫做A的普通对象  ---&gt; 将对象A的基本信息存入某个Map集合：</span><br><span class="line">                                                              Map&lt;beanName,地址信息&gt;</span><br><span class="line">2. 进行属性注入 ----&gt; 到单例池中寻找对象B，结果找不到 ----&gt; 创建对象B</span><br><span class="line">------------------------------------</span><br><span class="line">       对象B的生命周期 </span><br><span class="line">       2.1 对象实例化 ---&gt; 普通对象B</span><br><span class="line">       2.2 属性注入对象A ---&gt; 单例池寻找对象A ---&gt; 找不到，再去Map集合中去找，能找到 ----&gt; 执行下面流程</span><br><span class="line">       2.3 填充其他属性 </span><br><span class="line">       2.4 其他步骤（包括Aop） </span><br><span class="line">       2.5 加入到单例池中 </span><br><span class="line">-------------------------------------</span><br><span class="line">3.填充其他属性 </span><br><span class="line">4.其他步骤 </span><br><span class="line">5.加入单例池 </span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328214336075.png" alt="image-20230328214336075"></p>
+<p>看起来，循环依赖问题被解决了!</p>
+<p>不过，还要注意这个环节！</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328214747790.png" alt="image-20230328214747790"></p>
+<p>我们在对象的初始化之后，是有可能进行AOP的！</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328215008991.png" alt="image-20230328215008991"></p>
+<p>那我们再进行Aop之后，产生的对象是一个，<strong>代理对象</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class BServiceProxy <span class="keyword">extends</span> <span class="title class_">BService</span>&#123;</span><br><span class="line"></span><br><span class="line">BService target;  <span class="comment">//这个target才是我们原本要产生的对象</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//切面逻辑</span></span><br><span class="line"><span class="comment">//target.test()</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328220036373.png" alt="image-20230328220036373"></p>
+<p>那这样就出现问题了！！！</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328220308409.png" alt="image-20230328220308409"></p>
+<p>你的对象B里，应该注入的应该是A的普通对象呢？还是A的代理对象呢？</p>
+<p>那一定是最后被加入到单例池的那个对象嘛！！！  那就是代理对象！</p>
+<p>那上面的思路就有问题了！</p>
+<p>—&gt;</p>
+<p>于是乎，我们想，那Map中不存A普通对象的信息了，我们存A的代理对象的信息不就行了！</p>
+<p>那就是说，我们要提前进行AOP这个动作！比如在 对象实例化之后进行AOP！</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. 将对象A进行实例化 ---&gt; 判断是否发生循环依赖？  ---&gt; AOP操作 ---&gt; A的代理对象 ---&gt; 将对象A的【代理对象】的基本信息存入某个Map集合：</span><br><span class="line">                                                              Map&lt;beanName,地址信息&gt;</span><br><span class="line">2. 进行属性注入 ----&gt; 到单例池中寻找对象B，结果找不到 ----&gt; 创建对象B</span><br><span class="line">------------------------------------</span><br><span class="line">       对象B的生命周期 </span><br><span class="line">       2.1 对象实例化 ---&gt; 普通对象B</span><br><span class="line">       2.2 属性注入对象A ---&gt; 单例池寻找对象A ---&gt; 找不到，再去Map集合中去找，能找到 ----&gt; 执行下面流程</span><br><span class="line">       2.3 填充其他属性 </span><br><span class="line">       2.4 其他步骤（包括Aop） </span><br><span class="line">       2.5 加入到单例池中 </span><br><span class="line">-------------------------------------</span><br><span class="line">3.填充其他属性 </span><br><span class="line">4.其他步骤 </span><br><span class="line">5.加入单例池 </span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328221440764.png" alt="image-20230328221440764"></p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328221653974.png" alt="image-20230328221653974"></p>
+<p>于是，我们就去找一找，在哪一步比较容易发现循环依赖呢？</p>
+<p>第2.2步，对象B进行属性注入的时候！</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0.CreatingSet[对象A]</span><br><span class="line"></span><br><span class="line">1. 将对象A进行实例化 ---&gt; A的普通对象</span><br><span class="line">                                                              </span><br><span class="line">2. 进行属性注入 ----&gt; 到单例池中寻找对象B，结果找不到 ----&gt; 创建对象B</span><br><span class="line">------------------------------------</span><br><span class="line">       对象B的生命周期 </span><br><span class="line">       2.1 对象实例化 ---&gt; 普通对象B</span><br><span class="line">       2.2 属性注入对象A ---&gt; 单例池寻找对象A ---&gt; 找不到，查看CreatingSet集合---&gt; 循环依赖---&gt;AOP ----&gt; 对象A的代理对象 ---&gt; 存入某个Map中  Map&lt;beanName,地址信息&gt;  （暂时先忽略这一步~这个是后面要讲的~~~~）</span><br><span class="line">       </span><br><span class="line">       2.3 填充其他属性 </span><br><span class="line">       2.4 其他步骤（包括Aop） </span><br><span class="line">       2.5 加入到单例池中 </span><br><span class="line">-------------------------------------</span><br><span class="line">3.填充其他属性 </span><br><span class="line">4.其他步骤 </span><br><span class="line">5.加入单例池 </span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328222704517.png" alt="image-20230328222704517"></p>
+<p>这样看起来，即便进行AOP操作的循环依赖问题，也被解决掉啦！</p>
+<p>但是！还有问题！</p>
+<p>我们来看一下下面这种情况。</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328223741911.png" alt="image-20230328223741911"></p>
+<p>对象A依赖 对象B和C , B对象和C对象依赖A对象。</p>
+<p>那么 ，对象A的生命周期会变成什么样子？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0.CreatingSet[对象A]</span><br><span class="line"></span><br><span class="line">1. 将对象A进行实例化 ---&gt; A的普通对象</span><br><span class="line">                                                              </span><br><span class="line">2. 进行属性注入 ----&gt; 到单例池中寻找对象B，结果找不到 ----&gt; 创建对象B</span><br><span class="line">------------------------------------</span><br><span class="line">       对象B的生命周期 </span><br><span class="line">       2.1 对象实例化 ---&gt; 普通对象B</span><br><span class="line">       2.2 属性注入对象A ---&gt; 单例池寻找对象A ---&gt; 找不到，查看CreatingSet集合---&gt; 循环依赖---&gt;AOP ----&gt; 对象A的代理对象 ---&gt; 存入某个Map中  Map&lt;beanName,地址信息&gt;（暂时先忽略这一步~这个是后面要讲的~~~~）</span><br><span class="line">       </span><br><span class="line">       2.3 填充其他属性 </span><br><span class="line">       2.4 其他步骤（包括Aop） </span><br><span class="line">       2.5 加入到单例池中 </span><br><span class="line">-------------------------------------</span><br><span class="line"></span><br><span class="line">------------------------------------</span><br><span class="line">       对象C的生命周期 </span><br><span class="line">       2.1 对象实例化 ---&gt; 普通对象C</span><br><span class="line">       2.2 属性注入对象A ---&gt; 单例池寻找对象A ---&gt; 找不到，查看CreatingSet集合---&gt; 循环依赖---&gt;AOP ----&gt; 对象A的代理对象 ---&gt; 存入某个Map中  Map&lt;beanName,地址信息&gt;（暂时先忽略这一步~这个是后面要讲的~~~~）</span><br><span class="line">       </span><br><span class="line">       2.3 填充其他属性 </span><br><span class="line">       2.4 其他步骤（包括Aop） </span><br><span class="line">       2.5 加入到单例池中 </span><br><span class="line">-------------------------------------</span><br><span class="line"></span><br><span class="line">3.填充其他属性 </span><br><span class="line">4.其他步骤 </span><br><span class="line">5.加入单例池 </span><br></pre></td></tr></table></figure>
+
+<p>注意这个位置！</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328224916754.png" alt="image-20230328224916754"></p>
+<hr>
+<p>你单例池中只能存放一个 A对象的代理对象，你弄出两个不一样的代理对象，这不对啊！</p>
+<p>我们应该是把 一个A代理对象，同时赋给这两个对象属性才对啊！</p>
+<p>那接下来的问题就变成了，如何保证你创建的A对象的代理对象是 **单例 **的！</p>
+<p>这我们就联想到单例池了！单例池不就是干这个用的吗！</p>
+<p>（注意，第二步创建的那个A的代理对象，我们还不能至极放进单例池，因为那是一个不完成的对象！）</p>
+<p>于是乎，我们再创建一个Map集合，当产生A对象的代理对象的时候，把它放入这个Map中，当C对象再需要注入A对象时，就不需要再创建一个代理对象了，直接从这个Map中拿就好了！</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0.CreatingSet[对象A]</span><br><span class="line"></span><br><span class="line">1. 将对象A进行实例化 ---&gt; A的普通对象</span><br><span class="line">                                                              </span><br><span class="line">2. 进行属性注入 ----&gt; 到单例池中寻找对象B，结果找不到 ----&gt; 创建对象B</span><br><span class="line">------------------------------------</span><br><span class="line">       对象B的生命周期 </span><br><span class="line">       2.1 对象实例化 ---&gt; 普通对象B</span><br><span class="line">       2.2 属性注入对象A ---&gt; 单例池寻找对象A ---&gt; 找不到，查看CreatingSet集合---&gt; 循环依赖---&gt;  earlySingleObjects   ---&gt; AOP ----&gt; 对象A的代理对象 ---&gt; 存入某个Map中  Map&lt;beanName,地址信息&gt;</span><br><span class="line">       （这个Map就是 咱们的二级缓存池 earlySingleObjects 它的作用就是解决重复的代理对象的问题！）</span><br><span class="line">       </span><br><span class="line">       2.3 填充其他属性 </span><br><span class="line">       2.4 其他步骤（包括Aop） </span><br><span class="line">       2.5 加入到单例池中 </span><br><span class="line">-------------------------------------</span><br><span class="line">3.填充其他属性 </span><br><span class="line">4.其他步骤 </span><br><span class="line">5.加入单例池 </span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328231016700.png" alt="image-20230328231016700"></p>
+<p>这样，引入了二级缓存池，我们的C对象在给A对象赋值的时候，就能拿到二级缓存中的对象了，而不用再创建一个代理对象了。</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328231320658.png" alt="image-20230328231320658"></p>
+<p><strong>注意：earlySingleObjects里存放的是一个 早期对象（可能没创建完的但是需要给其他Bean用的Bean对象）</strong></p>
+<p>到这里，似乎还没有介绍到三级缓存池，接下来它的戏份了~</p>
+<p>对于循环依赖问题，最重要的一点是什么？</p>
+<p><strong>打破循环，跳出循环！</strong></p>
+<p>那么，二级缓存池的出现能够帮助我们打破循环吗？</p>
+<p><strong>不能！</strong></p>
+<p>可能你会疑惑？</p>
+<p>我们已经解决了 可能出现多个不同的代理对象的问题，流程也都能从头到尾走下来了，哪里还有问题？</p>
+<p>看这里！</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328232342647.png" alt="image-20230328232342647"></p>
+<p>那么你会发现</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328232526671.png" alt="image-20230328232526671"></p>
+<p>那么，生命周期流程又双叒叕变化了！</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0.CreatingSet[对象A]</span><br><span class="line"></span><br><span class="line">1. 将对象A进行实例化 ---&gt; A的普通对象</span><br><span class="line">                                                              </span><br><span class="line">2. 进行属性注入 ----&gt; 到单例池中寻找对象B，结果找不到 ----&gt; 创建对象B</span><br><span class="line">------------------------------------</span><br><span class="line">       对象B的生命周期 </span><br><span class="line">       2.1 对象实例化 ---&gt; 普通对象B ---&gt; 放入三级缓存池 singletonFactories</span><br><span class="line">       2.2 属性注入对象A ---&gt; 单例池寻找对象A ---&gt; 找不到，查看CreatingSet集合---&gt; 循环依赖---&gt;  earlySingleObjects  ---&gt;三级缓存池 singletonFactories ---&gt; AOP ----&gt; 对象A的代理对象 ---&gt; earlySingleObjects </span><br><span class="line">          </span><br><span class="line">       2.3 填充其他属性 </span><br><span class="line">       2.4 其他步骤（包括Aop） </span><br><span class="line">       2.5 加入到单例池中 </span><br><span class="line">-------------------------------------</span><br><span class="line">3.填充其他属性 </span><br><span class="line">4.其他步骤 </span><br><span class="line">5.加入单例池 </span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328233034254.png" alt="image-20230328233034254"></p>
+<p><strong>注意：</strong></p>
+<p><strong>三级缓存里面存的啥？  Map&lt;BeanName , Bean普通对象&gt; 你可以先简单这样理解，但是实际上不是这个！</strong></p>
+<p><strong>实际上是 Map&lt;BeanName , ObjectsFactory &gt;</strong></p>
+<p><strong>在这个 ObjectrFactory（ps：这是一个函数式接口） 对象中，有一个Lamada表达式，这个表达式很重要。</strong></p>
+<p> <img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230328234307171.png" alt="image-20230328234307171"></p>
+<p><strong>注意 ： 无论是生成了 代理对象，还是普通对象，放入二级缓存之后，三级缓存中对应的那个键值对是要被移除掉的！</strong></p>
+<p>​             <strong>万一你又在三级缓存池取了一次，又执行lamada表达式，又生成代理对象，那就乱套了！</strong></p>
+<ul>
+<li>到这里，三级缓存机制我们差不多将明白了，总结一下！</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">循环依赖要提前注入不完整对象，三级缓存暴露了对应对象的对象工厂（单例下）来帮助注入这个对象，但是注入对象如果是要aop的，对象工厂给的单例就要提前aop，这时候就需要二级缓存来存放这些aop的单例（保证aop对象是单例）</span><br><span class="line">依赖注入，初始化流程之后，要BeanPostProcesser（aop就在其中之一），从earlyProxyReferences这个map判断是要拿到提前aop的对象aop还是直接拿原对象aop</span><br><span class="line"></span><br><span class="line">其中三级缓存放入的函数式接口就是补充是否要生成aop的逻辑的方法体</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230329000202124.png" alt="image-20230329000202124"></p>
+<p>这句话啥意思？</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230329000409973.png" alt="image-20230329000409973"></p>
+<ul>
+<li><p><strong>如何在第四步判断是否提前进行过AOP呢？</strong></p>
+<p>很简单，从二级缓存池找一下A的普通对象&#x2F;代理对象就好了，找到了就是提前进行过AOP，没找到就是正常在这里进行Aop</p>
+<p><strong>不过我们Spring并不是从二级缓存池里面找的</strong></p>
+<p><strong>而是从一个 earlyProxyReference 这样一个Map集合中查找（</strong>这是Aop这个插件中的。）</p>
+<p>如果在这个Map中找到Bean对象的相关信息，就代表提前进行了AOP，</p>
+<p>如果没找到，就代表没提前进行AOP，要在这里进行AOP。</p>
+<p><strong>那么这个Map集合的信息是从哪来的呢？</strong></p>
+<p>实际上这个Map里的键值对，也是从二级缓存池中拿的，二级缓存池中找到了Bean对象的信息，就代表提前进行了Aop，并加入到这个Map中来。</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">在整个流程中 涉及到5个东西 </span><br><span class="line">三个缓存池singletonObjects  earlySingleObjects  singletonFactories   </span><br><span class="line">一个CreatingSet集合  </span><br><span class="line">earlyProxyReference</span><br><span class="line">面试你能都说出来就很厉害了！</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="还有一个小问题，spring不能帮我们解决的循环依赖问题？"><a href="#还有一个小问题，spring不能帮我们解决的循环依赖问题？" class="headerlink" title="还有一个小问题，spring不能帮我们解决的循环依赖问题？"></a>还有一个小问题，spring不能帮我们解决的循环依赖问题？</h4><p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230329124003996.png" alt="image-20230329124003996"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">当这两个对象互相依赖，且都是在有参构造中便需要彼此的时候。</span><br><span class="line">问题就来了！</span><br><span class="line">如果说之前的循环依赖问题，spring是能实例化一个早期Bean对象的。</span><br><span class="line">现在的这种有参构造的情况下，实例化一个早期对象都做不到了！</span><br><span class="line">这便是spring不能解决的循环依赖！</span><br></pre></td></tr></table></figure>
+
+<h4 id="人为能解决吗？"><a href="#人为能解决吗？" class="headerlink" title="人为能解决吗？"></a>人为能解决吗？</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">可以</span><br><span class="line">只需要在各自的有参函数上添加一个 @Lazy注解。</span><br><span class="line">------&gt;</span><br><span class="line">1.当@Lazy 放在类上，表示在启动的时候不会创建bean对象，当使用的时候才会创建</span><br><span class="line">2.当@Lazy 放在@Bean注解的方法上，表示在启动的时候不会创建bean对象，当使用的时候才会创建</span><br><span class="line">3.当@Lazy 放在@Autowired注解的属性上， 并不会直接给属性赋上真正的值，只是会赋值一个代理对象，当真正使用到这个属性的时候，才回去容器中找到一个符合的对象。在使用的时候，也会先执行代理对象的逻辑，然后再是真正bean对象的逻辑</span><br><span class="line"></span><br><span class="line">4.使用场景：循环依赖的时候可以在循环依赖的对象加上@Lazy注解</span><br><span class="line">写在方法或者方法参数前面上，效果和写在属性上是一样的，开始注入的只是代理对象，当真正调用的时候才会调用对应对象的逻辑</span><br><span class="line">写在构造方法或者构造方法参数前面上，同上</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@Lazy注解简单来说，就是在属性注入的时候，spring生成一个代理对象，先帮助我们完成Bean的生命周期，等真正使用的时候，代理对象的内部逻辑是到Spring容器中寻找到原本的对象，调用原本对象的逻辑。</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="还有一个小问题：多例Bean的循环依赖问题"><a href="#还有一个小问题：多例Bean的循环依赖问题" class="headerlink" title="还有一个小问题：多例Bean的循环依赖问题"></a>还有一个小问题：多例Bean的循环依赖问题</h4><p><strong>三种情况</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">情况一：</span><br><span class="line">条件</span><br><span class="line">serviceA：多例</span><br><span class="line">serviceB：多例</span><br><span class="line"></span><br><span class="line">结果</span><br><span class="line">此时不管是任何方式都是无法解决循环依赖的问题，最终都会报错，因为每次去获取依赖的bean都会重新创建。</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">情况二：</span><br><span class="line">条件</span><br><span class="line"></span><br><span class="line">serviceA：单例</span><br><span class="line">serviceB：多例</span><br><span class="line"></span><br><span class="line">结果</span><br><span class="line"></span><br><span class="line">若使用构造器的方式相互注入（有参构造），是无法完成注入操作的，会报错。</span><br><span class="line">若采用set方式注入，所有bean都还未创建的情况下，若去容器中获取serviceB，会报错，为什么？我们来看一下过程：、</span><br><span class="line"></span><br><span class="line">------------&gt;</span><br><span class="line">1.从容器中获取serviceB</span><br><span class="line">2.serviceB由于是多例的，所以缓存中肯定是没有的</span><br><span class="line">3.检查serviceB是在正在创建的bean名称列表中，没有</span><br><span class="line">4.准备创建serviceB</span><br><span class="line">5.将serviceB放入正在创建的bean名称列表中</span><br><span class="line">6.实例化serviceB（由于serviceB是多例的，所以不会提前暴露，必须是单例的才会暴露）</span><br><span class="line">7.准备填充serviceB属性，发现需要注入serviceA</span><br><span class="line">8.从容器中查找serviceA</span><br><span class="line">9.尝试从3级缓存中找serviceA，找不到</span><br><span class="line">10.准备创建serviceA</span><br><span class="line">11.将serviceA放入正在创建的bean名称列表中</span><br><span class="line">12.实例化serviceA</span><br><span class="line">13.由于serviceA是单例的，将早期serviceA暴露出去，丢到第3级缓存中</span><br><span class="line">14.准备填充serviceA的属性，发现需要注入serviceB</span><br><span class="line">15.从容器中获取serviceB</span><br><span class="line">16.先从缓存中找serviceB，找不到</span><br><span class="line">17.检查serviceB是在正在创建的bean名称列表中,发现已经存在了，抛出循环依赖的异常</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">情况三：</span><br><span class="line">条件：</span><br><span class="line">和上面一样，此处不是去获取serviceB，而是先去获取serviceA呢，会不会报错？</span><br><span class="line"></span><br><span class="line">-----------------&gt;</span><br><span class="line">1.从容器中获取serviceA</span><br><span class="line">2.容器尝试从3个缓存中找serviceA，找不到</span><br><span class="line">3.准备创建serviceA</span><br><span class="line">4.调用serviceA的构造器创建serviceA，得到serviceA实例，此时serviceA还未填充属性，未进行其他任何初始化的操作</span><br><span class="line">5.将早期的serviceA暴露出去：即将其丢到第3级缓存singletonFactories中</span><br><span class="line">6.serviceA准备填充属性，发现需要注入serviceB，然后向容器获取serviceB</span><br><span class="line">7.容器尝试从3个缓存中找serviceB，找不到</span><br><span class="line">8.准备创建serviceB</span><br><span class="line">9.调用serviceB的构造器创建serviceB，得到serviceB实例，此时serviceB还未填充属性，未进行其他任何初始化的操作</span><br><span class="line">10.将早期的serviceB暴露出去：即将其丢到第3级缓存singletonFactories中</span><br><span class="line">11.serviceB准备填充属性，发现需要注入serviceA，然后向容器获取serviceA</span><br><span class="line">12.容器尝试从3个缓存中找serviceA，发现此时serviceA位于第3级缓存中，经过处理之后，serviceA会从第3级缓存中移除，然后会存到第2级缓存中，然后将其返回给serviceB，此时serviceA通过serviceB中的setServiceA方法被注入到serviceB中</span><br><span class="line">13.serviceB继续执行后续的一些操作，最后完成创建工作，然后会调用addSingleton方法，将自己丢到第1级缓存中，并将自己从第2和第3级缓存中移除</span><br><span class="line">14.serviceB将自己返回给serviceA</span><br><span class="line">15.serviceA通过setServiceB方法将serviceB注入进去</span><br><span class="line">16.serviceB继续执行后续的一些操作，最后完成创建工作,然后会调用addSingleton方法，将自己丢到第1级缓存中，并将自己从第2和第3级缓存中移除</span><br><span class="line">17.完成</span><br><span class="line"></span><br><span class="line">注意：先获取单例Bean能成功，而先获取多例Bean就不能成功！</span><br><span class="line">     因为先获取单例Bean，创建它的时候会放进缓存中，多例Bean的创建不会放入缓存中，这是关键点。</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="第三步，检查是否实现Aware接口"><a href="#第三步，检查是否实现Aware接口" class="headerlink" title="第三步，检查是否实现Aware接口"></a>第三步，检查是否实现Aware接口</h3><ul>
+<li>Aware接口，是Spring中的一个根接口。Aware的中文含义，是“意识到，察觉到，发觉，发现”，所以该接口的目的，通过实现Aware的子接口，让类添加发觉信息的能力。</li>
+</ul>
+<h4 id="常见的Aware直接实现类"><a href="#常见的Aware直接实现类" class="headerlink" title="常见的Aware直接实现类:"></a>常见的Aware直接实现类:</h4><ol>
+<li>ApplicationContextAware</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">实现该接口，可以访问Spring容器中缓存的的其他Bean。</span><br><span class="line">获取的ApplicationContext，ApplicationContext接口继承了MessageSource, ApplicationEventPublisher, ResourcePatternResolver，可以实现 &#123;@link ResourceLoaderAware&#125;,</span><br><span class="line"></span><br><span class="line">&#123;@link ApplicationEventPublisherAware&#125; or &#123;@link MessageSourceAware&#125; 的功能。</span><br><span class="line">//TODO file resources 相关</span><br><span class="line">//TODO BeanFactoryPostProcessor</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>EnvironmentAware</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">实现该接口，项目启动时，可以获取环境变量配置。</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>BeanFactoryAware</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">获取加载该Bean的Bean工厂，可以动态加载Bean.</span><br><span class="line"></span><br><span class="line">//TODO BeanFactory和ApplicationContext的区别</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>ApplicationEventPublisherAware</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">可以i获取ApplicationEventPublisher，ApplicationEventPublisher可以用来发布事件，结合ApplicationListener来共同使用，下文在介绍ApplicationListener时会详细提到。这个对象也可以通过spring注入的方式来获得</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>ResourceLoaderAware</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">可以获取ResourceLoader，ResourceLoader可以获取classpath内所有的资源对象。</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>BeanNameAware</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">注入Bean的名字。</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/u012556047/article/details/118889163">(20条消息) Spring中的Aware接口_balance_doge的博客-CSDN博客</a></p>
+<h2 id="第六步，初始化"><a href="#第六步，初始化" class="headerlink" title="第六步，初始化"></a>第六步，初始化</h2><h3 id="Bean生命周期中的回调函数，三种方式"><a href="#Bean生命周期中的回调函数，三种方式" class="headerlink" title="Bean生命周期中的回调函数，三种方式"></a>Bean生命周期中的回调函数，三种方式</h3><p>[1、实现 InitializingBean 接口和 DisposableBean 接口</p>
+<p>[2、使用 @Bean 注解的 initMethod&#x2F;destroyMethod 属性]</p>
+<p>[3、使用 @PostConstruct&#x2F;@PreDestroy 注解]</p>
+<p>详细参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/swadian2008/article/details/102606371">(20条消息) Spring Bean 的生命周期回调方法示例_spring生命周期回调_swadian2008的博客-CSDN博客</a></p>
+<p>写的很易懂！</p>
+<h2 id="Bean的后置处理器"><a href="#Bean的后置处理器" class="headerlink" title="Bean的后置处理器"></a>Bean的后置处理器</h2><p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230329145549148.png" alt="image-20230329145549148"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Bean的后置处理器详解：</span><br><span class="line"></span><br><span class="line">Spring当中的后置处理器是Spring体用的一个扩展点，开发者只要去实现，Spring当中的BeanPostProcessor接口，那么就能插手SpringBean实例化的一个过程，怎么插手呢？</span><br><span class="line"></span><br><span class="line">它是在我们bean被放到Spring Bean容器之前去做一个插手，也就是说可以对我们的bean做一个改变。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Spring 在实例化单例Bean的过程中，会在9个地方执行5个后置处理器。       </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.BeanPostProcessor</span><br><span class="line">2.InstantiationAwareBeanPostProcessor</span><br><span class="line">3.SmartInstantiationAwareBeanPostProcessor</span><br><span class="line">4.MergedBeanDefinitionPostProcessor</span><br><span class="line">5.DestructionAwareBeanPostProcessor</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/CPLASF_/article/details/106451151">(20条消息) spring源码：九大后置处理器_spring九大后置处理器_小小少年_的博客-CSDN博客</a></p>
+<p>​           <a target="_blank" rel="noopener" href="https://blog.csdn.net/cmj962464/article/details/118415797">(20条消息) Spring 详解Bean的后置处理器_spring后置处理器的作用_小tu豆的博客-CSDN博客</a></p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后~"></a>最后~</h2><p>看到此处，IOC最重要的两个部分（容器启动阶段Bean的注册，Bean创建阶段）便简略的讲完了，还有一个地方要说一下！</p>
+<p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230329145832631.png" alt="image-20230329145832631"></p>
+<ul>
+<li><p>这个辅助工作是什么呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. 它同样发生在我们的容器启动阶段，除了完成Bean对象的注册，还要进行其他的一些辅助工作。</span><br><span class="line">包括：</span><br><span class="line">1.创建Bean工场对象</span><br><span class="line">2.加载spring扩展类</span><br><span class="line">3.加载环境变量，如EL表达式</span><br><span class="line">4.多语言</span><br><span class="line">5.事件监听器等</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="最后的最后"><a href="#最后的最后" class="headerlink" title="最后的最后~"></a>最后的最后~</h2><p><img src="/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/image-20230329150328913.png" alt="image-20230329150328913"></p>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>spring中的bean的ioc流程</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="http://example.com/2023/03/27/spring%E4%B8%AD%E7%9A%84bean%E7%9A%84ioc%E6%B5%81%E7%A8%8B/">http://example.com/2023/03/27/spring中的bean的ioc流程/</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>beckoningcoco</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2023-03-27</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2023-04-08</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/spring%E9%9D%A2%E8%AF%95%E9%A2%98/">spring面试题</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-57owz8.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/03/30/%E6%B5%85%E8%B0%88-Configuration%E5%AF%B9-Bean%E7%9A%84%E5%BD%B1%E5%93%8D/"><img class="prev-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-2yyl36.png" onerror="onerror=null;src='/null'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">浅谈-Configuration对-Bean的影响</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/25/Spring%E4%B8%AD%E7%9A%84bean%E6%A0%87%E7%AD%BE%E7%9A%84id%E5%92%8Cname%E5%B1%9E%E6%80%A7/"><img class="next-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-57q8r7.jpg" onerror="onerror=null;src='/null'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Spring中的bean标签的id和name属性</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">beckoningcoco</div><div class="author-info__description">世界好吵，让我帮你捂耳朵吧</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/beckoningcoco"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/beckoningcoco" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:995587764@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的blog！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFIOC%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是IOC？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IOC%E7%9A%84%E5%8A%A0%E8%BD%BD%E6%B5%81%E7%A8%8B-x2F-%E6%8E%A7%E5%88%B6%E6%B5%81%E7%A8%8B%E5%88%B0%E5%BA%95%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%E5%91%A2%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">IOC的加载流程&#x2F;控制流程到底是怎样的呢？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86"><span class="toc-number">3.</span> <span class="toc-text">第一部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EBean%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%B3%A8%E5%86%8C%EF%BC%88%E5%AE%B9%E5%99%A8%E5%90%AF%E5%8A%A8%E9%98%B6%E6%AE%B5%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">关于Bean对象的注册（容器启动阶段）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFBeanDefinition%EF%BC%9F"><span class="toc-number">4.1.</span> <span class="toc-text">什么是BeanDefinition？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%EF%BC%88%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E9%98%B6%E6%AE%B5%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">关于对象的创建（对象创建阶段）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%82%A3%E5%B0%B1%E8%A6%81%E8%B0%88%E4%B8%80%E8%B0%88Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%BA%86"><span class="toc-number">5.1.</span> <span class="toc-text">那就要谈一谈Bean的生命周期了~</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F-%E4%BA%94%E6%AD%A5"><span class="toc-number">5.2.</span> <span class="toc-text">Bean生命周期 五步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F-%E5%8D%81%E6%AD%A5"><span class="toc-number">5.3.</span> <span class="toc-text">Bean生命周期 十步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%8CBean%E7%9A%84%E5%AE%9E%E4%BE%8B%E5%8C%96"><span class="toc-number">5.4.</span> <span class="toc-text">第一步，Bean的实例化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">5.4.1.</span> <span class="toc-text">三种方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#FactoryBean-%E5%92%8C-BeanFactory%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">5.4.2.</span> <span class="toc-text">FactoryBean 和 BeanFactory的区别？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8A%E9%9D%A2%E6%8F%90%E5%88%B0%E4%BA%86BeanFactory%EF%BC%8C%E9%82%A3%E4%B9%88%E6%88%91%E4%BB%AC%E5%86%8D%E7%9C%8B%E7%9C%8BBeanFactory%E5%92%8CApplicationContext%E7%9A%84%E5%85%B3%E7%B3%BB%E5%90%A7%E3%80%82"><span class="toc-number">5.4.3.</span> <span class="toc-text">上面提到了BeanFactory，那么我们再看看BeanFactory和ApplicationContext的关系吧。</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%8C%E5%B1%9E%E6%80%A7%E6%B3%A8%E5%85%A5"><span class="toc-number">5.5.</span> <span class="toc-text">第二步，属性注入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#xml%E6%96%B9%E5%BC%8F%E4%B8%89%E7%A7%8D"><span class="toc-number">5.5.1.</span> <span class="toc-text">xml方式三种</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3%E6%96%B9%E5%BC%8F"><span class="toc-number">5.5.2.</span> <span class="toc-text">注解方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%9E%E5%B8%B8%E5%B8%B8%E8%A7%81%E7%9A%84%E4%B8%80%E4%B8%AA%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98"><span class="toc-number">5.5.3.</span> <span class="toc-text">非常常见的一个面试题：解决循环依赖问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%98%E6%9C%89%E4%B8%80%E4%B8%AA%E5%B0%8F%E9%97%AE%E9%A2%98%EF%BC%8Cspring%E4%B8%8D%E8%83%BD%E5%B8%AE%E6%88%91%E4%BB%AC%E8%A7%A3%E5%86%B3%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">5.5.4.</span> <span class="toc-text">还有一个小问题，spring不能帮我们解决的循环依赖问题？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%BA%E4%B8%BA%E8%83%BD%E8%A7%A3%E5%86%B3%E5%90%97%EF%BC%9F"><span class="toc-number">5.5.5.</span> <span class="toc-text">人为能解决吗？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%98%E6%9C%89%E4%B8%80%E4%B8%AA%E5%B0%8F%E9%97%AE%E9%A2%98%EF%BC%9A%E5%A4%9A%E4%BE%8BBean%E7%9A%84%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98"><span class="toc-number">5.5.6.</span> <span class="toc-text">还有一个小问题：多例Bean的循环依赖问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%8C%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E5%AE%9E%E7%8E%B0Aware%E6%8E%A5%E5%8F%A3"><span class="toc-number">5.6.</span> <span class="toc-text">第三步，检查是否实现Aware接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84Aware%E7%9B%B4%E6%8E%A5%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="toc-number">5.6.1.</span> <span class="toc-text">常见的Aware直接实现类:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E6%AD%A5%EF%BC%8C%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">6.</span> <span class="toc-text">第六步，初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%AD%E7%9A%84%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0%EF%BC%8C%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">6.1.</span> <span class="toc-text">Bean生命周期中的回调函数，三种方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bean%E7%9A%84%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86%E5%99%A8"><span class="toc-number">7.</span> <span class="toc-text">Bean的后置处理器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">8.</span> <span class="toc-text">最后~</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E%E7%9A%84%E6%9C%80%E5%90%8E"><span class="toc-number">9.</span> <span class="toc-text">最后的最后~</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/04/18/maven%E4%B8%8B%E9%A1%B9%E7%9B%AE%E6%98%BE%E7%A4%BA%E7%81%B0%E8%89%B2/" title="maven下项目显示灰色"><img src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-zyy1xv.jpg" onerror="this.onerror=null;this.src='/null'" alt="maven下项目显示灰色"/></a><div class="content"><a class="title" href="/2023/04/18/maven%E4%B8%8B%E9%A1%B9%E7%9B%AE%E6%98%BE%E7%A4%BA%E7%81%B0%E8%89%B2/" title="maven下项目显示灰色">maven下项目显示灰色</a><time datetime="2023-04-18T13:54:06.000Z" title="发表于 2023-04-18 21:54:06">2023-04-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/17/eureka%E5%AD%A6%E4%B9%A0/" title="eureka学习"><img src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-qzj21l.jpg" onerror="this.onerror=null;this.src='/null'" alt="eureka学习"/></a><div class="content"><a class="title" href="/2023/04/17/eureka%E5%AD%A6%E4%B9%A0/" title="eureka学习">eureka学习</a><time datetime="2023-04-17T15:41:53.000Z" title="发表于 2023-04-17 23:41:53">2023-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/17/SpringCloud%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%881%EF%BC%89/" title="SpringCloud面试题（1）"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-m313vk.jpg" onerror="this.onerror=null;this.src='/null'" alt="SpringCloud面试题（1）"/></a><div class="content"><a class="title" href="/2023/04/17/SpringCloud%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%881%EF%BC%89/" title="SpringCloud面试题（1）">SpringCloud面试题（1）</a><time datetime="2023-04-17T13:33:08.000Z" title="发表于 2023-04-17 21:33:08">2023-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/16/SpringCloud%E7%AC%AC%E5%85%AD%E5%A4%A9/" title="SpringCloud第六天"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-m31958.jpg" onerror="this.onerror=null;this.src='/null'" alt="SpringCloud第六天"/></a><div class="content"><a class="title" href="/2023/04/16/SpringCloud%E7%AC%AC%E5%85%AD%E5%A4%A9/" title="SpringCloud第六天">SpringCloud第六天</a><time datetime="2023-04-16T12:51:07.000Z" title="发表于 2023-04-16 20:51:07">2023-04-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/10/ElasticSearch%E3%80%81Kibana%E3%80%81Ik%E5%88%86%E8%AF%8D%E5%99%A8%E7%9A%84%E5%AE%89%E8%A3%85/" title="ElasticSearch、Kibana、Ik分词器的安装"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-ex9ork.jpg" onerror="this.onerror=null;this.src='/null'" alt="ElasticSearch、Kibana、Ik分词器的安装"/></a><div class="content"><a class="title" href="/2023/04/10/ElasticSearch%E3%80%81Kibana%E3%80%81Ik%E5%88%86%E8%AF%8D%E5%99%A8%E7%9A%84%E5%AE%89%E8%A3%85/" title="ElasticSearch、Kibana、Ik分词器的安装">ElasticSearch、Kibana、Ik分词器的安装</a><time datetime="2023-04-10T09:03:19.000Z" title="发表于 2023-04-10 17:03:19">2023-04-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-57owz8.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 By beckoningcoco</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">嘘声是给予挑战者的勋章——美浦波旁.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用JsDelivr为静态资源提供CDN加速"></a> &nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Vervel-brightgreen?style=flat&logo=Vercel" title="本站采用双线部署，默认线路托管于Vercel"></a>&nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Coding-0cedbe?style=flat&logo=Codio" title="本站采用双线部署，联通线路托管于Coding"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script defer data-pjax src="/js/readPercent.js"></script><div class="aplayer no-destroy" data-id="8091029090" data-server="netease" data-type="playlist"  data-fixed="true" data-mini="true"  data-listmaxheight="340px" listfolded="true"  data-autoplay="true" data-theme="#3F51B5" > </div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

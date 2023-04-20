@@ -1,0 +1,358 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Java集合相关面试题 | 梦落芳华</title><meta name="author" content="beckoningcoco"><meta name="copyright" content="beckoningcoco"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="集合和数组的区别？1.数组是固定长度的；集合可变长度的。2.数组可以存储基本数据类型，也可以存储引用数据类型；集合只能存储引用数据类型。3.数组存储的元素必须是同一个数据类型；集合存储的对象可以是不同数据类型。      常用的集合类有哪些？ Map接口和Collection接口是所有集合框架的父接口： Collection接口的子接口包括：Set接口和List接口 Map接口的实现类主要有：Ha">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java集合相关面试题">
+<meta property="og:url" content="http://example.com/2023/03/21/Java%E9%9B%86%E5%90%88%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/index.html">
+<meta property="og:site_name" content="梦落芳华">
+<meta property="og:description" content="集合和数组的区别？1.数组是固定长度的；集合可变长度的。2.数组可以存储基本数据类型，也可以存储引用数据类型；集合只能存储引用数据类型。3.数组存储的元素必须是同一个数据类型；集合存储的对象可以是不同数据类型。      常用的集合类有哪些？ Map接口和Collection接口是所有集合框架的父接口： Collection接口的子接口包括：Set接口和List接口 Map接口的实现类主要有：Ha">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-85kxlk.png">
+<meta property="article:published_time" content="2023-03-21T06:50:32.000Z">
+<meta property="article:modified_time" content="2023-04-08T15:28:46.785Z">
+<meta property="article:author" content="beckoningcoco">
+<meta property="article:tag" content="面试题">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-85kxlk.png"><link rel="shortcut icon" href="/img/%E5%A4%B4%E5%83%8F.png"><link rel="canonical" href="http://example.com/2023/03/21/Java%E9%9B%86%E5%90%88%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Java集合相关面试题',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-08 23:28:46'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/readPercent.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-85kxlk.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">梦落芳华</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Java集合相关面试题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-21T06:50:32.000Z" title="发表于 2023-03-21 14:50:32">2023-03-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-08T15:28:46.785Z" title="更新于 2023-04-08 23:28:46">2023-04-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8D%9A%E6%96%87/">博文</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Java集合相关面试题"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="集合和数组的区别？"><a href="#集合和数组的区别？" class="headerlink" title="集合和数组的区别？"></a>集合和数组的区别？</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.数组是固定长度的；集合可变长度的。</span><br><span class="line"></span><br><span class="line">2.数组可以存储基本数据类型，也可以存储引用数据类型；集合只能存储引用数据类型。</span><br><span class="line"></span><br><span class="line">3.数组存储的元素必须是同一个数据类型；集合存储的对象可以是不同数据类型。</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="常用的集合类有哪些？"><a href="#常用的集合类有哪些？" class="headerlink" title="常用的集合类有哪些？"></a>常用的集合类有哪些？</h1><ul>
+<li>Map接口和Collection接口是所有集合框架的父接口：<ol>
+<li>Collection接口的子接口包括：Set接口和List接口</li>
+<li>Map接口的实现类主要有：HashMap、TreeMap、Hashtable、ConcurrentHashMap以及Properties等</li>
+<li>Set接口的实现类主要有：HashSet、TreeSet、LinkedHashSet等</li>
+<li>List接口的实现类主要有：ArrayList、LinkedList、Stack以及Vector等</li>
+</ol>
+</li>
+</ul>
+<h1 id="List，Set，Map三者的区别？"><a href="#List，Set，Map三者的区别？" class="headerlink" title="List，Set，Map三者的区别？"></a>List，Set，Map三者的区别？</h1><p><img src="/2023/03/21/Java%E9%9B%86%E5%90%88%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/image-20230321153004633.png" alt="image-20230321153004633"></p>
+<ul>
+<li><p>Java 容器分为 Collection 和 Map 两大类，Collection集合的子接口有Set、List、Queue三种子接口。我们比较常用的是Set、List，Map接口不是collection的子接口。</p>
+</li>
+<li><p>Collection集合主要有List和Set两大接口</p>
+</li>
+<li><p>List：一个有序（元素存入集合的顺序和取出的顺序一致）容器，元素可以重复，可以插入多个null元素，元素都有索引。常用的实现类有 ArrayList、LinkedList 和 Vector。</p>
+</li>
+<li><p>Set：一个无序（存入和取出顺序有可能不一致）容器，不可以存储重复元素，只允许存入一个null元素，必须保证元素唯一性。Set 接口常用实现类是 HashSet、LinkedHashSet 以及 TreeSet。</p>
+<hr>
+</li>
+<li><p>Map是一个键值对集合，存储键、值和之间的映射。 Key无序，唯一；value 不要求有序，允许重复。Map没有继承于Collection接口，从Map集合中检索元素时，只要给出键对象，就会返回对应的值对象。</p>
+</li>
+<li><p>Map 的常用实现类：HashMap、TreeMap、HashTable、LinkedHashMap、ConcurrentHashMap</p>
+</li>
+</ul>
+<h1 id="集合框架底层数据结构"><a href="#集合框架底层数据结构" class="headerlink" title="集合框架底层数据结构"></a>集合框架底层数据结构</h1><p>Collection</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">List</span><br><span class="line"></span><br><span class="line">Arraylist： </span><br><span class="line">Vector： Object数组</span><br><span class="line">LinkedList： 双向循环链表</span><br><span class="line"></span><br><span class="line">Set</span><br><span class="line"></span><br><span class="line">HashSet（无序，唯一）：基于 HashMap 实现的，底层采用 HashMap 来保存元素</span><br><span class="line">LinkedHashSet： LinkedHashSet 继承与 HashSet，并且其内部是通过 LinkedHashMap 来实现的。有点类似于我们之前说的LinkedHashMap 其内部是基于 Hashmap 实现一样，不过还是有一点点区别的。</span><br><span class="line">TreeSet（有序，唯一）： 红黑树(自平衡的排序二叉树。)</span><br></pre></td></tr></table></figure>
+
+<p>Map</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HashMap： JDK1.8之前HashMap由数组+链表组成的，数组是HashMap的主体，链表则是主要为了解决哈希冲突而存在的（“拉链法”解决冲突）.JDK1.8以后在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间</span><br><span class="line">LinkedHashMap：LinkedHashMap 继承自 HashMap，所以它的底层仍然是基于拉链式散列结构即由数组和链表或红黑树组成。另外，LinkedHashMap 在上面结构的基础上，增加了一条双向链表，使得上面的结构可以保持键值对的插入顺序。同时通过对链表进行相应的操作，实现了访问顺序相关逻辑。</span><br><span class="line">HashTable： 数组+链表组成的，数组是 HashMap 的主体，链表则是主要为了解决哈希冲突而存在的</span><br><span class="line">TreeMap： 红黑树（自平衡的排序二叉树）</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="哪些集合类是线程安全的？"><a href="#哪些集合类是线程安全的？" class="headerlink" title="哪些集合类是线程安全的？"></a>哪些集合类是线程安全的？</h1><ul>
+<li><p>Vector：就比Arraylist多了个 synchronized （线程安全），因为效率较低，现在已经不太建议使用。</p>
+</li>
+<li><p>hashTable：就比hashMap多了个synchronized (线程安全)，不建议使用。</p>
+</li>
+<li><p>ConcurrentHashMap：是Java5中支持高并发、高吞吐量的线程安全HashMap实现。它由Segment数组结构和HashEntry数组结构组成。Segment数组在ConcurrentHashMap里扮演锁的角色，HashEntry则用于存储键-值对数据。一个ConcurrentHashMap里包含一个Segment数组，Segment的结构和HashMap类似，是一种数组和链表结构；一个Segment里包含一个HashEntry数组，每个HashEntry是一个链表结构的元素；每个Segment守护着一个HashEntry数组里的元素，当对HashEntry数组的数据进行修改时，必须首先获得它对应的Segment锁。（推荐使用）</p>
+</li>
+</ul>
+<h2 id="什么是ConcurrentHashMap？"><a href="#什么是ConcurrentHashMap？" class="headerlink" title="什么是ConcurrentHashMap？"></a>什么是ConcurrentHashMap？</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_29051413/article/details/107869427">(41条消息) 深入浅出ConcurrentHashMap详解_学哥斌的博客-CSDN博客</a></p>
+<h1 id="怎么确保一个集合不能被修改？"><a href="#怎么确保一个集合不能被修改？" class="headerlink" title="怎么确保一个集合不能被修改？"></a>怎么确保一个集合不能被修改？</h1><ul>
+<li><p>可以使用 Collections. unmodifiableCollection(Collection c) 方法来创建一个只读集合，这样改变集合的任何操作都会抛出 Java. lang. UnsupportedOperationException 异常。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">示例代码如下：</span><br><span class="line"></span><br><span class="line">List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">list. add(<span class="string">&quot;x&quot;</span>);</span><br><span class="line">Collection&lt;String&gt; clist = Collections. unmodifiableCollection(list);</span><br><span class="line">clist. add(<span class="string">&quot;y&quot;</span>); <span class="comment">// 运行时此行报错</span></span><br><span class="line">System. out. println(list. size());</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="迭代器-Iterator-是什么？"><a href="#迭代器-Iterator-是什么？" class="headerlink" title="迭代器 Iterator 是什么？"></a>迭代器 Iterator 是什么？</h1><ul>
+<li>terator 接口提供遍历任何 Collection 的接口。我们可以从一个 Collection 中使用迭代器方法来获取迭代器实例。迭代器取代了 Java 集合框架中的 Enumeration，迭代器允许调用者在迭代过程中移除元素。因为所有Collection接继承了Iterator迭代器</li>
+</ul>
+<p><img src="/2023/03/21/Java%E9%9B%86%E5%90%88%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/image-20230321162548401.png" alt="image-20230321162548401"></p>
+<p>Iterator 怎么使用？有什么特点？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Iterator 使用代码如下：</span><br><span class="line"></span><br><span class="line">List&lt;String&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">Iterator&lt;String&gt; it = list. iterator();</span><br><span class="line">while(it. hasNext())&#123;</span><br><span class="line">  String obj = it. next();</span><br><span class="line">  System. out. println(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>复制代码<br>Iterator 的特点是只能单向遍历，但是更加安全，因为它可以确保，在当前遍历的集合元素被更改的时候，就会抛出 ConcurrentModificationException 异常。</p>
+<p>如何边遍历边移除 Collection 中的元素？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">边遍历边修改 Collection 的唯一正确方式是使用 Iterator.remove() 方法，如下：</span><br><span class="line"></span><br><span class="line">Iterator&lt;Integer&gt; it = list.iterator();</span><br><span class="line">while(it.hasNext())&#123;</span><br><span class="line">   *// do something*</span><br><span class="line">   it.remove();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>复制代码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">一种最常见的错误代码如下：</span><br><span class="line"></span><br><span class="line">for(Integer i : list)&#123;</span><br><span class="line">   list.remove(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>复制代码<br>运行以上错误代码会报 ConcurrentModificationException 异常。这是因为当使用 foreach(for(Integer i : list)) 语句时，会自动生成一个iterator 来遍历该 list，但同时该 list 正在被 Iterator.remove() 修改。Java 一般不允许一个线程在遍历 Collection 时另一个线程修改它。</p>
+<h1 id="遍历一个-List-有哪些不同的方式？每种方法的实现原理是什么？Java-中-List-遍历的最佳实践是什么？"><a href="#遍历一个-List-有哪些不同的方式？每种方法的实现原理是什么？Java-中-List-遍历的最佳实践是什么？" class="headerlink" title="遍历一个 List 有哪些不同的方式？每种方法的实现原理是什么？Java 中 List 遍历的最佳实践是什么？"></a>遍历一个 List 有哪些不同的方式？每种方法的实现原理是什么？Java 中 List 遍历的最佳实践是什么？</h1><p>遍历方式有以下几种：</p>
+<p>for 循环遍历，基于计数器。在集合外部维护一个计数器，然后依次读取每一个位置的元素，当读取到最后一个元素后停止。<br>迭代器遍历，Iterator。Iterator 是面向对象的一个设计模式，目的是屏蔽不同数据集合的特点，统一遍历集合的接口。Java 在 Collections 中支持了 Iterator 模式。<br>foreach 循环遍历。foreach 内部也是采用了 Iterator 的方式实现，使用时不需要显式声明 Iterator 或计数器。优点是代码简洁，不易出错；缺点是只能做简单的遍历，不能在遍历过程中操作数据集合，例如删除、替换。<br>最佳实践：Java Collections 框架中提供了一个 RandomAccess 接口，用来标记 List 实现是否支持 Random Access。</p>
+<p>如果一个数据集合实现了该接口，就意味着它支持 Random Access，按位置读取元素的平均时间复杂度为 O(1)，如ArrayList。</p>
+<p>如果没有实现该接口，表示不支持 Random Access，如LinkedList。</p>
+<p>推荐的做法就是，支持 Random Access 的列表可用 for 循环遍历，否则建议用 Iterator 或 foreach 遍历。</p>
+<h2 id="那什么是RandomAccess接口呢？"><a href="#那什么是RandomAccess接口呢？" class="headerlink" title="那什么是RandomAccess接口呢？"></a>那什么是RandomAccess接口呢？</h2><p>RandomAccess 是一个标记接口，用于标明实现该接口的List支持快速随机访问，主要目的是使算法能够在随机和顺序访问的list中表现的更加高效。</p>
+<p>实现了这个接口的集合，使用for循环遍历更快，没实现它的使用迭代器更快。</p>
+<h1 id="说一下-ArrayList-的优缺点"><a href="#说一下-ArrayList-的优缺点" class="headerlink" title="说一下 ArrayList 的优缺点"></a>说一下 ArrayList 的优缺点</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ArrayList的优点如下：</span><br><span class="line"></span><br><span class="line">ArrayList 底层以数组实现，是一种随机访问模式。ArrayList 实现了 RandomAccess 接口，因此查找的时候非常快。</span><br><span class="line">ArrayList 在顺序添加一个元素的时候非常方便。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ArrayList 的缺点如下：</span><br><span class="line"></span><br><span class="line">删除元素的时候，需要做一次元素移动操作。如果要移动的元素很多，那么就会比较耗费性能。</span><br><span class="line">插入元素的时候，也需要做一次元素移动操作，缺点同上。</span><br><span class="line">ArrayList 比较适合顺序添加、随机访问的场景。</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="ArrayList-和-LinkedList-的区别是什么？"><a href="#ArrayList-和-LinkedList-的区别是什么？" class="headerlink" title="ArrayList 和 LinkedList 的区别是什么？"></a>ArrayList 和 LinkedList 的区别是什么？</h1><ul>
+<li>数据结构实现：ArrayList 是动态数组的数据结构实现，而 LinkedList 是双向链表的数据结构实现。</li>
+<li>随机访问效率：ArrayList 比 LinkedList 在随机访问的时候效率要高，因为 LinkedList 是线性的数据存储方式，所以需要移动指针从前往后依次查找。</li>
+<li>增加和删除效率：在非首尾的增加和删除操作，LinkedList 要比 ArrayList 效率要高，因为 ArrayList 增删操作要影响数组内的其他数据的下标。</li>
+<li>内存空间占用：LinkedList 比 ArrayList 更占内存，因为 LinkedList 的节点除了存储数据，还存储了两个引用，一个指向前一个元素，一个指向后一个元素。</li>
+<li>线程安全：ArrayList 和 LinkedList 都是不同步的，也就是不保证线程安全；</li>
+<li>综合来说，在需要频繁读取集合中的元素时，更推荐使用 ArrayList，而在插入和删除操作较多时，更推荐使用 LinkedList。</li>
+</ul>
+<p>LinkedList 的双向链表也叫双链表，是链表的一种，它的每个数据结点中都有两个指针，分别指向直接后继和直接前驱。所以，从双向链表中的任意一个结点开始，都可以很方便地访问它的前驱结点和后继结点。</p>
+<h1 id="ArrayList-和-Vector-的区别是什么？"><a href="#ArrayList-和-Vector-的区别是什么？" class="headerlink" title="ArrayList 和 Vector 的区别是什么？"></a>ArrayList 和 Vector 的区别是什么？</h1><p>这两个类都实现了 List 接口（List 接口继承了 Collection 接口），他们都是有序集合</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.线程安全：Vector 使用了 Synchronized 来实现线程同步，是线程安全的，而 ArrayList 是非线程安全的。</span><br><span class="line">2.性能：ArrayList 在性能方面要优于 Vector。</span><br><span class="line">3.扩容：ArrayList 和 Vector 都会根据实际的需要动态的调整容量，只不过在 Vector 扩容每次会增加 1 倍，而 ArrayList 只会增加 50%。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Arraylist不是同步的，所以在不需要保证线程安全时时建议使用Arraylist。</p>
+<p>Vector类的所有方法都是同步的。可以由两个线程安全地访问一个Vector对象、但是一个线程访问Vector的话代码要在同步操作上耗费大量的时间。</p>
+<h1 id="多线程场景下如何使用-ArrayList？"><a href="#多线程场景下如何使用-ArrayList？" class="headerlink" title="多线程场景下如何使用 ArrayList？"></a>多线程场景下如何使用 ArrayList？</h1><p>ArrayList 不是线程安全的，如果遇到多线程场景，可以通过 Collections 的 synchronizedList 方法将其转换成线程安全的容器后再使用。例如像下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; synchronizedList = Collections.synchronizedList(list);</span><br><span class="line">synchronizedList.add(&quot;aaa&quot;);</span><br><span class="line">synchronizedList.add(&quot;bbb&quot;);</span><br><span class="line"></span><br><span class="line">for (int i = 0; i &lt; synchronizedList.size(); i++) &#123;</span><br><span class="line">    System.out.println(synchronizedList.get(i));</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="说一下HashMap的实现原理？"><a href="#说一下HashMap的实现原理？" class="headerlink" title="说一下HashMap的实现原理？"></a>说一下HashMap的实现原理？</h1><p>HashMap概述： HashMap是基于哈希表的Map接口的非同步实现。此实现提供所有可选的映射操作，并允许使用null值和null键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。</p>
+<p>HashMap的数据结构： 在Java编程语言中，最基本的结构就是两种，一个是数组，另外一个是模拟指针（引用），所有的数据结构都可以用这两个基本结构来构造的，HashMap也不例外。HashMap实际上是一个“链表散列”的数据结构，即数组和链表的结合体。</p>
+<p>HashMap 基于 Hash 算法实现的</p>
+<p>当我们往HashMap中put元素时，利用key的hashCode重新hash计算出当前对象的元素在数组中的下标</p>
+<p>存储时，如果出现hash值相同的key，此时有两种情况。</p>
+<p> (1)如果key相同，则覆盖原始值；</p>
+<p> (2)如果key不同（出现冲突），则将当前的key-value放入链表中</p>
+<p>获取时，直接找到hash值对应的下标，在进一步判断key是否相同，从而找到对应值。</p>
+<p>理解了以上过程就不难明白HashMap是如何解决hash冲突的问题，核心就是使用了数组的存储方式，然后将冲突的key的对象放入链表中，一旦发现冲突就在链表中做进一步的对比。</p>
+<p>需要注意Jdk 1.8中对HashMap的实现做了优化，当链表中的节点数据超过八个之后，该链表会转为红黑树来提高查询效率，从原来的O(n)到O(logn)</p>
+<h1 id="HashMap在JDK1-7和JDK1-8中有哪些不同？HashMap的底层实现"><a href="#HashMap在JDK1-7和JDK1-8中有哪些不同？HashMap的底层实现" class="headerlink" title="HashMap在JDK1.7和JDK1.8中有哪些不同？HashMap的底层实现"></a>HashMap在JDK1.7和JDK1.8中有哪些不同？HashMap的底层实现</h1><p>在Java中，保存数据有两种比较简单的数据结构：数组和链表。数组的特点是：寻址容易，插入和删除困难；链表的特点是：寻址困难，但插入和删除容易；所以我们将数组和链表结合在一起，发挥两者各自的优势，使用一种叫做拉链法的方式可以解决哈希冲突。<br>HashMap JDK1.8之前</p>
+<p>JDK1.8之前采用的是拉链法。拉链法：将链表和数组相结合。也就是说创建一个链表数组，数组中每一格就是一个链表。若遇到哈希冲突，则将冲突的值加到链表中即可。<br><img src="/2023/03/21/Java%E9%9B%86%E5%90%88%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/image-20230321173605874.png" alt="image-20230321173605874"></p>
+<p>HashMap JDK1.8之后</p>
+<ul>
+<li>相比于之前的版本，jdk1.8在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。</li>
+</ul>
+<p><img src="/2023/03/21/Java%E9%9B%86%E5%90%88%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/image-20230321173705749.png" alt="image-20230321173705749"></p>
+<p>JDK1.7 VS JDK1.8 比较</p>
+<p>DK1.8主要解决或优化了一下问题：</p>
+<ol>
+<li>resize 扩容优化</li>
+<li>引入了红黑树，目的是避免单条链表过长而影响查询效率，红黑树算法请参考</li>
+<li>解决了多线程死循环问题，但仍是非线程安全的，多线程时可能会造成数据丢失问题。</li>
+</ol>
+<p><img src="/2023/03/21/Java%E9%9B%86%E5%90%88%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/image-20230321173837816.png" alt="image-20230321173837816"></p>
+<h1 id="HashMap的扩容操作是怎么实现的？"><a href="#HashMap的扩容操作是怎么实现的？" class="headerlink" title="HashMap的扩容操作是怎么实现的？"></a>HashMap的扩容操作是怎么实现的？</h1><p>在jdk1.8中，resize方法是在hashmap中的键值对大于阀值时或者初始化时，就调用resize方法进行扩容；</p>
+<p>每次扩展的时候，都是扩展2倍；</p>
+<p>扩展后Node对象的位置要么在原位置，要么移动到原偏移量两倍的位置。</p>
+<p>在putVal()中，我们看到在这个函数里面使用到了2次resize()方法，resize()方法表示的在进行第一次初始化时会对其进行扩容，或者当该数组的实际大小大于其临界值值(第一次为12),这个时候在扩容的同时也会伴随的桶上面的元素进行重新分发，这也是JDK1.8版本的一个优化的地方，在1.7中，扩容之后需要重新去计算其Hash值，根据Hash值对其进行分发，但在1.8版本中，则是根据在同一个桶的位置中进行判断(e.hash &amp; oldCap)是否为0，重新进行hash分配后，该元素的位置要么停留在原始位置，要么移动到原始位置+增加的数组大小这个位置上</p>
+<h1 id="HashMap-与-HashTable-有什么区别？"><a href="#HashMap-与-HashTable-有什么区别？" class="headerlink" title="HashMap 与 HashTable 有什么区别？"></a>HashMap 与 HashTable 有什么区别？</h1><ol>
+<li><p>线程安全： HashMap 是非线程安全的，HashTable 是线程安全的；HashTable 内部的方法基本都经过 synchronized 修饰。（如果你要保证线程安全的话就使用 ConcurrentHashMap ）；</p>
+</li>
+<li><p>效率： 因为线程安全的问题，HashMap 要比 HashTable 效率高一点。另外，HashTable 基本被淘汰，不要在代码中使用它；（如果你要保证线程安全的话就使用 ConcurrentHashMap ）；</p>
+</li>
+<li><p>对Null key 和Null value的支持： HashMap 中，null 可以作为键，这样的键只有一个，可以有一个或多个键所对应的值为 null。但是在 HashTable 中 put 进的键值只要有一个 null，直接抛NullPointerException。</p>
+</li>
+<li><p>初始容量大小和每次扩充容量大小的不同 ：<br>创建时如果不指定容量初始值，Hashtable 默认的初始大小为11，之后每次扩充，容量变为原来的2n+1。HashMap 默认的初始化大小为16。之后每次扩充，容量变为原来的2倍。<br>创建时如果给定了容量初始值，那么 Hashtable 会直接使用你给定的大小，而 HashMap 会将其扩充为2的幂次方大小。也就是说 HashMap 总是使用2的幂作为哈希表的大小，后面会介绍到为什么是2的幂次方。</p>
+</li>
+<li><p>底层数据结构： JDK1.8 以后的 HashMap 在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。Hashtable 没有这样的机制。</p>
+</li>
+<li><p>推荐使用：在 Hashtable 的类注释可以看到，Hashtable 是保留类不建议使用，推荐在单线程环境下使用 HashMap 替代，如果需要多线程使用则用 ConcurrentHashMap 替代。</p>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>Java集合相关面试题</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="http://example.com/2023/03/21/Java%E9%9B%86%E5%90%88%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/">http://example.com/2023/03/21/Java集合相关面试题/</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>beckoningcoco</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2023-03-21</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2023-04-08</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-85kxlk.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/03/22/MySQL%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/"><img class="prev-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-yx5pxg.jpg" onerror="onerror=null;src='/null'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MySQL相关面试题</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/18/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/"><img class="next-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-zyqx3g.jpg" onerror="onerror=null;src='/null'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Java多线程相关面试题</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/05/Javase%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/" title="Javase相关面试题"><img class="cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-we6o27.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-05</div><div class="title">Javase相关面试题</div></div></a></div><div><a href="/2023/04/17/SpringCloud%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%881%EF%BC%89/" title="SpringCloud面试题（1）"><img class="cover" src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-m313vk.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-17</div><div class="title">SpringCloud面试题（1）</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">beckoningcoco</div><div class="author-info__description">世界好吵，让我帮你捂耳朵吧</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/beckoningcoco"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/beckoningcoco" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:995587764@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的blog！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9B%86%E5%90%88%E5%92%8C%E6%95%B0%E7%BB%84%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">集合和数组的区别？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E9%9B%86%E5%90%88%E7%B1%BB%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">常用的集合类有哪些？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#List%EF%BC%8CSet%EF%BC%8CMap%E4%B8%89%E8%80%85%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">List，Set，Map三者的区别？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">4.</span> <span class="toc-text">集合框架底层数据结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%93%AA%E4%BA%9B%E9%9B%86%E5%90%88%E7%B1%BB%E6%98%AF%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">哪些集合类是线程安全的？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFConcurrentHashMap%EF%BC%9F"><span class="toc-number">5.1.</span> <span class="toc-text">什么是ConcurrentHashMap？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E7%A1%AE%E4%BF%9D%E4%B8%80%E4%B8%AA%E9%9B%86%E5%90%88%E4%B8%8D%E8%83%BD%E8%A2%AB%E4%BF%AE%E6%94%B9%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">怎么确保一个集合不能被修改？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8-Iterator-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">7.</span> <span class="toc-text">迭代器 Iterator 是什么？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%81%8D%E5%8E%86%E4%B8%80%E4%B8%AA-List-%E6%9C%89%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C%E7%9A%84%E6%96%B9%E5%BC%8F%EF%BC%9F%E6%AF%8F%E7%A7%8D%E6%96%B9%E6%B3%95%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9FJava-%E4%B8%AD-List-%E9%81%8D%E5%8E%86%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">8.</span> <span class="toc-text">遍历一个 List 有哪些不同的方式？每种方法的实现原理是什么？Java 中 List 遍历的最佳实践是什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%A3%E4%BB%80%E4%B9%88%E6%98%AFRandomAccess%E6%8E%A5%E5%8F%A3%E5%91%A2%EF%BC%9F"><span class="toc-number">8.1.</span> <span class="toc-text">那什么是RandomAccess接口呢？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%B4%E4%B8%80%E4%B8%8B-ArrayList-%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">9.</span> <span class="toc-text">说一下 ArrayList 的优缺点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ArrayList-%E5%92%8C-LinkedList-%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">10.</span> <span class="toc-text">ArrayList 和 LinkedList 的区别是什么？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ArrayList-%E5%92%8C-Vector-%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">11.</span> <span class="toc-text">ArrayList 和 Vector 的区别是什么？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9C%BA%E6%99%AF%E4%B8%8B%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-ArrayList%EF%BC%9F"><span class="toc-number">12.</span> <span class="toc-text">多线程场景下如何使用 ArrayList？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%B4%E4%B8%80%E4%B8%8BHashMap%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%EF%BC%9F"><span class="toc-number">13.</span> <span class="toc-text">说一下HashMap的实现原理？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashMap%E5%9C%A8JDK1-7%E5%92%8CJDK1-8%E4%B8%AD%E6%9C%89%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C%EF%BC%9FHashMap%E7%9A%84%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0"><span class="toc-number">14.</span> <span class="toc-text">HashMap在JDK1.7和JDK1.8中有哪些不同？HashMap的底层实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashMap%E7%9A%84%E6%89%A9%E5%AE%B9%E6%93%8D%E4%BD%9C%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F"><span class="toc-number">15.</span> <span class="toc-text">HashMap的扩容操作是怎么实现的？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashMap-%E4%B8%8E-HashTable-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">16.</span> <span class="toc-text">HashMap 与 HashTable 有什么区别？</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/04/18/maven%E4%B8%8B%E9%A1%B9%E7%9B%AE%E6%98%BE%E7%A4%BA%E7%81%B0%E8%89%B2/" title="maven下项目显示灰色"><img src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-zyy1xv.jpg" onerror="this.onerror=null;this.src='/null'" alt="maven下项目显示灰色"/></a><div class="content"><a class="title" href="/2023/04/18/maven%E4%B8%8B%E9%A1%B9%E7%9B%AE%E6%98%BE%E7%A4%BA%E7%81%B0%E8%89%B2/" title="maven下项目显示灰色">maven下项目显示灰色</a><time datetime="2023-04-18T13:54:06.000Z" title="发表于 2023-04-18 21:54:06">2023-04-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/17/eureka%E5%AD%A6%E4%B9%A0/" title="eureka学习"><img src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-qzj21l.jpg" onerror="this.onerror=null;this.src='/null'" alt="eureka学习"/></a><div class="content"><a class="title" href="/2023/04/17/eureka%E5%AD%A6%E4%B9%A0/" title="eureka学习">eureka学习</a><time datetime="2023-04-17T15:41:53.000Z" title="发表于 2023-04-17 23:41:53">2023-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/17/SpringCloud%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%881%EF%BC%89/" title="SpringCloud面试题（1）"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-m313vk.jpg" onerror="this.onerror=null;this.src='/null'" alt="SpringCloud面试题（1）"/></a><div class="content"><a class="title" href="/2023/04/17/SpringCloud%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%881%EF%BC%89/" title="SpringCloud面试题（1）">SpringCloud面试题（1）</a><time datetime="2023-04-17T13:33:08.000Z" title="发表于 2023-04-17 21:33:08">2023-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/16/SpringCloud%E7%AC%AC%E5%85%AD%E5%A4%A9/" title="SpringCloud第六天"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-m31958.jpg" onerror="this.onerror=null;this.src='/null'" alt="SpringCloud第六天"/></a><div class="content"><a class="title" href="/2023/04/16/SpringCloud%E7%AC%AC%E5%85%AD%E5%A4%A9/" title="SpringCloud第六天">SpringCloud第六天</a><time datetime="2023-04-16T12:51:07.000Z" title="发表于 2023-04-16 20:51:07">2023-04-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/10/ElasticSearch%E3%80%81Kibana%E3%80%81Ik%E5%88%86%E8%AF%8D%E5%99%A8%E7%9A%84%E5%AE%89%E8%A3%85/" title="ElasticSearch、Kibana、Ik分词器的安装"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-ex9ork.jpg" onerror="this.onerror=null;this.src='/null'" alt="ElasticSearch、Kibana、Ik分词器的安装"/></a><div class="content"><a class="title" href="/2023/04/10/ElasticSearch%E3%80%81Kibana%E3%80%81Ik%E5%88%86%E8%AF%8D%E5%99%A8%E7%9A%84%E5%AE%89%E8%A3%85/" title="ElasticSearch、Kibana、Ik分词器的安装">ElasticSearch、Kibana、Ik分词器的安装</a><time datetime="2023-04-10T09:03:19.000Z" title="发表于 2023-04-10 17:03:19">2023-04-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-85kxlk.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 By beckoningcoco</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">嘘声是给予挑战者的勋章——美浦波旁.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用JsDelivr为静态资源提供CDN加速"></a> &nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Vervel-brightgreen?style=flat&logo=Vercel" title="本站采用双线部署，默认线路托管于Vercel"></a>&nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Coding-0cedbe?style=flat&logo=Codio" title="本站采用双线部署，联通线路托管于Coding"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script defer data-pjax src="/js/readPercent.js"></script><div class="aplayer no-destroy" data-id="8091029090" data-server="netease" data-type="playlist"  data-fixed="true" data-mini="true"  data-listmaxheight="340px" listfolded="true"  data-autoplay="true" data-theme="#3F51B5" > </div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>SpringCloud第四天 | 梦落芳华</title><meta name="author" content="beckoningcoco"><meta name="copyright" content="beckoningcoco"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="SpringCloud第四天初识MQ同步通讯 我们之前学习的微服务之间的调用，就是基于同步方式的！ 会存在一些问题！  1. 耦合度高 ：每一次增加功能，都要去修改支付服务的代码，让其能够调用我们的新功能，这样不太好！2.性能下降：因为是同步方式，所有模块就像链条一样挨个被调用，所用时间太长！3.资源浪费：调用时，一个模块在干活，另外几个却在等待（占有cpu资源了）！4.级联失败：这是一条调用链，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloud第四天">
+<meta property="og:url" content="http://example.com/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/index.html">
+<meta property="og:site_name" content="梦落芳华">
+<meta property="og:description" content="SpringCloud第四天初识MQ同步通讯 我们之前学习的微服务之间的调用，就是基于同步方式的！ 会存在一些问题！  1. 耦合度高 ：每一次增加功能，都要去修改支付服务的代码，让其能够调用我们的新功能，这样不太好！2.性能下降：因为是同步方式，所有模块就像链条一样挨个被调用，所用时间太长！3.资源浪费：调用时，一个模块在干活，另外几个却在等待（占有cpu资源了）！4.级联失败：这是一条调用链，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-kxz1m1.jpg">
+<meta property="article:published_time" content="2023-04-02T08:09:12.000Z">
+<meta property="article:modified_time" content="2023-04-08T15:05:42.156Z">
+<meta property="article:author" content="beckoningcoco">
+<meta property="article:tag" content="springCloud">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-kxz1m1.jpg"><link rel="shortcut icon" href="/img/%E5%A4%B4%E5%83%8F.png"><link rel="canonical" href="http://example.com/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SpringCloud第四天',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-08 23:05:42'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/readPercent.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-kxz1m1.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">梦落芳华</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SpringCloud第四天</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-04-02T08:09:12.000Z" title="发表于 2023-04-02 16:09:12">2023-04-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-08T15:05:42.156Z" title="更新于 2023-04-08 23:05:42">2023-04-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8D%9A%E6%96%87/">博文</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SpringCloud第四天"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="SpringCloud第四天"><a href="#SpringCloud第四天" class="headerlink" title="SpringCloud第四天"></a>SpringCloud第四天</h1><h1 id="初识MQ"><a href="#初识MQ" class="headerlink" title="初识MQ"></a>初识MQ</h1><h2 id="同步通讯"><a href="#同步通讯" class="headerlink" title="同步通讯"></a>同步通讯</h2><p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403160418981.png" alt="image-20230403160418981"></p>
+<p>我们之前学习的微服务之间的调用，就是基于同步方式的！</p>
+<p>会存在一些问题！</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403160542196.png" alt="image-20230403160542196"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. 耦合度高 ：每一次增加功能，都要去修改支付服务的代码，让其能够调用我们的新功能，这样不太好！</span><br><span class="line"></span><br><span class="line">2.性能下降：因为是同步方式，所有模块就像链条一样挨个被调用，所用时间太长！</span><br><span class="line"></span><br><span class="line">3.资源浪费：调用时，一个模块在干活，另外几个却在等待（占有cpu资源了）！</span><br><span class="line"></span><br><span class="line">4.级联失败：这是一条调用链，中间哪个模块出问题，其它的都不能用了！</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="异步通讯"><a href="#异步通讯" class="headerlink" title="异步通讯"></a>异步通讯</h2><p><strong>而我们的MQ技术，则是采取事件驱动的方式，引入一个Broker，使用异步通讯，解决了上面的所有问题。</strong></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403161347769.png" alt="image-20230403161347769"></p>
+<p>—&gt;</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403161525075.png" alt="image-20230403161525075"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403161621581.png" alt="image-20230403161621581"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403161806641.png" alt="image-20230403161806641"></p>
+<h3 id="异步通讯优缺点："><a href="#异步通讯优缺点：" class="headerlink" title="异步通讯优缺点："></a>异步通讯优缺点：</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">优点：</span><br><span class="line">1.耦合度低</span><br><span class="line">2.吞吐量提升</span><br><span class="line">3.故障隔离</span><br><span class="line">4.流量消峰</span><br><span class="line">------------</span><br><span class="line">缺点：</span><br><span class="line">1.依赖于Broker的可靠性，安全性，吞吐能力</span><br><span class="line">2.架构复杂了，业务没有明显的流程线，不好跟踪处理。</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="什么是MQ"><a href="#什么是MQ" class="headerlink" title="什么是MQ"></a>什么是MQ</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MQ是中文消息队列，字面看来就是存放消息的队列，也是事件驱动中的Broker</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="MQ常见框架"><a href="#MQ常见框架" class="headerlink" title="MQ常见框架"></a>MQ常见框架</h2><p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403162543687.png" alt="image-20230403162543687"></p>
+<h1 id="RabbitMQ快速入门"><a href="#RabbitMQ快速入门" class="headerlink" title="RabbitMQ快速入门"></a>RabbitMQ快速入门</h1><h2 id="RabbitMQ的概述和安装"><a href="#RabbitMQ的概述和安装" class="headerlink" title="RabbitMQ的概述和安装"></a>RabbitMQ的概述和安装</h2><p>RabbitMQ是基于Erlang语言开发的开源消息通信中间件，官网地址：<a target="_blank" rel="noopener" href="https://rabbitmq.com/">https://rabbitmq.com/</a></p>
+<p>安装RabbitMQ，参考本博客内容：RabbitMQ的安装与部署</p>
+<h2 id="常见消息模型"><a href="#常见消息模型" class="headerlink" title="常见消息模型"></a>常见消息模型</h2><ul>
+<li><p>基本消息队列</p>
+</li>
+<li><p>工作消息队列</p>
+</li>
+<li><p>发布订阅，根据交换机不同分为三种</p>
+<ul>
+<li><p>广播（Fanout Exchange）</p>
+</li>
+<li><p>路由 （Direct Exchange）</p>
+</li>
+<li><p>主题 （Topic Exchange）</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403210647833.png" alt="image-20230403210647833"></p>
+<h2 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">完成官方Demo的hello world 案例</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403211810902.png" alt="image-20230403211810902"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">注意：要先打开虚拟机，打开docker，打开mq容器</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403220617455.png" alt="image-20230403220617455"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PublisherTest</span> &#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testSendMessage</span><span class="params">()</span> <span class="keyword">throws</span> IOException, TimeoutException &#123;</span><br><span class="line">        <span class="comment">// 1.建立连接</span></span><br><span class="line">        <span class="type">ConnectionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConnectionFactory</span>();</span><br><span class="line">        <span class="comment">// 1.1.设置连接参数，分别是：主机名、端口号、vhost、用户名、密码</span></span><br><span class="line">        factory.setHost(<span class="string">&quot;192.168.190.130&quot;</span>);  <span class="comment">//写你虚拟机的ip</span></span><br><span class="line">        factory.setPort(<span class="number">5672</span>);</span><br><span class="line">        factory.setVirtualHost(<span class="string">&quot;/&quot;</span>);</span><br><span class="line">        factory.setUsername(<span class="string">&quot;itcast&quot;</span>);   <span class="comment">//写你mq容器设置的默认name 和 password</span></span><br><span class="line">        factory.setPassword(<span class="string">&quot;123321&quot;</span>);</span><br><span class="line">        <span class="comment">// 1.2.建立连接</span></span><br><span class="line">        <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> factory.newConnection();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2.创建通道Channel</span></span><br><span class="line">        <span class="type">Channel</span> <span class="variable">channel</span> <span class="operator">=</span> connection.createChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3.创建队列</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> <span class="string">&quot;simple.queue&quot;</span>;</span><br><span class="line">        channel.queueDeclare(queueName, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4.发送消息</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;hello, rabbitmq!&quot;</span>;</span><br><span class="line">        channel.basicPublish(<span class="string">&quot;&quot;</span>, queueName, <span class="literal">null</span>, message.getBytes());</span><br><span class="line">        System.out.println(<span class="string">&quot;发送消息成功：【&quot;</span> + message + <span class="string">&quot;】&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 5.关闭通道和连接</span></span><br><span class="line">        channel.close();</span><br><span class="line">        connection.close();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>直接运行！</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403220728340.png" alt="image-20230403220728340"></p>
+<p>Publisher向消息队列发送了一条消息。</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403221013735.png" alt="image-20230403221013735"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403221112050.png" alt="image-20230403221112050"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403221132082.png" alt="image-20230403221132082"></p>
+<p>还有要介绍的是：</p>
+<p>—-&gt;</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403221517020.png" alt="image-20230403221517020"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403221608832.png" alt="image-20230403221608832"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403221733311.png" alt="image-20230403221733311"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403221821784.png" alt="image-20230403221821784"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403221915537.png" alt="image-20230403221915537"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403222107274.png" alt="image-20230403222107274"></p>
+<p>—&gt;</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403222213592.png" alt="image-20230403222213592"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403222320296.png" alt="image-20230403222320296"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403222454062.png" alt="image-20230403222454062"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">好了，跑远了跑远了，我们回来！</span><br><span class="line">刚刚我们简单的运行了一下 PublisherTest程序，向消息队列中发了一条消息。</span><br><span class="line">接下来，我们为程序打断点，看看具体的流程如何？</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403222959973.png" alt="image-20230403222959973"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403222908119.png" alt="image-20230403222908119"></p>
+<p>—————————–&gt;</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403223140785.png" alt="image-20230403223140785"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403223214423.png" alt="image-20230403223214423"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403223404788.png" alt="image-20230403223404788"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403223434733.png" alt="image-20230403223434733"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403223308982.png" alt="image-20230403223308982"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">至此：Publisher 发送消息到队列的过程就完了！</span><br><span class="line">我们看看队列中收到的消息吧！</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403223654196.png" alt="image-20230403223654196"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403223743430.png" alt="image-20230403223743430"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">看完了 生产者的 发送消息的流程，我们看一看 消费者接收消息的流程吧~</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403224228732.png" alt="image-20230403224228732"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ConsumerTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException &#123;</span><br><span class="line">        <span class="comment">// 1.建立连接</span></span><br><span class="line">        <span class="type">ConnectionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConnectionFactory</span>();</span><br><span class="line">        <span class="comment">// 1.1.设置连接参数，分别是：主机名、端口号、vhost、用户名、密码</span></span><br><span class="line">        factory.setHost(<span class="string">&quot;192.168.190.130&quot;</span>);</span><br><span class="line">        factory.setPort(<span class="number">5672</span>);</span><br><span class="line">        factory.setVirtualHost(<span class="string">&quot;/&quot;</span>);</span><br><span class="line">        factory.setUsername(<span class="string">&quot;itcast&quot;</span>);</span><br><span class="line">        factory.setPassword(<span class="string">&quot;123321&quot;</span>);</span><br><span class="line">        <span class="comment">// 1.2.建立连接</span></span><br><span class="line">        <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> factory.newConnection();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2.创建通道Channel</span></span><br><span class="line">        <span class="type">Channel</span> <span class="variable">channel</span> <span class="operator">=</span> connection.createChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3.创建队列</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> <span class="string">&quot;simple.queue&quot;</span>;</span><br><span class="line">        channel.queueDeclare(queueName, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br><span class="line">        <span class="comment">//这里的创建队列可以理解为一种保障，万一队列不存在就创建，实际上队列是存在的就不会创建了</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4.订阅消息</span></span><br><span class="line">        <span class="comment">//这就是把我们消费者服务和队列绑定关系，一旦队列有新消息，就会执行这里面的默认函数，函数内写我们需要的逻辑。</span></span><br><span class="line">        channel.basicConsume(queueName, <span class="literal">true</span>, <span class="keyword">new</span> <span class="title class_">DefaultConsumer</span>(channel)&#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span><br><span class="line"><span class="params">                                       AMQP.BasicProperties properties, <span class="type">byte</span>[] body)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">                <span class="comment">// 5.处理消息</span></span><br><span class="line">                <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(body);</span><br><span class="line">                System.out.println(<span class="string">&quot;接收到消息：【&quot;</span> + message + <span class="string">&quot;】&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        System.out.println(<span class="string">&quot;等待接收消息。。。。&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>运行一下，CustomerTest</p>
+<p>····</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403224907413.png" alt="image-20230403224907413"></p>
+<p>可以看到，我们之前PublisherTest发送的三条消息，都已经被收到了了！</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403225035029.png" alt="image-20230403225035029"></p>
+<p>当消息被接受完时，队列中的消息会清空~</p>
+<h1 id="SpringAMQP"><a href="#SpringAMQP" class="headerlink" title="SpringAMQP"></a>SpringAMQP</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">这一模块，介绍5种消息队列模型和1 个消息转换器</span><br><span class="line">Basic Queue简单队列模型</span><br><span class="line">Work Queue 工作队列模型</span><br><span class="line">发布、订阅模型-Fanout</span><br><span class="line">发布、订阅模型-Direct</span><br><span class="line">发布、订阅模型-Topic</span><br><span class="line">消息转换器</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403225634126.png" alt="image-20230403225634126"></p>
+<h2 id="学习使用SpringAMQP"><a href="#学习使用SpringAMQP" class="headerlink" title="学习使用SpringAMQP"></a>学习使用SpringAMQP</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">案例： 利用SpringAMQP实现HelloWorld中的基础消息队列功能</span><br></pre></td></tr></table></figure>
+
+<p>流程如下：</p>
+<ol>
+<li>在父工程中引入 spring-amqp依赖</li>
+<li>在publisher服务中利用RabbitTemplate发送消息到 simple.queue这个队列</li>
+<li>在consumer服务中编写逻辑，去绑定simple.queue这个队列</li>
+</ol>
+<h3 id="步骤一：引入依赖"><a href="#步骤一：引入依赖" class="headerlink" title="步骤一：引入依赖"></a>步骤一：引入依赖</h3><p>因为 publisher和consumer服务都需要使用，所以直接加到他们的父工程中去！</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403230346611.png" alt="image-20230403230346611"></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--        springAMQP--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-amqp<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="步骤二：在publisher中编写测试方法，向simple-queue发送消息"><a href="#步骤二：在publisher中编写测试方法，向simple-queue发送消息" class="headerlink" title="步骤二：在publisher中编写测试方法，向simple.queue发送消息"></a>步骤二：在publisher中编写测试方法，向simple.queue发送消息</h3><ol>
+<li><p>在publisher服务中编写application.yml文件，添加mq连接信息</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">rabbitmq:</span></span><br><span class="line">    <span class="attr">host:</span> <span class="number">192.168</span><span class="number">.190</span><span class="number">.130</span>  <span class="comment">#主机名</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">5672</span>  <span class="comment">#端口</span></span><br><span class="line">    <span class="attr">virtual-host:</span> <span class="string">/</span>   <span class="comment">#虚拟主机</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">itcast</span>  <span class="comment">#用户名</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123321</span>  <span class="comment">#密码</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在publisher服务中新建一个测试类，编写测试方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RunWith(SpringRunner.class)</span></span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpringAMQPTest</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RabbitTemplate rabbitTemplate;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testAMQP</span><span class="params">()</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> <span class="string">&quot;simple.queue&quot;</span>;</span><br><span class="line">    <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;hello,SpringAMQP!&quot;</span>;</span><br><span class="line">    rabbitTemplate.convertAndSend(queueName,message);   </span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403232554984.png" alt="image-20230403232554984"></p>
+<p>注意：我们上面那段代码并不包含创建simple.queue队列的代码，如果说</p>
+<p>你之前没有创建过这个队列，那么你必须自己手动写一段创建simple.queue的代码</p>
+<p><strong>经过测试，我们收到了一条消息~</strong></p>
+<h3 id="步骤三：在consumer中编写消费逻辑，监听simple-queue"><a href="#步骤三：在consumer中编写消费逻辑，监听simple-queue" class="headerlink" title="步骤三：在consumer中编写消费逻辑，监听simple.queue"></a>步骤三：在consumer中编写消费逻辑，监听simple.queue</h3><ol>
+<li>在consumer服务中编写applicatiopn.yml，添加mq连接消息</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">rabbitmq:</span></span><br><span class="line">    <span class="attr">host:</span> <span class="number">192.168</span><span class="number">.190</span><span class="number">.130</span>  <span class="comment">#主机名</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">5672</span>  <span class="comment">#端口</span></span><br><span class="line">    <span class="attr">virtual-host:</span> <span class="string">/</span>   <span class="comment">#虚拟主机</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">itcast</span>  <span class="comment">#用户名</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123321</span>  <span class="comment">#密码</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="2">
+<li><p>在consumer服务中新建一个类，编写消费逻辑</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403233927749.png" alt="image-20230403233927749"></p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpringRabbitListener</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RabbitListener(queues = &quot;simple.queue&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">listenSimpleQueue</span><span class="params">(String msg)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;SpringAMQP接受到的消息是---&gt;&quot;</span>+msg);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打开服务</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403234038123.png" alt="image-20230403234038123"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230403234115638.png" alt="image-20230403234115638"></p>
+<p><strong>可以发现，我们在后台接收到了消息，而且消息队列也被清空了！</strong></p>
+<h2 id="工作队列"><a href="#工作队列" class="headerlink" title="工作队列~"></a>工作队列~</h2><p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20230403234434653.png" alt="image-20230403234434653"></p>
+<p>目的：提高消息处理速度，避免消息堆积。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">案例：模拟WorkQueue，实现一个队列绑定多个消费者</span><br><span class="line">基本思路：</span><br><span class="line">1.在publisher服务中定义测试方法，每秒产生50条信息，发送到simple.queue</span><br><span class="line">2.在consumer服务中定义两个消息监听者，都监听simple.queue队列</span><br><span class="line">3.消费者1每秒处理50条消息，消费者2每秒处理10条消息</span><br></pre></td></tr></table></figure>
+
+<p>1.在 publisher服务的Test中写出一个方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testAMQP2</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> <span class="string">&quot;simple.queue&quot;</span>;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span> ; i&lt;<span class="number">50</span> ;i++)&#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;hello,this message is ---&gt;&quot;</span> + i;</span><br><span class="line">        rabbitTemplate.convertAndSend(queueName,message);</span><br><span class="line">        Thread.sleep(<span class="number">20</span>); <span class="comment">//稍微休眠一下，不然太快了！</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>修改constomer服务的方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">   </span><br><span class="line">    <span class="meta">@RabbitListener(queues = &quot;simple.queue&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">listenWorkQueue1</span><span class="params">(String msg)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line"></span><br><span class="line">    System.out.println(<span class="string">&quot;消费者1接收到的消息---&gt;&quot;</span>+msg+LocalTime.now());</span><br><span class="line">    Thread.sleep(<span class="number">20</span>); <span class="comment">//每秒处理50条</span></span><br><span class="line">   </span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line"><span class="meta">@RabbitListener(queues = &quot;simple.queue&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">listenWorkQueue2</span><span class="params">(String msg)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line">   </span><br><span class="line">    System.err.println(<span class="string">&quot;消费者2接收到的消息---&gt;&quot;</span>+msg+LocalTime.now());</span><br><span class="line">    Thread.sleep(<span class="number">100</span>); <span class="comment">//每秒处理10条</span></span><br><span class="line">   </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+</li>
+<li><p>启动consumer服务，并运行publisher服务的test方法，发送50条消息</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;000:08:47.496</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;100:08:47.505</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;200:08:47.528</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;400:08:47.569</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;300:08:47.607</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;600:08:47.615</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;800:08:47.660</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1000:08:47.705</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;500:08:47.708</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1200:08:47.752</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1400:08:47.801</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;700:08:47.810</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1600:08:47.845</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1800:08:47.888</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;900:08:47.911</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2000:08:47.934</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2200:08:47.980</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;1100:08:48.014</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2400:08:48.025</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2600:08:48.068</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2800:08:48.112</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;1300:08:48.115</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3000:08:48.161</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3200:08:48.207</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;1500:08:48.218</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3400:08:48.254</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3600:08:48.301</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;1700:08:48.321</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3800:08:48.347</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4000:08:48.393</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;1900:08:48.422</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4200:08:48.436</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4400:08:48.483</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;2100:08:48.526</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4600:08:48.528</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4800:08:48.573</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;2300:08:48.628</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;2500:08:48.732</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;2700:08:48.834</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;2900:08:48.937</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;3100:08:49.041</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;3300:08:49.143</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;3500:08:49.244</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;3700:08:49.346</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;3900:08:49.447</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;4100:08:49.549</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;4300:08:49.652</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;4500:08:49.755</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;4700:08:49.857</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;4900:08:49.960</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>我们发现！我们计划1s内接收所有消息，但是从结果上看，明显超过1s了！为什么？</strong></p>
+<p>我们发现，消费者2处理的消息是： 1、3、5、7、9……</p>
+<p>消费者1 处理的都是偶数的消息</p>
+<p>两个消费者，每个人都处理25条消息！</p>
+<p>—-&gt;</p>
+<p>但是这不对啊！</p>
+<p>我们希望谁的处理速度快，谁就多处理一些消息，现在怎么平均分配了呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">消息预取！</span><br><span class="line"></span><br><span class="line">什么叫消息预取？</span><br><span class="line"></span><br><span class="line">队列里有50条消息，消费者会提前拿过来，不管自己能不能处理完，占着茅坑不拉屎。</span><br></pre></td></tr></table></figure>
+
+<h3 id="消费预取限制"><a href="#消费预取限制" class="headerlink" title="消费预取限制"></a>消费预取限制</h3><p>修改application.yml文件，设置preFetch这个值，可以控制预取消息的上限。</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404001848192.png" alt="image-20230404001848192"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">listener:</span><br><span class="line">  simple:</span><br><span class="line">    prefetch: 1 #每次只获取1条消息，处理完才获取下一条消息~</span><br></pre></td></tr></table></figure>
+
+<p>在启动服务看看，</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;000:21:56.686</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;100:21:56.692</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;200:21:56.714</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;300:21:56.736</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;400:21:56.762</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;500:21:56.786</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;600:21:56.797</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;700:21:56.818</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;800:21:56.841</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;900:21:56.865</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1000:21:56.890</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;1100:21:56.903</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1200:21:56.924</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1300:21:56.947</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1400:21:56.970</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1500:21:56.995</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;1600:21:57.010</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1700:21:57.031</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1800:21:57.055</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;1900:21:57.079</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2000:21:57.103</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;2100:21:57.116</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2200:21:57.135</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2300:21:57.159</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2400:21:57.180</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2500:21:57.201</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;2600:21:57.219</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2700:21:57.240</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2800:21:57.261</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;2900:21:57.283</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3000:21:57.305</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;3100:21:57.323</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3200:21:57.343</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3300:21:57.366</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3400:21:57.388</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3500:21:57.411</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;3600:21:57.427</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3700:21:57.448</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3800:21:57.471</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;3900:21:57.493</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4000:21:57.515</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;4100:21:57.530</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4200:21:57.550</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4300:21:57.572</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4400:21:57.593</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4500:21:57.614</span><br><span class="line">消费者2接收到的消息---&gt;hello,this message is ---&gt;4600:21:57.634</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4700:21:57.656</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4800:21:57.678</span><br><span class="line">消费者1接收到的消息---&gt;hello,this message is ---&gt;4900:21:57.701</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这一次，消费者1处理的消息多！</p>
+<p>而且1s内就完成了！</p>
+<h2 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h2><p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404092531839.png" alt="image-20230404092531839"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">我们发现，前面介绍的简单消息队列，和工作消息队列，都无法满足一点。</span><br><span class="line">同一条消息，让多个消费者知道。</span><br><span class="line">因为一条消息被一个消费者拿到之后，就会被从队列中清除掉，那别的消费者就不知道这条消息了！</span><br><span class="line">所以，为了解决这个问题。</span><br><span class="line">我们引入了交换机！</span><br><span class="line">我们将消息发送到交换机，交换机负责将一条相同的消息发送至多个队列。</span><br><span class="line">这样就能让多个不同的消费者收到相同的消息了！</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>常见的exchange类型包括：<ul>
+<li>广播</li>
+<li>路由</li>
+<li>话题</li>
+</ul>
+</li>
+</ul>
+<p><strong>注意：exchange只负责消息的转发，而不是存储，一旦转发失败，则消息丢失。</strong></p>
+<h2 id="Fanout-Exchange-广播交换机"><a href="#Fanout-Exchange-广播交换机" class="headerlink" title="Fanout Exchange  广播交换机"></a>Fanout Exchange  广播交换机</h2><p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404093117425.png" alt="image-20230404093117425"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">案例：利用SpringAMQP演示FanoutExchange的使用</span><br><span class="line">实现思路：</span><br><span class="line">1.在consumer服务中，利用代码声明队列，交换机，并将二者绑定</span><br><span class="line">2.在consumer服务中，编写两个消费者方法，分别监听fanout.queue1和 fanout.queue2</span><br><span class="line">3.在publisher中编写测试方法，向itcast.fanout发送消息。</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404093451870.png" alt="image-20230404093451870"></p>
+<h3 id="步骤一：在consumer服务中声明，Exchange、Queue、Binding"><a href="#步骤一：在consumer服务中声明，Exchange、Queue、Binding" class="headerlink" title="步骤一：在consumer服务中声明，Exchange、Queue、Binding"></a>步骤一：在consumer服务中声明，Exchange、Queue、Binding</h3><p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404093721266.png" alt="image-20230404093721266"></p>
+<p>步骤一：</p>
+<p>在consumer中新建一个类，添加@Configuration注解，并声明FanoutExchange、Queue、和绑定关系对象Binding，代码如下，</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FanoutExchangeConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> FanoutExchange <span class="title function_">fanoutExchange</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">FanoutExchange</span>(<span class="string">&quot;itcast.fanout&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Queue <span class="title function_">queue1</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Queue</span>(<span class="string">&quot;fanout.queue1&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//      绑定队列 2到交换机</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Binding <span class="title function_">binding1</span><span class="params">(Queue queue1 , FanoutExchange fanoutExchange)</span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> BindingBuilder.bind(queue1).to(fanoutExchange);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//------------------------------------------下面是第二个队列</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Queue <span class="title function_">queue2</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Queue</span>(<span class="string">&quot;fanout.queue2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"><span class="comment">//    绑定队列 2到交换机</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Binding <span class="title function_">binding2</span><span class="params">(Queue queue2 , FanoutExchange fanoutExchange)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> BindingBuilder.bind(queue2).to(fanoutExchange);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>启动一下服务~</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404095956768.png" alt="image-20230404095956768"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404100033781.png" alt="image-20230404100033781"></p>
+<h3 id="步骤二：在consumer服务中编写监听方法"><a href="#步骤二：在consumer服务中编写监听方法" class="headerlink" title="步骤二：在consumer服务中编写监听方法"></a>步骤二：在consumer服务中编写监听方法</h3><p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404100820562.png" alt="image-20230404100820562"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RabbitListener(queues = &quot;fanout.queue1&quot;)</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">listenFanoutQueue1</span><span class="params">(String msg)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line"></span><br><span class="line">     System.err.println(<span class="string">&quot;队列queue1接收到的消息---&gt;&quot;</span>+msg+<span class="string">&quot;--&quot;</span>+ LocalTime.now());</span><br><span class="line">     Thread.sleep(<span class="number">100</span>); <span class="comment">//每秒处理10条</span></span><br><span class="line"></span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="meta">@RabbitListener(queues = &quot;fanout.queue2&quot;)</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">listenFanoutQueue2</span><span class="params">(String msg)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line"></span><br><span class="line">     System.err.println(<span class="string">&quot;队列queue2接收到的消息---&gt;&quot;</span>+msg+<span class="string">&quot;--&quot;</span>+ LocalTime.now());</span><br><span class="line">     Thread.sleep(<span class="number">100</span>); <span class="comment">//每秒处理10条</span></span><br><span class="line"></span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="步骤三：在publisher服务中编写测试方法，发送消息到交换机"><a href="#步骤三：在publisher服务中编写测试方法，发送消息到交换机" class="headerlink" title="步骤三：在publisher服务中编写测试方法，发送消息到交换机"></a>步骤三：在publisher服务中编写测试方法，发送消息到交换机</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFanoutExchange</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">String</span> <span class="variable">exchangeName</span> <span class="operator">=</span> <span class="string">&quot;itcast.fanout&quot;</span>;</span><br><span class="line">    <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;注意了，注意了，超市大甩卖了！！&quot;</span>;</span><br><span class="line">    rabbitTemplate.convertAndSend(exchange,<span class="string">&quot;&quot;</span>,message);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>启动测试方法，查看后台结果（consumer服务运行中~）</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404101417040.png" alt="image-20230404101417040"></p>
+<h2 id="DirectExchange-路由交换机"><a href="#DirectExchange-路由交换机" class="headerlink" title="DirectExchange  路由交换机"></a>DirectExchange  路由交换机</h2><p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404101807722.png" alt="image-20230404101807722"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">案例：利用SpringAMQP演示DirectExchange的使用</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404102104211.png" alt="image-20230404102104211"></p>
+<h3 id="步骤一：在-consumer服务中声明Exchange、Queue"><a href="#步骤一：在-consumer服务中声明Exchange、Queue" class="headerlink" title="步骤一：在 consumer服务中声明Exchange、Queue"></a>步骤一：在 consumer服务中声明Exchange、Queue</h3><ol>
+<li><p>在 consumer中，编写两个消费者方法，分别监听direct.queue1和 direct.queue2</p>
+</li>
+<li><p>利用@RabbitListener声明，Exchange、Queue、RoutingKey</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RabbitListener(bindings = @QueueBinding(</span></span><br><span class="line"><span class="meta">        value=@Queue(&quot;direct.queue2&quot;),</span></span><br><span class="line"><span class="meta">        exchange = @Exchange(name=&quot;itcast.direct&quot;,type = ExchangeTypes.DIRECT),</span></span><br><span class="line"><span class="meta">        key=&#123;&quot;red&quot;,&quot;blue&quot;&#125;  //key不一样哦~</span></span><br><span class="line"><span class="meta">))</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">listenDirectQueue2</span><span class="params">(String msg)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line">   </span><br><span class="line">    System.err.println(<span class="string">&quot;队列queue2接收到的消息---&gt;&quot;</span>+msg+<span class="string">&quot;--&quot;</span>+ LocalTime.now());</span><br><span class="line">    Thread.sleep(<span class="number">100</span>); <span class="comment">//每秒处理10条</span></span><br><span class="line">   </span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@RabbitListener(bindings = @QueueBinding(</span></span><br><span class="line"><span class="meta">        value=@Queue(&quot;direct.queue1&quot;),</span></span><br><span class="line"><span class="meta">        exchange = @Exchange(name=&quot;itcast.direct&quot;,type = ExchangeTypes.DIRECT),</span></span><br><span class="line"><span class="meta">        key=&#123;&quot;red&quot;,&quot;yellow&quot;&#125;  //key不一样哦~</span></span><br><span class="line"><span class="meta">))</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">listenDirectQueue1</span><span class="params">(String msg)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line">   </span><br><span class="line">    System.err.println(<span class="string">&quot;队列queue1接收到的消息---&gt;&quot;</span>+msg+<span class="string">&quot;--&quot;</span>+ LocalTime.now());</span><br><span class="line">    Thread.sleep(<span class="number">100</span>); <span class="comment">//每秒处理10条</span></span><br><span class="line">   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编写完，启动一下consumer服务，看看交换机，队列啥的都在不在！</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404103337939.png" alt="image-20230404103337939"></p>
+</li>
+</ol>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404103404334.png" alt="image-20230404103404334"></p>
+<p>可以看出，注解方式，会自动帮我们创建交换机和队列。</p>
+<h3 id="步骤二：在publisher服务中编写测试代码"><a href="#步骤二：在publisher服务中编写测试代码" class="headerlink" title="步骤二：在publisher服务中编写测试代码"></a>步骤二：在publisher服务中编写测试代码</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFanoutExchange2</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> <span class="string">&quot;itcast.direct&quot;</span>;</span><br><span class="line">    <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;冲冲冲！胜利就在前方！&quot;</span>;</span><br><span class="line">    rabbitTemplate.convertAndSend(queueName,<span class="string">&quot;red&quot;</span>,message); <span class="comment">//key可以变化</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404103602662.png" alt="image-20230404103602662"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFanoutExchange2</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> <span class="string">&quot;itcast.direct&quot;</span>;</span><br><span class="line">    <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;冲冲冲！胜利就在前方！&quot;</span>;</span><br><span class="line">    rabbitTemplate.convertAndSend(queueName,<span class="string">&quot;blue&quot;</span>,message);  <span class="comment">//key可以变化</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404103638364.png" alt="image-20230404103638364"></p>
+<p>——&gt;</p>
+<h2 id="TopicExchange-话题交换机"><a href="#TopicExchange-话题交换机" class="headerlink" title="TopicExchange 话题交换机"></a>TopicExchange 话题交换机</h2><p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404104201612.png" alt="image-20230404104201612"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">案例：利用SpringAMQP演示 TopicExchange的使用</span><br><span class="line">实现思路：</span><br><span class="line">1.利用RabbitListener 声明 Exchange，Queue，RoutingKey</span><br><span class="line">2.在consumer服务中，编写两个消费者方法，分别监听topic.queue1 和 topic.queue2</span><br><span class="line">3.在publisher中编写测试方法，向itcast.topic发送消息。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="步骤一：利用RabbitListener-声明-Exchange，Queue，RoutingKey"><a href="#步骤一：利用RabbitListener-声明-Exchange，Queue，RoutingKey" class="headerlink" title="步骤一：利用RabbitListener 声明 Exchange，Queue，RoutingKey"></a>步骤一：利用RabbitListener 声明 Exchange，Queue，RoutingKey</h3><p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404105110047.png" alt="image-20230404105110047"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RabbitListener(bindings = @QueueBinding(</span></span><br><span class="line"><span class="meta">        value=@Queue(&quot;topic.queue1&quot;),</span></span><br><span class="line"><span class="meta">        exchange = @Exchange(name=&quot;itcast.topic&quot;,type = ExchangeTypes.TOPIC),</span></span><br><span class="line"><span class="meta">        key=&quot;china.#&quot;</span></span><br><span class="line"><span class="meta">))</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">listenTopicQueue1</span><span class="params">(String msg)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line"></span><br><span class="line">    System.err.println(<span class="string">&quot;队列queue1接收到的消息---&gt;&quot;</span>+msg+<span class="string">&quot;--&quot;</span>+ LocalTime.now());</span><br><span class="line">    Thread.sleep(<span class="number">100</span>); <span class="comment">//每秒处理10条</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RabbitListener(bindings = @QueueBinding(</span></span><br><span class="line"><span class="meta">        value=@Queue(&quot;topic.queue2&quot;),</span></span><br><span class="line"><span class="meta">        exchange = @Exchange(name=&quot;itcast.topic&quot;,type = ExchangeTypes.TOPIC),</span></span><br><span class="line"><span class="meta">        key=&quot;#.news&quot;</span></span><br><span class="line"><span class="meta">))</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">listenTopicQueue2</span><span class="params">(String msg)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line"></span><br><span class="line">    System.err.println(<span class="string">&quot;队列queue2接收到的消息---&gt;&quot;</span>+msg+<span class="string">&quot;--&quot;</span>+ LocalTime.now());</span><br><span class="line">    Thread.sleep(<span class="number">100</span>); <span class="comment">//每秒处理10条</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行一下consumer服务看一下</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404105620023.png" alt="image-20230404105620023"></p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404105645892.png" alt="image-20230404105645892"></p>
+<h3 id="步骤二：在consumer中编写测试方法"><a href="#步骤二：在consumer中编写测试方法" class="headerlink" title="步骤二：在consumer中编写测试方法"></a>步骤二：在consumer中编写测试方法</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testTopicExchange</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> <span class="string">&quot;itcast.topic&quot;</span>;</span><br><span class="line">        <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;会像天外来物一样，求之不得~&quot;</span>;</span><br><span class="line">        rabbitTemplate.convertAndSend(queueName,<span class="string">&quot;china.sing&quot;</span>,message);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404110001099.png" alt="image-20230404110001099"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testTopicExchange</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> <span class="string">&quot;itcast.topic&quot;</span>;</span><br><span class="line">    <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;等风亦等你~&quot;</span>;</span><br><span class="line">    rabbitTemplate.convertAndSend(queueName,<span class="string">&quot;11.news&quot;</span>,message);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404111159685.png" alt="image-20230404111159685"></p>
+<p>为啥两个队列都能接收到消息？？？？</p>
+<h2 id="SpringAMQP的消息转换器"><a href="#SpringAMQP的消息转换器" class="headerlink" title="SpringAMQP的消息转换器"></a>SpringAMQP的消息转换器</h2><p>在之前我们写的SpringAMQP的发送方法中，接收消息的类型是Object，也就是说我们可以发送任意对象类型的消息，SpringAMQP会序列化成字节之后发送！</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404112603664.png" alt="image-20230404112603664"></p>
+<p>测试：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> Queue <span class="title function_">queue</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Queue</span>(<span class="string">&quot;test.queue&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404112710498.png" alt="image-20230404112710498"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testObjectqueue</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> <span class="string">&quot;test.queue&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">HashMap</span> <span class="variable">hashMap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line">    hashMap.put(<span class="string">&quot;name&quot;</span>,<span class="string">&quot;张三&quot;</span>);</span><br><span class="line">    hashMap.put(<span class="string">&quot;age&quot;</span>,<span class="number">26</span>);</span><br><span class="line">    rabbitTemplate.convertAndSend(queueName,<span class="string">&quot;&quot;</span>,hashMap);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>测试一下~</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404113502370.png" alt="image-20230404113502370"></p>
+<p>我们不希望把它字节化呢？我们就希望他传一个jackson对象！</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404113551192.png" alt="image-20230404113551192"></p>
+<p>引入了这个消息转换器会覆盖springboot默认的消息转换器</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.fasterxml.jackson.dataformat<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jackson-dataformat-xml<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JackSonConfig</span> &#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> MessageConverter <span class="title function_">messageConverter</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Jackson2JsonMessageConverter</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20230404114604321.png" alt="image-20230404114604321"></p>
+<p>成功拿到json数据了！！！</p>
+<p>发送端的消息转换弄好了，接收端的也要弄一下！</p>
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404114745957.png" alt="image-20230404114745957"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RabbitListener(queues = &quot;test.queue&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">listenFanoutQueue3</span><span class="params">(Map map)</span> <span class="keyword">throws</span> Exception&#123; <span class="comment">//发送端发啥类型，这里就用啥类型接收</span></span><br><span class="line"></span><br><span class="line">    System.err.println(<span class="string">&quot;队列queue2接收到的消息---&gt;&quot;</span>+map+<span class="string">&quot;--&quot;</span>+ LocalTime.now());</span><br><span class="line">    Thread.sleep(<span class="number">100</span>); <span class="comment">//每秒处理10条</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/image-20230404115241185.png" alt="image-20230404115241185"></p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.SpringAMQP默认的消息转换器是利用MessageConvert实现的，默认JDK序列化</span><br><span class="line">2.发送与接收方必须使用相同的MessageConvert</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>SpringCloud第四天</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="http://example.com/2023/04/02/SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9/">http://example.com/2023/04/02/SpringCloud第四天/</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>beckoningcoco</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2023-04-02</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2023-04-08</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/springCloud/">springCloud</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-kxz1m1.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/04/03/MQ%E7%9A%84%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/"><img class="prev-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-z8jjpv.jpg" onerror="onerror=null;src='/null'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MQ的安装教程</div></div></a></div><div class="next-post pull-right"><a href="/2023/04/01/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/"><img class="next-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-3lqjl6.png" onerror="onerror=null;src='/null'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">动态代理</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">beckoningcoco</div><div class="author-info__description">世界好吵，让我帮你捂耳朵吧</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/beckoningcoco"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/beckoningcoco" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:995587764@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的blog！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SpringCloud%E7%AC%AC%E5%9B%9B%E5%A4%A9"><span class="toc-number">1.</span> <span class="toc-text">SpringCloud第四天</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%9D%E8%AF%86MQ"><span class="toc-number">2.</span> <span class="toc-text">初识MQ</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E9%80%9A%E8%AE%AF"><span class="toc-number">2.1.</span> <span class="toc-text">同步通讯</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E9%80%9A%E8%AE%AF"><span class="toc-number">2.2.</span> <span class="toc-text">异步通讯</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E9%80%9A%E8%AE%AF%E4%BC%98%E7%BC%BA%E7%82%B9%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">异步通讯优缺点：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFMQ"><span class="toc-number">2.3.</span> <span class="toc-text">什么是MQ</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MQ%E5%B8%B8%E8%A7%81%E6%A1%86%E6%9E%B6"><span class="toc-number">2.4.</span> <span class="toc-text">MQ常见框架</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RabbitMQ%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="toc-number">3.</span> <span class="toc-text">RabbitMQ快速入门</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ%E7%9A%84%E6%A6%82%E8%BF%B0%E5%92%8C%E5%AE%89%E8%A3%85"><span class="toc-number">3.1.</span> <span class="toc-text">RabbitMQ的概述和安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8B"><span class="toc-number">3.2.</span> <span class="toc-text">常见消息模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="toc-number">3.3.</span> <span class="toc-text">快速入门</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SpringAMQP"><span class="toc-number">4.</span> <span class="toc-text">SpringAMQP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%A6%E4%B9%A0%E4%BD%BF%E7%94%A8SpringAMQP"><span class="toc-number">4.1.</span> <span class="toc-text">学习使用SpringAMQP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E4%B8%80%EF%BC%9A%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="toc-number">4.1.1.</span> <span class="toc-text">步骤一：引入依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E4%BA%8C%EF%BC%9A%E5%9C%A8publisher%E4%B8%AD%E7%BC%96%E5%86%99%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%EF%BC%8C%E5%90%91simple-queue%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF"><span class="toc-number">4.1.2.</span> <span class="toc-text">步骤二：在publisher中编写测试方法，向simple.queue发送消息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E4%B8%89%EF%BC%9A%E5%9C%A8consumer%E4%B8%AD%E7%BC%96%E5%86%99%E6%B6%88%E8%B4%B9%E9%80%BB%E8%BE%91%EF%BC%8C%E7%9B%91%E5%90%ACsimple-queue"><span class="toc-number">4.1.3.</span> <span class="toc-text">步骤三：在consumer中编写消费逻辑，监听simple.queue</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97"><span class="toc-number">4.2.</span> <span class="toc-text">工作队列~</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E8%B4%B9%E9%A2%84%E5%8F%96%E9%99%90%E5%88%B6"><span class="toc-number">4.2.1.</span> <span class="toc-text">消费预取限制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.3.</span> <span class="toc-text">发布订阅模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fanout-Exchange-%E5%B9%BF%E6%92%AD%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="toc-number">4.4.</span> <span class="toc-text">Fanout Exchange  广播交换机</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E4%B8%80%EF%BC%9A%E5%9C%A8consumer%E6%9C%8D%E5%8A%A1%E4%B8%AD%E5%A3%B0%E6%98%8E%EF%BC%8CExchange%E3%80%81Queue%E3%80%81Binding"><span class="toc-number">4.4.1.</span> <span class="toc-text">步骤一：在consumer服务中声明，Exchange、Queue、Binding</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E4%BA%8C%EF%BC%9A%E5%9C%A8consumer%E6%9C%8D%E5%8A%A1%E4%B8%AD%E7%BC%96%E5%86%99%E7%9B%91%E5%90%AC%E6%96%B9%E6%B3%95"><span class="toc-number">4.4.2.</span> <span class="toc-text">步骤二：在consumer服务中编写监听方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E4%B8%89%EF%BC%9A%E5%9C%A8publisher%E6%9C%8D%E5%8A%A1%E4%B8%AD%E7%BC%96%E5%86%99%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%EF%BC%8C%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%E5%88%B0%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="toc-number">4.4.3.</span> <span class="toc-text">步骤三：在publisher服务中编写测试方法，发送消息到交换机</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DirectExchange-%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="toc-number">4.5.</span> <span class="toc-text">DirectExchange  路由交换机</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E4%B8%80%EF%BC%9A%E5%9C%A8-consumer%E6%9C%8D%E5%8A%A1%E4%B8%AD%E5%A3%B0%E6%98%8EExchange%E3%80%81Queue"><span class="toc-number">4.5.1.</span> <span class="toc-text">步骤一：在 consumer服务中声明Exchange、Queue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E4%BA%8C%EF%BC%9A%E5%9C%A8publisher%E6%9C%8D%E5%8A%A1%E4%B8%AD%E7%BC%96%E5%86%99%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="toc-number">4.5.2.</span> <span class="toc-text">步骤二：在publisher服务中编写测试代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TopicExchange-%E8%AF%9D%E9%A2%98%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="toc-number">4.6.</span> <span class="toc-text">TopicExchange 话题交换机</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E4%B8%80%EF%BC%9A%E5%88%A9%E7%94%A8RabbitListener-%E5%A3%B0%E6%98%8E-Exchange%EF%BC%8CQueue%EF%BC%8CRoutingKey"><span class="toc-number">4.6.1.</span> <span class="toc-text">步骤一：利用RabbitListener 声明 Exchange，Queue，RoutingKey</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E4%BA%8C%EF%BC%9A%E5%9C%A8consumer%E4%B8%AD%E7%BC%96%E5%86%99%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95"><span class="toc-number">4.6.2.</span> <span class="toc-text">步骤二：在consumer中编写测试方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SpringAMQP%E7%9A%84%E6%B6%88%E6%81%AF%E8%BD%AC%E6%8D%A2%E5%99%A8"><span class="toc-number">4.7.</span> <span class="toc-text">SpringAMQP的消息转换器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">4.7.1.</span> <span class="toc-text">总结：</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/04/18/maven%E4%B8%8B%E9%A1%B9%E7%9B%AE%E6%98%BE%E7%A4%BA%E7%81%B0%E8%89%B2/" title="maven下项目显示灰色"><img src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-zyy1xv.jpg" onerror="this.onerror=null;this.src='/null'" alt="maven下项目显示灰色"/></a><div class="content"><a class="title" href="/2023/04/18/maven%E4%B8%8B%E9%A1%B9%E7%9B%AE%E6%98%BE%E7%A4%BA%E7%81%B0%E8%89%B2/" title="maven下项目显示灰色">maven下项目显示灰色</a><time datetime="2023-04-18T13:54:06.000Z" title="发表于 2023-04-18 21:54:06">2023-04-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/17/eureka%E5%AD%A6%E4%B9%A0/" title="eureka学习"><img src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-qzj21l.jpg" onerror="this.onerror=null;this.src='/null'" alt="eureka学习"/></a><div class="content"><a class="title" href="/2023/04/17/eureka%E5%AD%A6%E4%B9%A0/" title="eureka学习">eureka学习</a><time datetime="2023-04-17T15:41:53.000Z" title="发表于 2023-04-17 23:41:53">2023-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/17/SpringCloud%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%881%EF%BC%89/" title="SpringCloud面试题（1）"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-m313vk.jpg" onerror="this.onerror=null;this.src='/null'" alt="SpringCloud面试题（1）"/></a><div class="content"><a class="title" href="/2023/04/17/SpringCloud%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%881%EF%BC%89/" title="SpringCloud面试题（1）">SpringCloud面试题（1）</a><time datetime="2023-04-17T13:33:08.000Z" title="发表于 2023-04-17 21:33:08">2023-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/16/SpringCloud%E7%AC%AC%E5%85%AD%E5%A4%A9/" title="SpringCloud第六天"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-m31958.jpg" onerror="this.onerror=null;this.src='/null'" alt="SpringCloud第六天"/></a><div class="content"><a class="title" href="/2023/04/16/SpringCloud%E7%AC%AC%E5%85%AD%E5%A4%A9/" title="SpringCloud第六天">SpringCloud第六天</a><time datetime="2023-04-16T12:51:07.000Z" title="发表于 2023-04-16 20:51:07">2023-04-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/10/ElasticSearch%E3%80%81Kibana%E3%80%81Ik%E5%88%86%E8%AF%8D%E5%99%A8%E7%9A%84%E5%AE%89%E8%A3%85/" title="ElasticSearch、Kibana、Ik分词器的安装"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-ex9ork.jpg" onerror="this.onerror=null;this.src='/null'" alt="ElasticSearch、Kibana、Ik分词器的安装"/></a><div class="content"><a class="title" href="/2023/04/10/ElasticSearch%E3%80%81Kibana%E3%80%81Ik%E5%88%86%E8%AF%8D%E5%99%A8%E7%9A%84%E5%AE%89%E8%A3%85/" title="ElasticSearch、Kibana、Ik分词器的安装">ElasticSearch、Kibana、Ik分词器的安装</a><time datetime="2023-04-10T09:03:19.000Z" title="发表于 2023-04-10 17:03:19">2023-04-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-kxz1m1.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2023 By beckoningcoco</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">嘘声是给予挑战者的勋章——美浦波旁.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用JsDelivr为静态资源提供CDN加速"></a> &nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Vervel-brightgreen?style=flat&logo=Vercel" title="本站采用双线部署，默认线路托管于Vercel"></a>&nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Coding-0cedbe?style=flat&logo=Codio" title="本站采用双线部署，联通线路托管于Coding"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script defer data-pjax src="/js/readPercent.js"></script><div class="aplayer no-destroy" data-id="8091029090" data-server="netease" data-type="playlist"  data-fixed="true" data-mini="true"  data-listmaxheight="340px" listfolded="true"  data-autoplay="true" data-theme="#3F51B5" > </div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

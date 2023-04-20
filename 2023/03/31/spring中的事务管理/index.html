@@ -1,0 +1,461 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>spring中的事务管理 | 梦落芳华</title><meta name="author" content="beckoningcoco"><meta name="copyright" content="beckoningcoco"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Spring事务简介相关概念介绍 事务作用：在数据层保障一系列的数据库操作同成功同失败 Spring事务作用：在数据层或**&#x3D;&#x3D;业务层&#x3D;&#x3D;**保障一系列的数据库操作同成功同失败  数据层有事务我们可以理解，为什么业务层也需要处理事务呢? 举个简单的例子，  转账业务会有两次数据层的调用，一次是加钱一次是减钱 把事务放在数据层，加钱和减钱就有两个事务 没办法保">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring中的事务管理">
+<meta property="og:url" content="http://example.com/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="梦落芳华">
+<meta property="og:description" content="Spring事务简介相关概念介绍 事务作用：在数据层保障一系列的数据库操作同成功同失败 Spring事务作用：在数据层或**&#x3D;&#x3D;业务层&#x3D;&#x3D;**保障一系列的数据库操作同成功同失败  数据层有事务我们可以理解，为什么业务层也需要处理事务呢? 举个简单的例子，  转账业务会有两次数据层的调用，一次是加钱一次是减钱 把事务放在数据层，加钱和减钱就有两个事务 没办法保">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-6o3o8w.jpg">
+<meta property="article:published_time" content="2023-03-31T12:24:03.000Z">
+<meta property="article:modified_time" content="2023-04-08T15:03:40.498Z">
+<meta property="article:author" content="beckoningcoco">
+<meta property="article:tag" content="spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-6o3o8w.jpg"><link rel="shortcut icon" href="/img/%E5%A4%B4%E5%83%8F.png"><link rel="canonical" href="http://example.com/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'spring中的事务管理',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-08 23:03:40'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/readPercent.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-6o3o8w.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">梦落芳华</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">spring中的事务管理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-31T12:24:03.000Z" title="发表于 2023-03-31 20:24:03">2023-03-31</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-08T15:03:40.498Z" title="更新于 2023-04-08 23:03:40">2023-04-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8D%9A%E6%96%87/">博文</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="spring中的事务管理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="Spring事务简介"><a href="#Spring事务简介" class="headerlink" title="Spring事务简介"></a>Spring事务简介</h3><h4 id="相关概念介绍"><a href="#相关概念介绍" class="headerlink" title="相关概念介绍"></a>相关概念介绍</h4><ul>
+<li>事务作用：在数据层保障一系列的数据库操作同成功同失败</li>
+<li>Spring事务作用：在数据层或**&#x3D;&#x3D;业务层&#x3D;&#x3D;**保障一系列的数据库操作同成功同失败</li>
+</ul>
+<p>数据层有事务我们可以理解，为什么业务层也需要处理事务呢?</p>
+<p>举个简单的例子，</p>
+<ul>
+<li>转账业务会有两次数据层的调用，一次是加钱一次是减钱</li>
+<li>把事务放在数据层，加钱和减钱就有两个事务</li>
+<li>没办法保证加钱和减钱同时成功或者同时失败</li>
+<li>这个时候就需要将事务放在业务层进行处理。</li>
+</ul>
+<p>Spring为了管理事务，提供了一个平台事务管理器<code>PlatformTransactionManager</code></p>
+<p><img src="/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/1630243651541-16802736886262.png" alt="1630243651541"></p>
+<p>commit是用来提交事务，rollback是用来回滚事务。</p>
+<p>PlatformTransactionManager只是一个接口，Spring还为其提供了一个具体的实现:</p>
+<p><img src="/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/1630243993380.png" alt="1630243993380"></p>
+<p>从名称上可以看出，我们只需要给它一个DataSource对象，它就可以帮你去在业务层管理事务。其内部采用的是JDBC的事务。所以说如果你持久层采用的是JDBC相关的技术，就可以采用这个事务管理器来管理你的事务。而Mybatis内部采用的就是JDBC的事务，所以后期我们Spring整合Mybatis就采用的这个DataSourceTransactionManager事务管理器。</p>
+<h4 id="6-1-2-转账案例-需求分析"><a href="#6-1-2-转账案例-需求分析" class="headerlink" title="6.1.2 转账案例-需求分析"></a>6.1.2 转账案例-需求分析</h4><p>接下来通过一个案例来学习下Spring是如何来管理事务的。</p>
+<p>先来分析下需求:</p>
+<p>需求: 实现任意两个账户间转账操作</p>
+<p>需求微缩: A账户减钱，B账户加钱</p>
+<p>为了实现上述的业务需求，我们可以按照下面步骤来实现下:<br>①：数据层提供基础操作，指定账户减钱（outMoney），指定账户加钱（inMoney）</p>
+<p>②：业务层提供转账操作（transfer），调用减钱与加钱的操作</p>
+<p>③：提供2个账号和操作金额执行转账操作</p>
+<p>④：基于Spring整合MyBatis环境搭建上述操作</p>
+<h4 id="6-1-3-转账案例-环境搭建"><a href="#6-1-3-转账案例-环境搭建" class="headerlink" title="6.1.3 转账案例-环境搭建"></a>6.1.3 转账案例-环境搭建</h4><h5 id="步骤1-准备数据库表"><a href="#步骤1-准备数据库表" class="headerlink" title="步骤1:准备数据库表"></a>步骤1:准备数据库表</h5><p>之前我们在整合Mybatis的时候已经创建了这个表,可以直接使用</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> database spring_db <span class="type">character</span> <span class="keyword">set</span> utf8;</span><br><span class="line">use spring_db;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> tbl_account(</span><br><span class="line">    id <span class="type">int</span> <span class="keyword">primary</span> key auto_increment,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">35</span>),</span><br><span class="line">    money <span class="keyword">double</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tbl_account <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">&#x27;Tom&#x27;</span>,<span class="number">1000</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tbl_account <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">&#x27;Jerry&#x27;</span>,<span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+
+<h5 id="步骤2-创建项目导入jar包"><a href="#步骤2-创建项目导入jar包" class="headerlink" title="步骤2:创建项目导入jar包"></a>步骤2:创建项目导入jar包</h5><p>项目的pom.xml添加相关依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.2.10.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.16<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.1.47<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.2.10.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.12<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.2.10.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="步骤3-根据表创建模型类"><a href="#步骤3-根据表创建模型类" class="headerlink" title="步骤3:根据表创建模型类"></a>步骤3:根据表创建模型类</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Account</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Double money;</span><br><span class="line">	<span class="comment">//setter...getter...toString...方法略    </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/image-20230331224238999.png" alt="image-20230331224238999"></p>
+<h5 id="步骤4-创建Dao接口"><a href="#步骤4-创建Dao接口" class="headerlink" title="步骤4:创建Dao接口"></a>步骤4:创建Dao接口</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">AccountDao</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Update(&quot;update tbl_account set money = money + #&#123;money&#125; where name = #&#123;name&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">inMoney</span><span class="params">(<span class="meta">@Param(&quot;name&quot;)</span> String name, <span class="meta">@Param(&quot;money&quot;)</span> Double money)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Update(&quot;update tbl_account set money = money - #&#123;money&#125; where name = #&#123;name&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">outMoney</span><span class="params">(<span class="meta">@Param(&quot;name&quot;)</span> String name, <span class="meta">@Param(&quot;money&quot;)</span> Double money)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="步骤5-创建Service接口和实现类"><a href="#步骤5-创建Service接口和实现类" class="headerlink" title="步骤5:创建Service接口和实现类"></a>步骤5:创建Service接口和实现类</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">AccountService</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 转账操作</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> out 传出方</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> in 转入方</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> money 金额</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transfer</span><span class="params">(String out,String in ,Double money)</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AccountServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">AccountService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccountDao accountDao;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transfer</span><span class="params">(String out,String in ,Double money)</span> &#123;</span><br><span class="line">        accountDao.outMoney(out,money);</span><br><span class="line">        accountDao.inMoney(in,money);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="步骤6-添加jdbc-properties文件"><a href="#步骤6-添加jdbc-properties文件" class="headerlink" title="步骤6:添加jdbc.properties文件"></a>步骤6:添加jdbc.properties文件</h5><figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">jdbc.driver</span>=<span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line"><span class="attr">jdbc.url</span>=<span class="string">jdbc:mysql://localhost:3306/spring_db?useSSL=false</span></span><br><span class="line"><span class="attr">jdbc.username</span>=<span class="string">root</span></span><br><span class="line"><span class="attr">jdbc.password</span>=<span class="string">root</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="步骤7-创建JdbcConfig配置类"><a href="#步骤7-创建JdbcConfig配置类" class="headerlink" title="步骤7:创建JdbcConfig配置类"></a>步骤7:创建JdbcConfig配置类</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JdbcConfig</span> &#123;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;jdbc.driver&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String driver;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;jdbc.url&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String url;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;jdbc.username&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String userName;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;jdbc.password&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> DataSource <span class="title function_">dataSource</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">DruidDataSource</span> <span class="variable">ds</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DruidDataSource</span>();</span><br><span class="line">        ds.setDriverClassName(driver);</span><br><span class="line">        ds.setUrl(url);</span><br><span class="line">        ds.setUsername(userName);</span><br><span class="line">        ds.setPassword(password);</span><br><span class="line">        <span class="keyword">return</span> ds;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="步骤8-创建MybatisConfig配置类"><a href="#步骤8-创建MybatisConfig配置类" class="headerlink" title="步骤8:创建MybatisConfig配置类"></a>步骤8:创建MybatisConfig配置类</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MybatisConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> SqlSessionFactoryBean <span class="title function_">sqlSessionFactory</span><span class="params">(DataSource dataSource)</span>&#123;</span><br><span class="line">        <span class="type">SqlSessionFactoryBean</span> <span class="variable">ssfb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SqlSessionFactoryBean</span>();</span><br><span class="line">        ssfb.setTypeAliasesPackage(<span class="string">&quot;com.itheima.domain&quot;</span>);</span><br><span class="line">        ssfb.setDataSource(dataSource);</span><br><span class="line">        <span class="keyword">return</span> ssfb;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> MapperScannerConfigurer <span class="title function_">mapperScannerConfigurer</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">MapperScannerConfigurer</span> <span class="variable">msc</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MapperScannerConfigurer</span>();</span><br><span class="line">        msc.setBasePackage(<span class="string">&quot;com.itheima.dao&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> msc;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="步骤9-创建SpringConfig配置类"><a href="#步骤9-创建SpringConfig配置类" class="headerlink" title="步骤9:创建SpringConfig配置类"></a>步骤9:创建SpringConfig配置类</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ComponentScan(&quot;com.itheima&quot;)</span></span><br><span class="line"><span class="meta">@PropertySource(&quot;classpath:jdbc.properties&quot;)</span></span><br><span class="line"><span class="meta">@Import(&#123;JdbcConfig.class,MybatisConfig.class&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpringConfig</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="步骤10-编写测试类"><a href="#步骤10-编写测试类" class="headerlink" title="步骤10:编写测试类"></a>步骤10:编写测试类</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RunWith(SpringJUnit4ClassRunner.class)</span></span><br><span class="line"><span class="meta">@ContextConfiguration(classes = SpringConfig.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AccountServiceTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccountService accountService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testTransfer</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        accountService.transfer(<span class="string">&quot;Tom&quot;</span>,<span class="string">&quot;Jerry&quot;</span>,<span class="number">100D</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终创建好的项目结构如下:</p>
+<p><img src="/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/1630247220645.png" alt="1630247220645"></p>
+<h4 id="6-1-4-事务管理"><a href="#6-1-4-事务管理" class="headerlink" title="6.1.4 事务管理"></a>6.1.4 事务管理</h4><p>上述环境，运行单元测试类，会执行转账操作，<code>Tom</code>的账户会减少100，<code>Jerry</code>的账户会加100。</p>
+<p>这是正常情况下的运行结果，但是如果在转账的过程中出现了异常，如:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AccountServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">AccountService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccountDao accountDao;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transfer</span><span class="params">(String out,String in ,Double money)</span> &#123;</span><br><span class="line">        accountDao.outMoney(out,money);</span><br><span class="line">        <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>/<span class="number">0</span>;</span><br><span class="line">        accountDao.inMoney(in,money);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候就模拟了转账过程中出现异常的情况，正确的操作应该是转账出问题了，<code>Tom</code>应该还是900，<code>Jerry</code>应该还是1100，但是真正运行后会发现，并没有像我们想象的那样，<code>Tom</code>账户为800而<code>Jerry</code>还是1100,100块钱凭空消息了，银行乐疯了。如果把转账换个顺序，银行就该哭了。</p>
+<p>不管哪种情况，都是不允许出现的，对刚才的结果我们做一个分析:</p>
+<p>①：程序正常执行时，账户金额A减B加，没有问题</p>
+<p>②：程序出现异常后，转账失败，但是异常之前操作成功，异常之后操作失败，整体业务失败</p>
+<p>当程序出问题后，我们需要让事务进行回滚，而且这个事务应该是加在业务层上，而Spring的事务管理就是用来解决这类问题的。</p>
+<p>Spring事务管理具体的实现步骤为:</p>
+<h5 id="步骤1-在需要被事务管理的方法上添加注解"><a href="#步骤1-在需要被事务管理的方法上添加注解" class="headerlink" title="步骤1:在需要被事务管理的方法上添加注解"></a>步骤1:在需要被事务管理的方法上添加注解</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">AccountService</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 转账操作</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> out 传出方</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> in 转入方</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> money 金额</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//配置当前接口方法具有事务</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transfer</span><span class="params">(String out,String in ,Double money)</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AccountServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">AccountService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccountDao accountDao;</span><br><span class="line">	<span class="meta">@Transactional</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transfer</span><span class="params">(String out,String in ,Double money)</span> &#123;</span><br><span class="line">        accountDao.outMoney(out,money);</span><br><span class="line">        <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>/<span class="number">0</span>;</span><br><span class="line">        accountDao.inMoney(in,money);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&#x3D;&#x3D;注意:&#x3D;&#x3D;</p>
+<p>@Transactional可以写在接口类上、接口方法上、实现类上和实现类方法上</p>
+<ul>
+<li>写在接口类上，该接口的所有实现类的所有方法都会有事务</li>
+<li>写在接口方法上，该接口的所有实现类的该方法都会有事务</li>
+<li>写在实现类上，该类中的所有方法都会有事务</li>
+<li>写在实现类方法上，该方法上有事务</li>
+<li>&#x3D;&#x3D;建议写在实现类或实现类的方法上&#x3D;&#x3D;</li>
+</ul>
+<h5 id="步骤2-在JdbcConfig类中配置事务管理器"><a href="#步骤2-在JdbcConfig类中配置事务管理器" class="headerlink" title="步骤2:在JdbcConfig类中配置事务管理器"></a>步骤2:在JdbcConfig类中配置事务管理器</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JdbcConfig</span> &#123;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;jdbc.driver&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String driver;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;jdbc.url&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String url;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;jdbc.username&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String userName;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;jdbc.password&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> DataSource <span class="title function_">dataSource</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">DruidDataSource</span> <span class="variable">ds</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DruidDataSource</span>();</span><br><span class="line">        ds.setDriverClassName(driver);</span><br><span class="line">        ds.setUrl(url);</span><br><span class="line">        ds.setUsername(userName);</span><br><span class="line">        ds.setPassword(password);</span><br><span class="line">        <span class="keyword">return</span> ds;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//配置事务管理器，mybatis使用的是jdbc事务</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> PlatformTransactionManager <span class="title function_">transactionManager</span><span class="params">(DataSource dataSource)</span>&#123;</span><br><span class="line">        <span class="type">DataSourceTransactionManager</span> <span class="variable">transactionManager</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DataSourceTransactionManager</span>();</span><br><span class="line">        transactionManager.setDataSource(dataSource);</span><br><span class="line">        <span class="keyword">return</span> transactionManager;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong>事务管理器要根据使用技术进行选择，Mybatis框架使用的是JDBC事务，可以直接使用<code>DataSourceTransactionManager</code></p>
+<h5 id="步骤3：开启事务注解"><a href="#步骤3：开启事务注解" class="headerlink" title="步骤3：开启事务注解"></a>步骤3：开启事务注解</h5><p>在SpringConfig的配置类中开启</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ComponentScan(&quot;com.itheima&quot;)</span></span><br><span class="line"><span class="meta">@PropertySource(&quot;classpath:jdbc.properties&quot;)</span></span><br><span class="line"><span class="meta">@Import(&#123;JdbcConfig.class,MybatisConfig.class</span></span><br><span class="line"><span class="meta">//开启注解式事务驱动</span></span><br><span class="line"><span class="meta">@EnableTransactionManagement</span></span><br><span class="line"><span class="meta">public class SpringConfig &#123;</span></span><br><span class="line"><span class="meta">&#125;</span></span><br><span class="line"><span class="meta"></span></span><br></pre></td></tr></table></figure>
+
+<h5 id="步骤4-运行测试类"><a href="#步骤4-运行测试类" class="headerlink" title="步骤4:运行测试类"></a>步骤4:运行测试类</h5><p>会发现在转换的业务出现错误后，事务就可以控制回顾，保证数据的正确性。</p>
+<h5 id="知识点1：-EnableTransactionManagement"><a href="#知识点1：-EnableTransactionManagement" class="headerlink" title="知识点1：@EnableTransactionManagement"></a>知识点1：@EnableTransactionManagement</h5><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>@EnableTransactionManagement</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>类型</td>
+<td>配置类注解</td>
+</tr>
+<tr>
+<td>位置</td>
+<td>配置类定义上方</td>
+</tr>
+<tr>
+<td>作用</td>
+<td>设置当前Spring环境中开启注解式事务支持</td>
+</tr>
+</tbody></table>
+<h5 id="知识点2：-Transactional"><a href="#知识点2：-Transactional" class="headerlink" title="知识点2：@Transactional"></a>知识点2：@Transactional</h5><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>@Transactional</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>类型</td>
+<td>接口注解  类注解  方法注解</td>
+</tr>
+<tr>
+<td>位置</td>
+<td>业务层接口上方  业务层实现类上方  业务方法上方</td>
+</tr>
+<tr>
+<td>作用</td>
+<td>为当前业务层方法添加事务（如果设置在类或接口上方则类或接口中所有方法均添加事务）</td>
+</tr>
+</tbody></table>
+<h3 id="6-2-Spring事务角色"><a href="#6-2-Spring事务角色" class="headerlink" title="6.2 Spring事务角色"></a>6.2 Spring事务角色</h3><p>这节中我们重点要理解两个概念，分别是<code>事务管理员</code>和<code>事务协调员</code>。</p>
+<ol>
+<li>未开启Spring事务之前:</li>
+</ol>
+<p><img src="/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/1630248794837.png" alt="1630248794837"></p>
+<ul>
+<li>AccountDao的outMoney因为是修改操作，会开启一个事务T1</li>
+<li>AccountDao的inMoney因为是修改操作，会开启一个事务T2</li>
+<li>AccountService的transfer没有事务，<ul>
+<li>运行过程中如果没有抛出异常，则T1和T2都正常提交，数据正确</li>
+<li>如果在两个方法中间抛出异常，T1因为执行成功提交事务，T2因为抛异常不会被执行</li>
+<li>就会导致数据出现错误</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>开启Spring的事务管理后</li>
+</ol>
+<p><img src="/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/1630249111055.png" alt="1630249111055"></p>
+<ul>
+<li>transfer上添加了@Transactional注解，在该方法上就会有一个事务T</li>
+<li>AccountDao的outMoney方法的事务T1加入到transfer的事务T中</li>
+<li>AccountDao的inMoney方法的事务T2加入到transfer的事务T中</li>
+<li>这样就保证他们在同一个事务中，当业务层中出现异常，整个事务就会回滚，保证数据的准确性。</li>
+</ul>
+<p>通过上面例子的分析，我们就可以得到如下概念:</p>
+<ul>
+<li>事务管理员：发起事务方，在Spring中通常指代业务层开启事务的方法</li>
+<li>事务协调员：加入事务方，在Spring中通常指代数据层方法，也可以是业务层方法</li>
+</ul>
+<p>&#x3D;&#x3D;注意:&#x3D;&#x3D;</p>
+<p>目前的事务管理是基于<code>DataSourceTransactionManager</code>和<code>SqlSessionFactoryBean</code>使用的是同一个数据源。</p>
+<h3 id="6-3-Spring事务属性"><a href="#6-3-Spring事务属性" class="headerlink" title="6.3 Spring事务属性"></a>6.3 Spring事务属性</h3><p>上一节我们介绍了两个概念，事务的管理员和事务的协同员，对于这两个概念具体做什么的，我们待会通过案例来使用下。除了这两个概念，还有就是事务的其他相关配置都有哪些，就是我们接下来要学习的内容。</p>
+<p>在这一节中，我们主要学习三部分内容<code>事务配置</code>、<code>转账业务追加日志</code>、<code>事务传播行为</code>。</p>
+<h4 id="6-3-1-事务配置"><a href="#6-3-1-事务配置" class="headerlink" title="6.3.1 事务配置"></a>6.3.1 事务配置</h4><p><img src="/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/1630250069844.png" alt="1630250069844"></p>
+<p>上面这些属性都可以在<code>@Transactional</code>注解的参数上进行设置。</p>
+<ul>
+<li><p>readOnly：true只读事务，false读写事务，增删改要设为false,查询设为true。</p>
+</li>
+<li><p>timeout:设置超时时间单位秒，在多长时间之内事务没有提交成功就自动回滚，-1表示不设置超时时间。</p>
+</li>
+<li><p>rollbackFor:当出现指定异常进行事务回滚</p>
+</li>
+<li><p>noRollbackFor:当出现指定异常不进行事务回滚</p>
+<ul>
+<li><p>思考:出现异常事务会自动回滚，这个是我们之前就已经知道的</p>
+</li>
+<li><p>noRollbackFor是设定对于指定的异常不回滚，这个好理解</p>
+</li>
+<li><p>rollbackFor是指定回滚异常，对于异常事务不应该都回滚么，为什么还要指定?</p>
+<ul>
+<li><p>这块需要更正一个知识点，并不是所有的异常都会回滚事务，比如下面的代码就不会回滚</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">AccountService</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 转账操作</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> out 传出方</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> in 转入方</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> money 金额</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//配置当前接口方法具有事务</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transfer</span><span class="params">(String out,String in ,Double money)</span> <span class="keyword">throws</span> IOException;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AccountServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">AccountService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccountDao accountDao;</span><br><span class="line">	<span class="meta">@Transactional</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transfer</span><span class="params">(String out,String in ,Double money)</span> <span class="keyword">throws</span> IOException&#123;</span><br><span class="line">        accountDao.outMoney(out,money);</span><br><span class="line">        <span class="comment">//int i = 1/0; //这个异常事务会回滚</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IOException</span>(); <span class="comment">//这个异常事务就不会回滚</span></span><br><span class="line">        &#125;</span><br><span class="line">        accountDao.inMoney(in,money);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>出现这个问题的原因是，Spring的事务只会对<code>Error异常</code>和<code>RuntimeException异常</code>及其子类进行事务回顾，其他的异常类型是不会回滚的，对应IOException不符合上述条件所以不回滚</p>
+<ul>
+<li><p>此时就可以使用rollbackFor属性来设置出现IOException异常不回滚</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AccountServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">AccountService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccountDao accountDao;</span><br><span class="line">	 <span class="meta">@Transactional(rollbackFor = &#123;IOException.class&#125;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transfer</span><span class="params">(String out,String in ,Double money)</span> <span class="keyword">throws</span> IOException&#123;</span><br><span class="line">        accountDao.outMoney(out,money);</span><br><span class="line">        <span class="comment">//int i = 1/0; //这个异常事务会回滚</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IOException</span>(); <span class="comment">//这个异常事务就不会回滚</span></span><br><span class="line">        &#125;</span><br><span class="line">        accountDao.inMoney(in,money);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>rollbackForClassName等同于rollbackFor,只不过属性为异常的类全名字符串</p>
+</li>
+<li><p>noRollbackForClassName等同于noRollbackFor，只不过属性为异常的类全名字符串</p>
+</li>
+<li><p>isolation设置事务的隔离级别</p>
+<ul>
+<li>DEFAULT   :默认隔离级别, 会采用数据库的隔离级别</li>
+<li>READ_UNCOMMITTED : 读未提交</li>
+<li>READ_COMMITTED : 读已提交</li>
+<li>REPEATABLE_READ : 重复读取</li>
+<li>SERIALIZABLE: 串行化</li>
+</ul>
+</li>
+</ul>
+<p>介绍完上述属性后，还有最后一个事务的传播行为，为了讲解该属性的设置，我们需要完成下面的案例。</p>
+<h4 id="6-3-2-转账业务追加日志案例"><a href="#6-3-2-转账业务追加日志案例" class="headerlink" title="6.3.2 转账业务追加日志案例"></a>6.3.2 转账业务追加日志案例</h4><h5 id="6-3-2-1-需求分析"><a href="#6-3-2-1-需求分析" class="headerlink" title="6.3.2.1 需求分析"></a>6.3.2.1 需求分析</h5><p>在前面的转案例的基础上添加新的需求，完成转账后记录日志。</p>
+<ul>
+<li>需求：实现任意两个账户间转账操作，并对每次转账操作在数据库进行留痕</li>
+<li>需求微缩：A账户减钱，B账户加钱，数据库记录日志</li>
+</ul>
+<p>基于上述的业务需求，我们来分析下该如何实现:</p>
+<p>①：基于转账操作案例添加日志模块，实现数据库中记录日志</p>
+<p>②：业务层转账操作（transfer），调用减钱、加钱与记录日志功能</p>
+<p>需要注意一点就是，我们这个案例的预期效果为:</p>
+<p>&#x3D;&#x3D;无论转账操作是否成功，均进行转账操作的日志留痕&#x3D;&#x3D;</p>
+<h5 id="6-3-2-2-环境准备"><a href="#6-3-2-2-环境准备" class="headerlink" title="6.3.2.2 环境准备"></a>6.3.2.2 环境准备</h5><p>该环境是基于转账环境来完成的，所以环境的准备可以参考<code>6.1.3的环境搭建步骤</code>，在其基础上，我们继续往下写</p>
+<h6 id="步骤1-创建日志表"><a href="#步骤1-创建日志表" class="headerlink" title="步骤1:创建日志表"></a>步骤1:创建日志表</h6><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> tbl_log(</span><br><span class="line">   id <span class="type">int</span> <span class="keyword">primary</span> key auto_increment,</span><br><span class="line">   info <span class="type">varchar</span>(<span class="number">255</span>),</span><br><span class="line">   createDate datetime</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h6 id="步骤2-添加LogDao接口"><a href="#步骤2-添加LogDao接口" class="headerlink" title="步骤2:添加LogDao接口"></a>步骤2:添加LogDao接口</h6><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">LogDao</span> &#123;</span><br><span class="line">    <span class="meta">@Insert(&quot;insert into tbl_log (info,createDate) values(#&#123;info&#125;,now())&quot;)</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">log</span><span class="params">(String info)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h6 id="步骤3-添加LogService接口与实现类"><a href="#步骤3-添加LogService接口与实现类" class="headerlink" title="步骤3:添加LogService接口与实现类"></a>步骤3:添加LogService接口与实现类</h6><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">LogService</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">log</span><span class="params">(String out, String in, Double money)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LogServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">LogService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> LogDao logDao;</span><br><span class="line">	<span class="meta">@Transactional</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">log</span><span class="params">(String out,String in,Double money )</span> &#123;</span><br><span class="line">        logDao.log(<span class="string">&quot;转账操作由&quot;</span>+out+<span class="string">&quot;到&quot;</span>+in+<span class="string">&quot;,金额：&quot;</span>+money);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="步骤4-在转账的业务中添加记录日志"><a href="#步骤4-在转账的业务中添加记录日志" class="headerlink" title="步骤4:在转账的业务中添加记录日志"></a>步骤4:在转账的业务中添加记录日志</h6><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">AccountService</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 转账操作</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> out 传出方</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> in 转入方</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> money 金额</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//配置当前接口方法具有事务</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transfer</span><span class="params">(String out,String in ,Double money)</span><span class="keyword">throws</span> IOException ;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AccountServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">AccountService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccountDao accountDao;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> LogService logService;</span><br><span class="line">	<span class="meta">@Transactional</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transfer</span><span class="params">(String out,String in ,Double money)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            accountDao.outMoney(out,money);</span><br><span class="line">            accountDao.inMoney(in,money);</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            logService.log(out,in,money);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="步骤5-运行程序"><a href="#步骤5-运行程序" class="headerlink" title="步骤5:运行程序"></a>步骤5:运行程序</h6><ul>
+<li><p>当程序正常运行，tbl_account表中转账成功，tbl_log表中日志记录成功</p>
+</li>
+<li><p>当转账业务之间出现异常(int i &#x3D;1&#x2F;0),转账失败，tbl_account成功回滚，但是tbl_log表未添加数据</p>
+</li>
+<li><p>这个结果和我们想要的不一样，什么原因?该如何解决?</p>
+</li>
+<li><p>失败原因:日志的记录与转账操作隶属同一个事务，同成功同失败</p>
+</li>
+<li><p>最终效果:无论转账操作是否成功，日志必须保留</p>
+</li>
+</ul>
+<h4 id="6-3-3-事务传播行为"><a href="#6-3-3-事务传播行为" class="headerlink" title="6.3.3 事务传播行为"></a>6.3.3 事务传播行为</h4><p><img src="/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/1630253779575.png" alt="1630253779575"></p>
+<p>对于上述案例的分析:</p>
+<ul>
+<li>log方法、inMoney方法和outMoney方法都属于增删改，分别有事务T1,T2,T3</li>
+<li>transfer因为加了@Transactional注解，也开启了事务T</li>
+<li>前面我们讲过Spring事务会把T1,T2,T3都加入到事务T中</li>
+<li>所以当转账失败后，所有的事务都回滚，导致日志没有记录下来</li>
+<li>这和我们的需求不符，这个时候我们就想能不能让log方法单独是一个事务呢?</li>
+</ul>
+<p><strong>要想解决这个问题，就需要用到事务传播行为，所谓的事务传播行为指的是:</strong></p>
+<p><strong>事务传播行为：事务协调员对事务管理员所携带事务的处理态度。</strong></p>
+<p>具体如何解决，就需要用到之前我们没有说的<code>propagation属性</code>。</p>
+<h5 id="1-修改logService改变事务的传播行为"><a href="#1-修改logService改变事务的传播行为" class="headerlink" title="1.修改logService改变事务的传播行为"></a>1.修改logService改变事务的传播行为</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LogServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">LogService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> LogDao logDao;</span><br><span class="line">	<span class="comment">//propagation设置事务属性：传播行为设置为当前操作需要新事务</span></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.REQUIRES_NEW)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">log</span><span class="params">(String out,String in,Double money )</span> &#123;</span><br><span class="line">        logDao.log(<span class="string">&quot;转账操作由&quot;</span>+out+<span class="string">&quot;到&quot;</span>+in+<span class="string">&quot;,金额：&quot;</span>+money);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行后，就能实现我们想要的结果，不管转账是否成功，都会记录日志。</p>
+<h5 id="2-事务传播行为的可选值"><a href="#2-事务传播行为的可选值" class="headerlink" title="2.事务传播行为的可选值"></a>2.事务传播行为的可选值</h5><p><img src="/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/1630254257628.png" alt="1630254257628"></p>
+<p>对于我们开发实际中使用的话，因为默认值需要事务是常态的。根据开发过程选择其他的就可以了，例如案例中需要新事务就需要手工配置。其实入账和出账操作上也有事务，采用的就是默认值。</p>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>spring中的事务管理</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="http://example.com/2023/03/31/spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/">http://example.com/2023/03/31/spring中的事务管理/</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>beckoningcoco</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2023-03-31</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2023-04-08</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/spring/">spring</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-6o3o8w.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/04/01/java%E4%B8%AD%E7%9A%84%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/"><img class="prev-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-zyy1xv.jpg" onerror="onerror=null;src='/null'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">java中的反射机制</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/31/Spring%E4%B8%AD%E7%9A%84AOP%E5%85%A5%E9%97%A8/"><img class="next-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-qz3915.jpg" onerror="onerror=null;src='/null'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Spring中的AOP入门</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/31/Spring%E4%B8%AD%E7%9A%84AOP%E5%85%A5%E9%97%A8/" title="Spring中的AOP入门"><img class="cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-qz3915.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-31</div><div class="title">Spring中的AOP入门</div></div></a></div><div><a href="/2023/03/25/Spring%E4%B8%AD%E7%9A%84bean%E6%A0%87%E7%AD%BE%E7%9A%84id%E5%92%8Cname%E5%B1%9E%E6%80%A7/" title="Spring中的bean标签的id和name属性"><img class="cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-57q8r7.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-25</div><div class="title">Spring中的bean标签的id和name属性</div></div></a></div><div><a href="/2023/03/30/%E6%B5%85%E8%B0%88-Configuration%E5%AF%B9-Bean%E7%9A%84%E5%BD%B1%E5%93%8D/" title="浅谈-Configuration对-Bean的影响"><img class="cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-2yyl36.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-30</div><div class="title">浅谈-Configuration对-Bean的影响</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">beckoningcoco</div><div class="author-info__description">世界好吵，让我帮你捂耳朵吧</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/beckoningcoco"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/beckoningcoco" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:995587764@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的blog！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring%E4%BA%8B%E5%8A%A1%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">Spring事务简介</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.1.</span> <span class="toc-text">相关概念介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-2-%E8%BD%AC%E8%B4%A6%E6%A1%88%E4%BE%8B-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-number">1.2.</span> <span class="toc-text">6.1.2 转账案例-需求分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-3-%E8%BD%AC%E8%B4%A6%E6%A1%88%E4%BE%8B-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.3.</span> <span class="toc-text">6.1.3 转账案例-环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A41-%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8"><span class="toc-number">1.3.1.</span> <span class="toc-text">步骤1:准备数据库表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A42-%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE%E5%AF%BC%E5%85%A5jar%E5%8C%85"><span class="toc-number">1.3.2.</span> <span class="toc-text">步骤2:创建项目导入jar包</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A43-%E6%A0%B9%E6%8D%AE%E8%A1%A8%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B%E7%B1%BB"><span class="toc-number">1.3.3.</span> <span class="toc-text">步骤3:根据表创建模型类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A44-%E5%88%9B%E5%BB%BADao%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.3.4.</span> <span class="toc-text">步骤4:创建Dao接口</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A45-%E5%88%9B%E5%BB%BAService%E6%8E%A5%E5%8F%A3%E5%92%8C%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="toc-number">1.3.5.</span> <span class="toc-text">步骤5:创建Service接口和实现类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A46-%E6%B7%BB%E5%8A%A0jdbc-properties%E6%96%87%E4%BB%B6"><span class="toc-number">1.3.6.</span> <span class="toc-text">步骤6:添加jdbc.properties文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A47-%E5%88%9B%E5%BB%BAJdbcConfig%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="toc-number">1.3.7.</span> <span class="toc-text">步骤7:创建JdbcConfig配置类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A48-%E5%88%9B%E5%BB%BAMybatisConfig%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="toc-number">1.3.8.</span> <span class="toc-text">步骤8:创建MybatisConfig配置类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A49-%E5%88%9B%E5%BB%BASpringConfig%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="toc-number">1.3.9.</span> <span class="toc-text">步骤9:创建SpringConfig配置类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A410-%E7%BC%96%E5%86%99%E6%B5%8B%E8%AF%95%E7%B1%BB"><span class="toc-number">1.3.10.</span> <span class="toc-text">步骤10:编写测试类</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-4-%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="toc-number">1.4.</span> <span class="toc-text">6.1.4 事务管理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A41-%E5%9C%A8%E9%9C%80%E8%A6%81%E8%A2%AB%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86%E7%9A%84%E6%96%B9%E6%B3%95%E4%B8%8A%E6%B7%BB%E5%8A%A0%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.1.</span> <span class="toc-text">步骤1:在需要被事务管理的方法上添加注解</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A42-%E5%9C%A8JdbcConfig%E7%B1%BB%E4%B8%AD%E9%85%8D%E7%BD%AE%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86%E5%99%A8"><span class="toc-number">1.4.2.</span> <span class="toc-text">步骤2:在JdbcConfig类中配置事务管理器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A43%EF%BC%9A%E5%BC%80%E5%90%AF%E4%BA%8B%E5%8A%A1%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.3.</span> <span class="toc-text">步骤3：开启事务注解</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A44-%E8%BF%90%E8%A1%8C%E6%B5%8B%E8%AF%95%E7%B1%BB"><span class="toc-number">1.4.4.</span> <span class="toc-text">步骤4:运行测试类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B91%EF%BC%9A-EnableTransactionManagement"><span class="toc-number">1.4.5.</span> <span class="toc-text">知识点1：@EnableTransactionManagement</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B92%EF%BC%9A-Transactional"><span class="toc-number">1.4.6.</span> <span class="toc-text">知识点2：@Transactional</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-Spring%E4%BA%8B%E5%8A%A1%E8%A7%92%E8%89%B2"><span class="toc-number">2.</span> <span class="toc-text">6.2 Spring事务角色</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-Spring%E4%BA%8B%E5%8A%A1%E5%B1%9E%E6%80%A7"><span class="toc-number">3.</span> <span class="toc-text">6.3 Spring事务属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-1-%E4%BA%8B%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="toc-number">3.1.</span> <span class="toc-text">6.3.1 事务配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-2-%E8%BD%AC%E8%B4%A6%E4%B8%9A%E5%8A%A1%E8%BF%BD%E5%8A%A0%E6%97%A5%E5%BF%97%E6%A1%88%E4%BE%8B"><span class="toc-number">3.2.</span> <span class="toc-text">6.3.2 转账业务追加日志案例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#6-3-2-1-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-number">3.2.1.</span> <span class="toc-text">6.3.2.1 需求分析</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-3-2-2-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-number">3.2.2.</span> <span class="toc-text">6.3.2.2 环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A41-%E5%88%9B%E5%BB%BA%E6%97%A5%E5%BF%97%E8%A1%A8"><span class="toc-number">3.2.2.1.</span> <span class="toc-text">步骤1:创建日志表</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A42-%E6%B7%BB%E5%8A%A0LogDao%E6%8E%A5%E5%8F%A3"><span class="toc-number">3.2.2.2.</span> <span class="toc-text">步骤2:添加LogDao接口</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A43-%E6%B7%BB%E5%8A%A0LogService%E6%8E%A5%E5%8F%A3%E4%B8%8E%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="toc-number">3.2.2.3.</span> <span class="toc-text">步骤3:添加LogService接口与实现类</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A44-%E5%9C%A8%E8%BD%AC%E8%B4%A6%E7%9A%84%E4%B8%9A%E5%8A%A1%E4%B8%AD%E6%B7%BB%E5%8A%A0%E8%AE%B0%E5%BD%95%E6%97%A5%E5%BF%97"><span class="toc-number">3.2.2.4.</span> <span class="toc-text">步骤4:在转账的业务中添加记录日志</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A45-%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F"><span class="toc-number">3.2.2.5.</span> <span class="toc-text">步骤5:运行程序</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-3-%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA"><span class="toc-number">3.3.</span> <span class="toc-text">6.3.3 事务传播行为</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E4%BF%AE%E6%94%B9logService%E6%94%B9%E5%8F%98%E4%BA%8B%E5%8A%A1%E7%9A%84%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA"><span class="toc-number">3.3.1.</span> <span class="toc-text">1.修改logService改变事务的传播行为</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA%E7%9A%84%E5%8F%AF%E9%80%89%E5%80%BC"><span class="toc-number">3.3.2.</span> <span class="toc-text">2.事务传播行为的可选值</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/04/18/maven%E4%B8%8B%E9%A1%B9%E7%9B%AE%E6%98%BE%E7%A4%BA%E7%81%B0%E8%89%B2/" title="maven下项目显示灰色"><img src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-zyy1xv.jpg" onerror="this.onerror=null;this.src='/null'" alt="maven下项目显示灰色"/></a><div class="content"><a class="title" href="/2023/04/18/maven%E4%B8%8B%E9%A1%B9%E7%9B%AE%E6%98%BE%E7%A4%BA%E7%81%B0%E8%89%B2/" title="maven下项目显示灰色">maven下项目显示灰色</a><time datetime="2023-04-18T13:54:06.000Z" title="发表于 2023-04-18 21:54:06">2023-04-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/17/eureka%E5%AD%A6%E4%B9%A0/" title="eureka学习"><img src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-qzj21l.jpg" onerror="this.onerror=null;this.src='/null'" alt="eureka学习"/></a><div class="content"><a class="title" href="/2023/04/17/eureka%E5%AD%A6%E4%B9%A0/" title="eureka学习">eureka学习</a><time datetime="2023-04-17T15:41:53.000Z" title="发表于 2023-04-17 23:41:53">2023-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/17/SpringCloud%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%881%EF%BC%89/" title="SpringCloud面试题（1）"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-m313vk.jpg" onerror="this.onerror=null;this.src='/null'" alt="SpringCloud面试题（1）"/></a><div class="content"><a class="title" href="/2023/04/17/SpringCloud%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%881%EF%BC%89/" title="SpringCloud面试题（1）">SpringCloud面试题（1）</a><time datetime="2023-04-17T13:33:08.000Z" title="发表于 2023-04-17 21:33:08">2023-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/16/SpringCloud%E7%AC%AC%E5%85%AD%E5%A4%A9/" title="SpringCloud第六天"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-m31958.jpg" onerror="this.onerror=null;this.src='/null'" alt="SpringCloud第六天"/></a><div class="content"><a class="title" href="/2023/04/16/SpringCloud%E7%AC%AC%E5%85%AD%E5%A4%A9/" title="SpringCloud第六天">SpringCloud第六天</a><time datetime="2023-04-16T12:51:07.000Z" title="发表于 2023-04-16 20:51:07">2023-04-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/10/ElasticSearch%E3%80%81Kibana%E3%80%81Ik%E5%88%86%E8%AF%8D%E5%99%A8%E7%9A%84%E5%AE%89%E8%A3%85/" title="ElasticSearch、Kibana、Ik分词器的安装"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-ex9ork.jpg" onerror="this.onerror=null;this.src='/null'" alt="ElasticSearch、Kibana、Ik分词器的安装"/></a><div class="content"><a class="title" href="/2023/04/10/ElasticSearch%E3%80%81Kibana%E3%80%81Ik%E5%88%86%E8%AF%8D%E5%99%A8%E7%9A%84%E5%AE%89%E8%A3%85/" title="ElasticSearch、Kibana、Ik分词器的安装">ElasticSearch、Kibana、Ik分词器的安装</a><time datetime="2023-04-10T09:03:19.000Z" title="发表于 2023-04-10 17:03:19">2023-04-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-6o3o8w.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2023 By beckoningcoco</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">嘘声是给予挑战者的勋章——美浦波旁.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用JsDelivr为静态资源提供CDN加速"></a> &nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Vervel-brightgreen?style=flat&logo=Vercel" title="本站采用双线部署，默认线路托管于Vercel"></a>&nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Coding-0cedbe?style=flat&logo=Codio" title="本站采用双线部署，联通线路托管于Coding"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script defer data-pjax src="/js/readPercent.js"></script><div class="aplayer no-destroy" data-id="8091029090" data-server="netease" data-type="playlist"  data-fixed="true" data-mini="true"  data-listmaxheight="340px" listfolded="true"  data-autoplay="true" data-theme="#3F51B5" > </div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

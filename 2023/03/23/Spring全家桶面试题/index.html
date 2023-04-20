@@ -1,0 +1,353 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Spring全家桶面试题 | 梦落芳华</title><meta name="author" content="beckoningcoco"><meta name="copyright" content="beckoningcoco"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="什么是 Spring 框架？Spring 框架有哪些主要模块？ Spring是一个控制反转和面向切面的容器框架。  Spring有七大功能模块：  Core:Core模块是Spring的核心类库，Core实现了IOC功能。 AOP:Apring AOP模块是Spring的AOP库，提供了AOP（拦截器）机制，并提供常见的拦截器，供用户自定义和配置。 ORM:提供对常用ORM框架的管理和支持，hib">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring全家桶面试题">
+<meta property="og:url" content="http://example.com/2023/03/23/Spring%E5%85%A8%E5%AE%B6%E6%A1%B6%E9%9D%A2%E8%AF%95%E9%A2%98/index.html">
+<meta property="og:site_name" content="梦落芳华">
+<meta property="og:description" content="什么是 Spring 框架？Spring 框架有哪些主要模块？ Spring是一个控制反转和面向切面的容器框架。  Spring有七大功能模块：  Core:Core模块是Spring的核心类库，Core实现了IOC功能。 AOP:Apring AOP模块是Spring的AOP库，提供了AOP（拦截器）机制，并提供常见的拦截器，供用户自定义和配置。 ORM:提供对常用ORM框架的管理和支持，hib">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-jxemjm.png">
+<meta property="article:published_time" content="2023-03-23T14:38:34.000Z">
+<meta property="article:modified_time" content="2023-04-08T15:05:20.596Z">
+<meta property="article:author" content="beckoningcoco">
+<meta property="article:tag" content="Spring全家桶">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-jxemjm.png"><link rel="shortcut icon" href="/img/%E5%A4%B4%E5%83%8F.png"><link rel="canonical" href="http://example.com/2023/03/23/Spring%E5%85%A8%E5%AE%B6%E6%A1%B6%E9%9D%A2%E8%AF%95%E9%A2%98/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Spring全家桶面试题',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-08 23:05:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/readPercent.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-jxemjm.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">梦落芳华</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Spring全家桶面试题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-23T14:38:34.000Z" title="发表于 2023-03-23 22:38:34">2023-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-08T15:05:20.596Z" title="更新于 2023-04-08 23:05:20">2023-04-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8D%9A%E6%96%87/">博文</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Spring全家桶面试题"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="什么是-Spring-框架？Spring-框架有哪些主要模块？"><a href="#什么是-Spring-框架？Spring-框架有哪些主要模块？" class="headerlink" title="什么是 Spring 框架？Spring 框架有哪些主要模块？"></a>什么是 Spring 框架？Spring 框架有哪些主要模块？</h2><ul>
+<li><p>Spring是一个控制反转和面向切面的容器框架。</p>
+</li>
+<li><p>Spring有七大功能模块：</p>
+<ol>
+<li>Core:Core模块是Spring的核心类库，Core实现了IOC功能。</li>
+<li>AOP:Apring AOP模块是Spring的AOP库，提供了AOP（拦截器）机制，并提供常见的拦截器，供用户自定义和配置。</li>
+<li>ORM:提供对常用ORM框架的管理和支持，hibernate、mybatis等。</li>
+<li>Dao:Spring提供对JDBC的支持，对JDBC进行封装。</li>
+<li>Web:对Struts2的支持。</li>
+<li>Context:Context模块提供框架式的Bean的访问方式，其它程序可以通过Context访问Spring的Bean资源，相当于资源注入。</li>
+<li>MVC模块为spring提供了一套轻量级的MVC实现，即Spring MVC。</li>
+</ol>
+</li>
+</ul>
+<h2 id="使用-Spring-框架能带来哪些好处？"><a href="#使用-Spring-框架能带来哪些好处？" class="headerlink" title="使用 Spring 框架能带来哪些好处？"></a>使用 Spring 框架能带来哪些好处？</h2><p>1、轻量级框架、容器</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Spring是一个容器，管理对象的生命周期和配置。基于一个可配置原型prototype，你的bean可以使单利的，也可以每次需要时都生成一个新的实例。</span><br></pre></td></tr></table></figure>
+
+<p>2、控制反转IOC</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Spring通过控制反转实现松耦合。</span><br></pre></td></tr></table></figure>
+
+<p>3、支持AOP</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Spring提供对AOP的支持，它允许将一些通用任务，如安全、事务、日志等进行集中式处理，从而提高了程序的复用性。</span><br></pre></td></tr></table></figure>
+
+<p>4、轻量级框架</p>
+<p>5、方便测试</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Spring提供Junit4的支持，可以通过注解方便测试spring程序。</span><br></pre></td></tr></table></figure>
+
+<p>6、对Java中很多API进行了封装</p>
+<p>7、方便集成各种优秀框架</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">如Struts、hibernate、mybstis。</span><br></pre></td></tr></table></figure>
+
+<p>8、支持声明式事务处理</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">只需通过配置就可以完成对事务的管理，而无须手动编程。</span><br></pre></td></tr></table></figure>
+
+<h2 id="什么是控制反转-IOC-？什么是依赖注入？"><a href="#什么是控制反转-IOC-？什么是依赖注入？" class="headerlink" title="什么是控制反转(IOC)？什么是依赖注入？"></a>什么是控制反转(IOC)？什么是依赖注入？</h2><p>借助Spring实现具有依赖关系的对象之间的解耦。</p>
+<p>对象A运行需要对象B，由主动创建变为IOC容器注入，这便是控制反转。</p>
+<p>获得依赖对象的过程被反转了，获取依赖对象的过程由自身创建变为由IOC容器注入，这便是依赖注入。</p>
+<h2 id="BeanFactory-和-ApplicationContext-有什么区别？"><a href="#BeanFactory-和-ApplicationContext-有什么区别？" class="headerlink" title="BeanFactory 和 ApplicationContext 有什么区别？"></a>BeanFactory 和 ApplicationContext 有什么区别？</h2><p>1、BeanFactory是Spring的最底层接口，包含bean的定义，管理bean的加载，实例化，控制bean的生命周期，特点是每次获取对象时才会创建对象。</p>
+<p>ApplicationContext是BeanFactory的子接口，拥有BeanFactory的全部功能，并且扩展了很多高级特性，每次容器启动时就会创建所有的对象。</p>
+<p>ApplicationContext的额外功能：<br>1.继承MessageSource，支持国际化；<br>2.统一的资源文件访问方式；<br>3.提供在监听器中注册bean；<br>4.同时加载过个配置文件；<br>5.载入多个（有继承关系）上下文，使得每个上下文都专注于一个特定的层次，比如应用的web层；</p>
+<p>2、BeanFactory通常以编程的方式被创建，ApplicationContext可以以声明的方式创建，如使用ContextLoader。</p>
+<p>3、BeanFactory 和 ApplicationContext都支持BeanPostProcessor，BeanFactoryPostProcessor，但BeanFactory需要手动注册，ApplicationContext则是自动注册。</p>
+<p>[(43条消息) <a target="_blank" rel="noopener" href="https://janus.blog.csdn.net/article/details/55267967?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-55267967-blog-82752881.235%5Ev27%5Epc_relevant_default&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-55267967-blog-82752881.235%5Ev27%5Epc_relevant_default&utm_relevant_index=1">读书笔记]Spring中BeanFactory和ApplicationContext的联系和区别_iso8859-1 1252_程序员小默的博客-CSDN博客</a></p>
+<h2 id="什么是-JavaConfig？"><a href="#什么是-JavaConfig？" class="headerlink" title="什么是 JavaConfig？"></a>什么是 JavaConfig？</h2><p>JavaConfig是Spring3.0新增的概念，就是以注解的形式取代Spring中繁琐的xml文件。</p>
+<p>JavaConfig结合了xml的解耦和java编译时检查的优点。</p>
+<p>@Configuration，表示这个类是配置类；<br>@ComponentScan，相当于xml的&lt;context:componentScan basepackage&#x3D;&gt;；<br>@Bean，相当于xml的<bean id="student" class="com.guor.entity">；<br>@EnableWebMvc，相当于xml的<a href="mvc:annotation-driven">mvc:annotation-driven</a>；<br>@ImportResource，相当于xml的<import resource="application-context-cache.xml">；<br>@PropertySource，用于读取properties配置文件；<br>@Profile，一般用于多环境配置，激活时可用@ActiveProfile(“dev”)注解；</import></bean></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7001843959731339271">spring中需要掌握的25个常用注解 - 掘金 (juejin.cn)</a></p>
+<h2 id="请解释-Spring-Bean-的生命周期？"><a href="#请解释-Spring-Bean-的生命周期？" class="headerlink" title="请解释 Spring Bean 的生命周期？"></a>请解释 Spring Bean 的生命周期？</h2><ol>
+<li>通过构造器或工厂方法创建bean实例；</li>
+<li>为bean的属性赋值；</li>
+<li>检查是否实现了aware（信息处理）接口，并执行相应的方法。</li>
+<li>执行Bean后置处理器的postProcessBeforeInitialization()方法。（如果bean实现了BeanPostProcessor接口）</li>
+<li>如果Bean 实现了InitializingBean接口，Spring将调用他们的afterPropertiesSet()方法。</li>
+<li>调用bean的初始化方法；</li>
+<li>执行Bean后置处理器的postProcessAfterInitialization()方法。（如果bean实现了BeanPostProcessor接口）</li>
+<li>使用bean；</li>
+<li>如果bean实现了DisposableBean接口，Spring将调用它的接口方法，</li>
+<li>当容器关闭时，调用bean的销毁方法；</li>
+</ol>
+<p><img src="/2023/03/23/Spring%E5%85%A8%E5%AE%B6%E6%A1%B6%E9%9D%A2%E8%AF%95%E9%A2%98/image-20230324194549054.png" alt="image-20230324194549054"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Aware相关的接口包括：BeanNameAware、BeanClassLoaderAware、BeanFactoryAware</span><br><span class="line">● 当Bean实现了BeanNameAware，Spring会将Bean的名字传递给Bean。</span><br><span class="line">● 当Bean实现了BeanClassLoaderAware，Spring会将加载该Bean的类加载器传递给Bean。</span><br><span class="line">● 当Bean实现了BeanFactoryAware，Spring会将Bean工厂对象传递给Bean</span><br><span class="line"></span><br><span class="line">---------------------------------</span><br><span class="line">● InitializingBean的方法早于init-method的执行。</span><br><span class="line">● DisposableBean的方法早于destroy-method的执行</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Spring-Bean-的作用域之间有什么区别？"><a href="#Spring-Bean-的作用域之间有什么区别？" class="headerlink" title="Spring Bean 的作用域之间有什么区别？"></a>Spring Bean 的作用域之间有什么区别？</h2><ol>
+<li><p>singleton：这种bean范围是默认的，这种范围确保不管接受多少请求，每个容器中只哟一个bean的实例，单例模式；</p>
+<p>​                 </p>
+</li>
+<li><p>prototype：为每一个bean提供一个实例；(生命周期到使用bean的时候，spring就不管了，当在需要获取bean的时候直接实例化一个新的)</p>
+</li>
+<li><p>request：在请求bean范围内为每一个来自客户端的网络请求创建一个实例，在请求完毕后，bean会失效并被垃圾回收器回收；（在一个请求域内的bean。）</p>
+</li>
+<li><p>session：为每个session创建一个实例，session过期后，bean会随之消失；</p>
+</li>
+<li><p>global-session：global-session和Portlet应用相关。当你的应用部署在Portlet容器中工作时，它包含很多portlet。如果你想要声明让所有的portlet公用全局的存储变量的话，那么全局变量需要存储在global-session中。</p>
+</li>
+</ol>
+<h2 id="bean的自动装配？"><a href="#bean的自动装配？" class="headerlink" title="bean的自动装配？"></a>bean的自动装配？</h2><p>主要分两种方式</p>
+<ul>
+<li>基于xml方式</li>
+</ul>
+<p><code>ByName</code>:按照名称自动装配</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> &lt;!-- 装配address --&gt;</span><br><span class="line"> &lt;bean id=&quot;address&quot; class=&quot;com.lili.entity.Address&quot;&gt;</span><br><span class="line">     &lt;property name=&quot;address&quot; value=&quot;china&quot;/&gt;</span><br><span class="line"> &lt;/bean&gt;</span><br><span class="line">&lt;!--根据名字自动装配--&gt;</span><br><span class="line">&lt;bean id=&quot;student&quot; class=&quot;com.lili.entity.Student&quot; autowire=&quot;byName&quot;&gt;</span><br><span class="line">    &lt;property name=&quot;name&quot; value=&quot;qijingjing&quot;/&gt;</span><br><span class="line">&lt;/bean&gt;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>ByType</code>:按照类型自动装配</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;!--根据名字自动装配--&gt;</span><br><span class="line"> &lt;bean id=&quot;student&quot; class=&quot;com.lili.entity.Student&quot; autowire=&quot;byType&quot;&gt;</span><br><span class="line">     &lt;property name=&quot;name&quot; value=&quot;qijingjing&quot;/&gt;</span><br><span class="line"> &lt;/bean&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>基于注解方式</li>
+</ul>
+<p>使用@Autowired的required属性</p>
+<p>使用@Qualifier指定注入Bean的名称</p>
+<h3 id="属性注入的三种方式"><a href="#属性注入的三种方式" class="headerlink" title="属性注入的三种方式"></a>属性注入的三种方式</h3><ul>
+<li><p>setter注入</p>
+</li>
+<li><p>有参构造注入</p>
+</li>
+<li><p>工厂方法注入</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wuchanming/p/5426746.html">spring中bean配置和bean注入 - Jessica程序猿 - 博客园 (cnblogs.com)</a></p>
+</li>
+</ul>
+<h2 id="如何开启注解的自动装配？"><a href="#如何开启注解的自动装配？" class="headerlink" title="如何开启注解的自动装配？"></a>如何开启注解的自动装配？</h2><p>配置注解的支持：<em>context:annotation-config</em></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="string"><span class="tag">        https://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="string"><span class="tag">        http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="string"><span class="tag">        https://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:annotation-config</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p> @Autowired 和 @Resource的异同<br>都是用来自动装配的，都可以放在属性字段上<br>@ Autowired 通过byType的方式实现，而且要求这个对象必须存在<br>@ Resource 默认通过byName的方式实现，如果找不到名字，则通过byType实现！如果两个都找不到，就报错！【常用】<br>执行顺序不同：@ Autowired 通过byType的方式实现，@ Resource 默认通过byName的方式实现</p>
+<p>如果@Autowired自动装配环境复杂，自动装配无法通过一个注解（@Autowirde）完成的时候，可以使用@<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=Qualifier&spm=1001.2101.3001.7020">Qualifier</a>(value&#x3D;“xxx”)去配置，指定一个唯一的bean对象注入！</p>
+<h2 id="谈谈controller，接口调用的路径问题"><a href="#谈谈controller，接口调用的路径问题" class="headerlink" title="谈谈controller，接口调用的路径问题"></a>谈谈controller，接口调用的路径问题</h2><p>1、Spring MVC如何匹配请求路径</p>
+<p>@RequestMapping是用来映射请求的，比如get请求、post请求、或者REST风格与非REST风格的。该注解可以用在类上或方法上，如果用在类上，表示是该类中所有方法的父路径。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@RequestMapping(&quot;/springmvc&quot;)</span><br><span class="line">@Controller</span><br><span class="line">public class SpringMVCTest &#123;</span><br><span class="line">    @RequestMapping(&quot;/testRequestMapping&quot;)</span><br><span class="line">    public String testRequestMapping()&#123;</span><br><span class="line">        System.out.println(&quot;testRequestMapping&quot;);</span><br><span class="line">        return SUCCESS;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在类上还添加了一个@Controller注解，该注解在SpringMVC中负责处理由DispatcherServlet分发的请求，它把用户请求的数据经过业务处理层处理之后封装成一个model，然后再把该model返回给对应的view进行展示。</p>
+<p>我们可以通过“springmvc&#x2F;testRequestMapping”这个路径来定位到testRequestMapping这个方法，然后执行方法内的方法体。</p>
+<p>RequestMapping可以实现模糊匹配路径，比如：</p>
+<p>？表示一个字符；<br>*表示任意字符；<br><strong>匹配多层路径；<br>&#x2F;springmvc&#x2F;</strong>&#x2F;testRequestMapping 就可以匹配&#x2F;springmvc&#x2F;stu&#x2F;getStudentInfo&#x2F;testRequestMapping 这样的路径了。</p>
+<p>2、SpringMVC如何获取请求的参数</p>
+<p>（1）@PathVariable</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">该注解用来映射请求URL中绑定的占位符。通过@PathVariable可以将URL中占位符的参数绑定到controller处理方法的入参中。</span><br><span class="line"></span><br><span class="line">@RequestMapping(&quot;/testPathVariable/&#123;id&#125;&quot;)</span><br><span class="line">public String testPathVariable(@PathVariable(value=&quot;id&quot;) Integer id)&#123;</span><br><span class="line">    System.out.println(&quot;testPathVariable:&quot; + id);</span><br><span class="line">    return SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在index.jsp中我们添加一条连接，用来触发一个请求：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;a href=&quot;springmvc/testPathVariable/1&quot;&gt;testPathVariable&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+
+<p>（2） @RequestParam</p>
+<p>该注解也是用来获取请求参数的，那么该注解和@PathVariable有什么不同呢？</p>
+<p>equestParam处理的是<strong>请求参数</strong>，而PathVariable处理的是<strong>路径变量</strong>,（一个在请求体，一个在路径栏）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@RequestMapping(value=&quot;/testRequestParam&quot;)</span><br><span class="line">public String testRequestParam(@RequestParam(value=&quot;username&quot;) String username, @RequestParam(value=&quot;age&quot;, required=false, defaultValue=&quot;0&quot;) int age)&#123;</span><br><span class="line">    System.out.println(&quot;testRequestParam&quot; + &quot; username:&quot; + username + &quot; age:&quot; +age);</span><br><span class="line">    return SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在index.jsp添加超链接标签</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;a href=&quot;springmvc/testRequestParam?username=jackie&amp;age=12&quot;&gt;testRequestParam&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+
+<p>3、REST风格的请求</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">在SpringMVC中业务最多的应该是CRUD了</span><br><span class="line"></span><br><span class="line">@RequestMapping(value=&quot;/testRest/&#123;id&#125;&quot;, method=RequestMethod.PUT)</span><br><span class="line">public String testRestPut(@PathVariable(value=&quot;id&quot;) Integer id)&#123;</span><br><span class="line">    System.out.println(&quot;test put:&quot; + id);</span><br><span class="line">    return SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line">     </span><br><span class="line">@RequestMapping(value=&quot;/testRest/&#123;id&#125;&quot;, method=RequestMethod.DELETE)</span><br><span class="line">public String testRestDelete(@PathVariable(value=&quot;id&quot;) Integer id)&#123;</span><br><span class="line">    System.out.println(&quot;test delete:&quot; + id);</span><br><span class="line">    return SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line">     </span><br><span class="line">@RequestMapping(value=&quot;/testRest&quot;, method=RequestMethod.POST)</span><br><span class="line">public String testRest()&#123;</span><br><span class="line">    System.out.println(&quot;test post&quot;);</span><br><span class="line">    return SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line">     </span><br><span class="line">@RequestMapping(value=&quot;/testRest/&#123;id&#125;&quot;, method=RequestMethod.GET)</span><br><span class="line">public String testRest(@PathVariable(value=&quot;id&quot;) Integer id)&#123;</span><br><span class="line">    System.out.println(&quot;test get:&quot; + id);</span><br><span class="line">    return SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>Spring全家桶面试题</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="http://example.com/2023/03/23/Spring%E5%85%A8%E5%AE%B6%E6%A1%B6%E9%9D%A2%E8%AF%95%E9%A2%98/">http://example.com/2023/03/23/Spring全家桶面试题/</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>beckoningcoco</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2023-03-23</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2023-04-08</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spring%E5%85%A8%E5%AE%B6%E6%A1%B6/">Spring全家桶</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-jxemjm.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/03/25/Spring%E4%B8%AD%E7%9A%84bean%E6%A0%87%E7%AD%BE%E7%9A%84id%E5%92%8Cname%E5%B1%9E%E6%80%A7/"><img class="prev-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-57q8r7.jpg" onerror="onerror=null;src='/null'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Spring中的bean标签的id和name属性</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/22/MySQL%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98/"><img class="next-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-yx5pxg.jpg" onerror="onerror=null;src='/null'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MySQL相关面试题</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">beckoningcoco</div><div class="author-info__description">世界好吵，让我帮你捂耳朵吧</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/beckoningcoco"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/beckoningcoco" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:995587764@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的blog！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-Spring-%E6%A1%86%E6%9E%B6%EF%BC%9FSpring-%E6%A1%86%E6%9E%B6%E6%9C%89%E5%93%AA%E4%BA%9B%E4%B8%BB%E8%A6%81%E6%A8%A1%E5%9D%97%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是 Spring 框架？Spring 框架有哪些主要模块？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Spring-%E6%A1%86%E6%9E%B6%E8%83%BD%E5%B8%A6%E6%9D%A5%E5%93%AA%E4%BA%9B%E5%A5%BD%E5%A4%84%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">使用 Spring 框架能带来哪些好处？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC-IOC-%EF%BC%9F%E4%BB%80%E4%B9%88%E6%98%AF%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">什么是控制反转(IOC)？什么是依赖注入？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BeanFactory-%E5%92%8C-ApplicationContext-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">BeanFactory 和 ApplicationContext 有什么区别？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-JavaConfig%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">什么是 JavaConfig？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B7%E8%A7%A3%E9%87%8A-Spring-Bean-%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">请解释 Spring Bean 的生命周期？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Bean-%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B9%8B%E9%97%B4%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">7.</span> <span class="toc-text">Spring Bean 的作用域之间有什么区别？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bean%E7%9A%84%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%EF%BC%9F"><span class="toc-number">8.</span> <span class="toc-text">bean的自动装配？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">8.1.</span> <span class="toc-text">属性注入的三种方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%BC%80%E5%90%AF%E6%B3%A8%E8%A7%A3%E7%9A%84%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%EF%BC%9F"><span class="toc-number">9.</span> <span class="toc-text">如何开启注解的自动装配？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B0%88%E8%B0%88controller%EF%BC%8C%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8%E7%9A%84%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98"><span class="toc-number">10.</span> <span class="toc-text">谈谈controller，接口调用的路径问题</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/04/18/maven%E4%B8%8B%E9%A1%B9%E7%9B%AE%E6%98%BE%E7%A4%BA%E7%81%B0%E8%89%B2/" title="maven下项目显示灰色"><img src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-zyy1xv.jpg" onerror="this.onerror=null;this.src='/null'" alt="maven下项目显示灰色"/></a><div class="content"><a class="title" href="/2023/04/18/maven%E4%B8%8B%E9%A1%B9%E7%9B%AE%E6%98%BE%E7%A4%BA%E7%81%B0%E8%89%B2/" title="maven下项目显示灰色">maven下项目显示灰色</a><time datetime="2023-04-18T13:54:06.000Z" title="发表于 2023-04-18 21:54:06">2023-04-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/17/eureka%E5%AD%A6%E4%B9%A0/" title="eureka学习"><img src="https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-qzj21l.jpg" onerror="this.onerror=null;this.src='/null'" alt="eureka学习"/></a><div class="content"><a class="title" href="/2023/04/17/eureka%E5%AD%A6%E4%B9%A0/" title="eureka学习">eureka学习</a><time datetime="2023-04-17T15:41:53.000Z" title="发表于 2023-04-17 23:41:53">2023-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/17/SpringCloud%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%881%EF%BC%89/" title="SpringCloud面试题（1）"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-m313vk.jpg" onerror="this.onerror=null;this.src='/null'" alt="SpringCloud面试题（1）"/></a><div class="content"><a class="title" href="/2023/04/17/SpringCloud%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%881%EF%BC%89/" title="SpringCloud面试题（1）">SpringCloud面试题（1）</a><time datetime="2023-04-17T13:33:08.000Z" title="发表于 2023-04-17 21:33:08">2023-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/16/SpringCloud%E7%AC%AC%E5%85%AD%E5%A4%A9/" title="SpringCloud第六天"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-m31958.jpg" onerror="this.onerror=null;this.src='/null'" alt="SpringCloud第六天"/></a><div class="content"><a class="title" href="/2023/04/16/SpringCloud%E7%AC%AC%E5%85%AD%E5%A4%A9/" title="SpringCloud第六天">SpringCloud第六天</a><time datetime="2023-04-16T12:51:07.000Z" title="发表于 2023-04-16 20:51:07">2023-04-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/10/ElasticSearch%E3%80%81Kibana%E3%80%81Ik%E5%88%86%E8%AF%8D%E5%99%A8%E7%9A%84%E5%AE%89%E8%A3%85/" title="ElasticSearch、Kibana、Ik分词器的安装"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/wallhaven-ex9ork.jpg" onerror="this.onerror=null;this.src='/null'" alt="ElasticSearch、Kibana、Ik分词器的安装"/></a><div class="content"><a class="title" href="/2023/04/10/ElasticSearch%E3%80%81Kibana%E3%80%81Ik%E5%88%86%E8%AF%8D%E5%99%A8%E7%9A%84%E5%AE%89%E8%A3%85/" title="ElasticSearch、Kibana、Ik分词器的安装">ElasticSearch、Kibana、Ik分词器的安装</a><time datetime="2023-04-10T09:03:19.000Z" title="发表于 2023-04-10 17:03:19">2023-04-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/beckoningcoco.github.io@master/picGo/img/cover/wallhaven-jxemjm.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 By beckoningcoco</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">嘘声是给予挑战者的勋章——美浦波旁.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用JsDelivr为静态资源提供CDN加速"></a> &nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Vervel-brightgreen?style=flat&logo=Vercel" title="本站采用双线部署，默认线路托管于Vercel"></a>&nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Coding-0cedbe?style=flat&logo=Codio" title="本站采用双线部署，联通线路托管于Coding"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script defer data-pjax src="/js/readPercent.js"></script><div class="aplayer no-destroy" data-id="8091029090" data-server="netease" data-type="playlist"  data-fixed="true" data-mini="true"  data-listmaxheight="340px" listfolded="true"  data-autoplay="true" data-theme="#3F51B5" > </div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
