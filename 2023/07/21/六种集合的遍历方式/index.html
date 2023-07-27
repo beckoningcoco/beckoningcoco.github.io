@@ -1,0 +1,334 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>六种集合的遍历方式 | 梦落芳华</title><meta name="author" content="beckoningcoco"><meta name="copyright" content="beckoningcoco"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="List集合 List集合的存储特点是元素有序，可重复。遍历List集合有以下三种方式：  准备一个集合   ArrayList&lt;String&gt; al &#x3D; new ArrayList();al.add(&quot;小明&quot;);al.add(&quot;王富贵&quot;);al.add(&quot;小红&quot;);  普通for循环&#x2F;&#x2F;        普通for循环遍历">
+<meta property="og:type" content="article">
+<meta property="og:title" content="六种集合的遍历方式">
+<meta property="og:url" content="http://example.com/2023/07/21/%E5%85%AD%E7%A7%8D%E9%9B%86%E5%90%88%E7%9A%84%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F/index.html">
+<meta property="og:site_name" content="梦落芳华">
+<meta property="og:description" content="List集合 List集合的存储特点是元素有序，可重复。遍历List集合有以下三种方式：  准备一个集合   ArrayList&lt;String&gt; al &#x3D; new ArrayList();al.add(&quot;小明&quot;);al.add(&quot;王富贵&quot;);al.add(&quot;小红&quot;);  普通for循环&#x2F;&#x2F;        普通for循环遍历">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).png">
+<meta property="article:published_time" content="2023-07-21T01:45:25.000Z">
+<meta property="article:modified_time" content="2023-07-21T03:14:39.276Z">
+<meta property="article:author" content="beckoningcoco">
+<meta property="article:tag" content="JavaSE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).png"><link rel="shortcut icon" href="/img/%E5%A4%B4%E5%83%8F.png"><link rel="canonical" href="http://example.com/2023/07/21/%E5%85%AD%E7%A7%8D%E9%9B%86%E5%90%88%E7%9A%84%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '六种集合的遍历方式',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-21 11:14:39'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/readPercent.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">60</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">36</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">梦落芳华</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">六种集合的遍历方式</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-21T01:45:25.000Z" title="发表于 2023-07-21 09:45:25">2023-07-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-21T03:14:39.276Z" title="更新于 2023-07-21 11:14:39">2023-07-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8D%9A%E6%96%87/">博文</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="六种集合的遍历方式"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="List集合"><a href="#List集合" class="headerlink" title="List集合"></a>List集合</h1><ul>
+<li><p><strong>List集合的存储特点是元素有序，可重复。遍历List集合有以下三种方式：</strong></p>
+</li>
+<li><p>准备一个集合</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ArrayList&lt;String&gt; al = <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">al.add(<span class="string">&quot;小明&quot;</span>);</span><br><span class="line">al.add(<span class="string">&quot;王富贵&quot;</span>);</span><br><span class="line">al.add(<span class="string">&quot;小红&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="普通for循环"><a href="#普通for循环" class="headerlink" title="普通for循环"></a>普通for循环</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//        普通for循环遍历</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span><span class="number">0</span> ; i&lt;al.size() ; i++)&#123;</span><br><span class="line">            System.out.println(al.get(i));</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="增强for循环"><a href="#增强for循环" class="headerlink" title="增强for循环"></a>增强for循环</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//        增强for循环</span></span><br><span class="line">        <span class="keyword">for</span>(String s : al)&#123;</span><br><span class="line">            System.out.println(s);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//        迭代器遍历</span></span><br><span class="line">        Iterator&lt;String&gt; iterator = al.iterator();</span><br><span class="line">        <span class="keyword">while</span> (iterator.hasNext())&#123;</span><br><span class="line">            System.out.println(iterator.next());</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Set集合"><a href="#Set集合" class="headerlink" title="Set集合"></a>Set集合</h1><ul>
+<li><strong>Set集合的存储特点是元素无序，且唯一。遍历Set集合有以下两种方法：</strong></li>
+<li><strong>Set集合不能用下标取数据</strong></li>
+<li>准备一个集合</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">HashSet&lt;String&gt; set = <span class="keyword">new</span> <span class="title class_">HashSet</span>();</span><br><span class="line">set.add(<span class="string">&quot;张三&quot;</span>);</span><br><span class="line">set.add(<span class="string">&quot;李四&quot;</span>);</span><br><span class="line">set.add(<span class="string">&quot;王五&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="增强for循环-1"><a href="#增强for循环-1" class="headerlink" title="增强for循环"></a>增强for循环</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//        增强for循环</span></span><br><span class="line">        <span class="keyword">for</span> (String s: set)&#123;</span><br><span class="line">            System.out.println(s);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="迭代器-1"><a href="#迭代器-1" class="headerlink" title="迭代器"></a>迭代器</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Iterator&lt;String&gt; iterator = set.iterator();</span><br><span class="line"><span class="keyword">while</span> (iterator.hasNext())&#123;</span><br><span class="line">    System.out.println(iterator.next());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Map集合"><a href="#Map集合" class="headerlink" title="Map集合"></a>Map集合</h1><ul>
+<li><p><strong>Map集合内部使用数组+链表+红黑树来存储元素。其内部存储的是key-value键值对。键唯一。遍历Map有以下三种方法</strong></p>
+</li>
+<li><p>准备一个map集合</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">HashMap&lt;Integer, String&gt; hashMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line">hashMap.put(<span class="number">1</span>,<span class="string">&quot;张三&quot;</span>);</span><br><span class="line">hashMap.put(<span class="number">2</span>,<span class="string">&quot;李四&quot;</span>);</span><br><span class="line">hashMap.put(<span class="number">3</span>,<span class="string">&quot;王五&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="获取所有key，循环获取value"><a href="#获取所有key，循环获取value" class="headerlink" title="获取所有key，循环获取value"></a>获取所有key，循环获取value</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Set&lt;Integer&gt; kset = hashMap.keySet();</span><br><span class="line"><span class="keyword">for</span> (Integer i : kset)&#123;</span><br><span class="line">    System.out.println(hashMap.get(i));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="获取EntrySet，增强for循环遍历"><a href="#获取EntrySet，增强for循环遍历" class="headerlink" title="获取EntrySet，增强for循环遍历"></a>获取EntrySet，增强for循环遍历</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Set&lt;Map.Entry&lt;Integer, String&gt;&gt; entry = hashMap.entrySet();</span><br><span class="line"><span class="keyword">for</span> (Map.Entry&lt;Integer,String&gt; e :  entry)&#123;</span><br><span class="line">    System.out.println(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="获取EntrySet，迭代器遍历"><a href="#获取EntrySet，迭代器遍历" class="headerlink" title="获取EntrySet，迭代器遍历"></a>获取EntrySet，迭代器遍历</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Iterator&lt;Map.Entry&lt;Integer, String&gt;&gt; iterator = hashMap.entrySet().iterator();</span><br><span class="line"><span class="keyword">while</span> (iterator.hasNext())&#123;</span><br><span class="line">    System.out.println(iterator.next());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="队列-Queue"><a href="#队列-Queue" class="headerlink" title="队列 Queue"></a>队列 Queue</h1><ul>
+<li><p>队列的特点是先进先出。且只能从队尾入队，队头出队。遍历Queue的方法有以下三种：</p>
+</li>
+<li><p>队列常用方法<br>　　add                 增加一个元索                                 如果队列已满，则抛出一个IIIegaISlabEepeplian异常<br>　　remove          移除并返回队列头部的元素          如果队列为空，则抛出一个NoSuchElementException异常<br>　　element         返回队列头部的元素                     如果队列为空，则抛出一个NoSuchElementException异常<br>　　offer               添加一个元素并返回true              如果队列已满，则返回false<br>　　poll                 移除并返问队列头部的元素          如果队列为空，则返回null<br>　　peek               返回队列头部的元素                     如果队列为空，则返回null<br>　　put                 添加一个元素                                 如果队列满，则阻塞<br>　　take               移除并返回队列头部的元素          如果队列为空，则阻塞<br>   drainTo(list)   一次性取出队列所有元素</p>
+</li>
+<li><p><img src="/2023/07/21/%E5%85%AD%E7%A7%8D%E9%9B%86%E5%90%88%E7%9A%84%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F/image-20230721103251371.png" alt="image-20230721103251371"></p>
+</li>
+<li><p>首先，准备一个 队列</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Queue&lt;String&gt; queue = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;String&gt;();</span><br><span class="line">queue.offer(<span class="string">&quot;叶璇&quot;</span>);</span><br><span class="line">queue.offer(<span class="string">&quot;依可&quot;</span>);</span><br><span class="line">queue.offer(<span class="string">&quot;安灵君&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="while循环配合-poll方法"><a href="#while循环配合-poll方法" class="headerlink" title="while循环配合 poll方法"></a>while循环配合 poll方法</h2><p> 用此方法遍历队列时，用poo()方法会删除队列中的元素。当遍历结束时，队列为空。                                                                     </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String s ;</span><br><span class="line"><span class="keyword">while</span>(( s = queue.poll())!=<span class="literal">null</span>)&#123;</span><br><span class="line">    System.out.println(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="迭代器遍历"><a href="#迭代器遍历" class="headerlink" title="迭代器遍历"></a>迭代器遍历</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Iterator&lt;String&gt; iterator = queue.iterator();</span><br><span class="line"><span class="keyword">while</span> (iterator.hasNext())&#123;</span><br><span class="line">    System.out.println(iterator.next());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="增强for循环-2"><a href="#增强for循环-2" class="headerlink" title="增强for循环"></a>增强for循环</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(String x: queue)&#123;</span><br><span class="line">    System.out.println(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="Deque双端队列"><a href="#Deque双端队列" class="headerlink" title="Deque双端队列"></a>Deque双端队列</h1><ul>
+<li><p>与队列相似，但是可以从两端遍历。</p>
+</li>
+<li><p>双端队列可以从两端入队，从两端出队。其遍历方式有以下三种：</p>
+</li>
+<li><p>准备一个队列</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ArrayDeque&lt;String&gt; dQueue = <span class="keyword">new</span> <span class="title class_">ArrayDeque</span>&lt;String&gt;();</span><br><span class="line">dQueue.offer(<span class="string">&quot;以津真天&quot;</span>);</span><br><span class="line">dQueue.offer(<span class="string">&quot;白泽&quot;</span>);</span><br><span class="line">dQueue.offer(<span class="string">&quot;樱雪姬&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="增强for循环-3"><a href="#增强for循环-3" class="headerlink" title="增强for循环"></a>增强for循环</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(String s : dQueue)&#123;</span><br><span class="line">    System.out.println(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="迭代器-2"><a href="#迭代器-2" class="headerlink" title="迭代器"></a>迭代器</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Iterator&lt;String&gt; iterator = dQueue.iterator();</span><br><span class="line"><span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">    System.out.println(iterator.next());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="while配合pollFirst、pollLast"><a href="#while配合pollFirst、pollLast" class="headerlink" title="while配合pollFirst、pollLast"></a>while配合pollFirst、pollLast</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">       String str ;</span><br><span class="line"> <span class="comment">//        从头到尾遍历</span></span><br><span class="line">       <span class="keyword">while</span> ((str = dQueue.pollFirst())!=<span class="literal">null</span>)&#123;</span><br><span class="line">           System.out.println(str);</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line"> <span class="comment">//        从尾到头遍历</span></span><br><span class="line">       <span class="keyword">while</span>((str = dQueue.pollLast())!=<span class="literal">null</span>)&#123;</span><br><span class="line">           System.out.println(str);</span><br><span class="line">       &#125;</span><br><span class="line"><span class="comment">//注意 和poll相关的方法，依旧是返回元素后移除元素。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="Stack栈"><a href="#Stack栈" class="headerlink" title="Stack栈"></a>Stack栈</h1><ul>
+<li><p>Stack栈，栈只能从栈顶入栈，从栈顶出栈，因此栈的特点为后进先出。遍历栈的方法有以下几种：</p>
+</li>
+<li><p>准备Stack</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Stack&lt;Integer&gt; stack = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">stack.add(<span class="number">1</span>);</span><br><span class="line">stack.add(<span class="number">3</span>);</span><br><span class="line">stack.add(<span class="number">5</span>);</span><br><span class="line">stack.add(<span class="number">7</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="增强for循环-4"><a href="#增强for循环-4" class="headerlink" title="增强for循环"></a>增强for循环</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (Integer i:stack)&#123;</span><br><span class="line">    System.out.println(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="迭代器-3"><a href="#迭代器-3" class="headerlink" title="迭代器"></a>迭代器</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Iterator&lt;Integer&gt; iterator = stack.iterator();</span><br><span class="line"><span class="keyword">while</span> (iterator.hasNext())&#123;</span><br><span class="line">    System.out.println(iterator.next());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="while循环配合-isEmpty方法"><a href="#while循环配合-isEmpty方法" class="headerlink" title="while循环配合 isEmpty方法"></a>while循环配合 isEmpty方法</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">   <span class="keyword">while</span> (!stack.isEmpty())&#123; <span class="comment">//栈为空</span></span><br><span class="line">            System.out.println(stack.pop());</span><br><span class="line"><span class="comment">//            将元素依次弹出栈</span></span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">1.上述的六种集合都可以使用增强for循环遍历。而此方法底层使用迭代器进行遍历。故它们也都可以使用迭代器进行遍历。</span><br><span class="line"></span><br><span class="line"> 2.Deque双端队列可以从两端入队和出队，因此它可以结合自身的方法从前遍历，也可以从后遍历。</span><br><span class="line"></span><br><span class="line"> 3.List和Stack可以使用两种迭代器进行遍历。分别是Iterator和ListIterator，Iterator只能从前往后遍历。ListIterator允许从指定位置开始，可以从前遍历，也可以从后遍历。</span><br><span class="line"></span><br><span class="line"> 4.虽然它们都可以使用迭代器进行遍历，但是由于不同的集合内部存储元素的结构不同。因此迭代器的内部实现遍历的逻辑规则也完全不同。</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>六种集合的遍历方式</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="http://example.com/2023/07/21/%E5%85%AD%E7%A7%8D%E9%9B%86%E5%90%88%E7%9A%84%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F/">http://example.com/2023/07/21/六种集合的遍历方式/</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>beckoningcoco</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2023-07-21</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2023-07-21</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JavaSE/">JavaSE</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/07/26/2023/7/Sql%E8%AF%AD%E5%8F%A5%E7%BB%83%E4%B9%A0%E9%A2%98/"><img class="prev-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(3).jpg" onerror="onerror=null;src='/null'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Sql语句练习题</div></div></a></div><div class="next-post pull-right"><a href="/2023/07/20/mysql%E5%AD%A6%E4%B9%A0/"><img class="next-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).jpg" onerror="onerror=null;src='/null'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">mysql学习</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/02/13/JavaSE/" title="JavaSE"><img class="cover" src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/6-11%20(3).jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-13</div><div class="title">JavaSE</div></div></a></div><div><a href="/2023/07/19/Protected%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90/" title="Protected访问权限"><img class="cover" src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/3-6%20(2).png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-19</div><div class="title">Protected访问权限</div></div></a></div><div><a href="/2023/03/01/JavaSE%E8%BF%9B%E9%98%B6/" title="JavaSE进阶"><img class="cover" src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/6-11%20(2).jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-01</div><div class="title">JavaSE进阶</div></div></a></div><div><a href="/2023/07/19/java%E5%90%91%E4%B8%8A%E8%BD%AC%E5%9E%8B%E5%92%8C%E5%90%91%E4%B8%8B%E8%BD%AC%E5%9E%8B/" title="java向上转型和向下转型"><img class="cover" src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/6-13%20(3).jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-19</div><div class="title">java向上转型和向下转型</div></div></a></div><div><a href="/2023/07/20/%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3/" title="抽象类与接口"><img class="cover" src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(1).png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-20</div><div class="title">抽象类与接口</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">beckoningcoco</div><div class="author-info__description">世界好吵，让我帮你捂耳朵吧</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">60</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">36</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/beckoningcoco"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/beckoningcoco" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:995587764@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的blog！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#List%E9%9B%86%E5%90%88"><span class="toc-number">1.</span> <span class="toc-text">List集合</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%99%AE%E9%80%9Afor%E5%BE%AA%E7%8E%AF"><span class="toc-number">1.1.</span> <span class="toc-text">普通for循环</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A2%9E%E5%BC%BAfor%E5%BE%AA%E7%8E%AF"><span class="toc-number">1.2.</span> <span class="toc-text">增强for循环</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8"><span class="toc-number">1.3.</span> <span class="toc-text">迭代器</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Set%E9%9B%86%E5%90%88"><span class="toc-number">2.</span> <span class="toc-text">Set集合</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A2%9E%E5%BC%BAfor%E5%BE%AA%E7%8E%AF-1"><span class="toc-number">2.1.</span> <span class="toc-text">增强for循环</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8-1"><span class="toc-number">2.2.</span> <span class="toc-text">迭代器</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Map%E9%9B%86%E5%90%88"><span class="toc-number">3.</span> <span class="toc-text">Map集合</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89key%EF%BC%8C%E5%BE%AA%E7%8E%AF%E8%8E%B7%E5%8F%96value"><span class="toc-number">3.1.</span> <span class="toc-text">获取所有key，循环获取value</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96EntrySet%EF%BC%8C%E5%A2%9E%E5%BC%BAfor%E5%BE%AA%E7%8E%AF%E9%81%8D%E5%8E%86"><span class="toc-number">3.2.</span> <span class="toc-text">获取EntrySet，增强for循环遍历</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96EntrySet%EF%BC%8C%E8%BF%AD%E4%BB%A3%E5%99%A8%E9%81%8D%E5%8E%86"><span class="toc-number">3.3.</span> <span class="toc-text">获取EntrySet，迭代器遍历</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%98%9F%E5%88%97-Queue"><span class="toc-number">4.</span> <span class="toc-text">队列 Queue</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#while%E5%BE%AA%E7%8E%AF%E9%85%8D%E5%90%88-poll%E6%96%B9%E6%B3%95"><span class="toc-number">4.1.</span> <span class="toc-text">while循环配合 poll方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E9%81%8D%E5%8E%86"><span class="toc-number">4.2.</span> <span class="toc-text">迭代器遍历</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A2%9E%E5%BC%BAfor%E5%BE%AA%E7%8E%AF-2"><span class="toc-number">4.3.</span> <span class="toc-text">增强for循环</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Deque%E5%8F%8C%E7%AB%AF%E9%98%9F%E5%88%97"><span class="toc-number">5.</span> <span class="toc-text">Deque双端队列</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A2%9E%E5%BC%BAfor%E5%BE%AA%E7%8E%AF-3"><span class="toc-number">5.1.</span> <span class="toc-text">增强for循环</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8-2"><span class="toc-number">5.2.</span> <span class="toc-text">迭代器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#while%E9%85%8D%E5%90%88pollFirst%E3%80%81pollLast"><span class="toc-number">5.3.</span> <span class="toc-text">while配合pollFirst、pollLast</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Stack%E6%A0%88"><span class="toc-number">6.</span> <span class="toc-text">Stack栈</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A2%9E%E5%BC%BAfor%E5%BE%AA%E7%8E%AF-4"><span class="toc-number">6.1.</span> <span class="toc-text">增强for循环</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8-3"><span class="toc-number">6.2.</span> <span class="toc-text">迭代器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#while%E5%BE%AA%E7%8E%AF%E9%85%8D%E5%90%88-isEmpty%E6%96%B9%E6%B3%95"><span class="toc-number">6.3.</span> <span class="toc-text">while循环配合 isEmpty方法</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/07/26/2023/7/Sql%E8%AF%AD%E5%8F%A5%E7%BB%83%E4%B9%A0%E9%A2%98/" title="Sql语句练习题"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(3).jpg" onerror="this.onerror=null;this.src='/null'" alt="Sql语句练习题"/></a><div class="content"><a class="title" href="/2023/07/26/2023/7/Sql%E8%AF%AD%E5%8F%A5%E7%BB%83%E4%B9%A0%E9%A2%98/" title="Sql语句练习题">Sql语句练习题</a><time datetime="2023-07-26T03:29:56.000Z" title="发表于 2023-07-26 11:29:56">2023-07-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/07/21/%E5%85%AD%E7%A7%8D%E9%9B%86%E5%90%88%E7%9A%84%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F/" title="六种集合的遍历方式"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).png" onerror="this.onerror=null;this.src='/null'" alt="六种集合的遍历方式"/></a><div class="content"><a class="title" href="/2023/07/21/%E5%85%AD%E7%A7%8D%E9%9B%86%E5%90%88%E7%9A%84%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F/" title="六种集合的遍历方式">六种集合的遍历方式</a><time datetime="2023-07-21T01:45:25.000Z" title="发表于 2023-07-21 09:45:25">2023-07-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/07/20/mysql%E5%AD%A6%E4%B9%A0/" title="mysql学习"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).jpg" onerror="this.onerror=null;this.src='/null'" alt="mysql学习"/></a><div class="content"><a class="title" href="/2023/07/20/mysql%E5%AD%A6%E4%B9%A0/" title="mysql学习">mysql学习</a><time datetime="2023-07-20T05:55:18.000Z" title="发表于 2023-07-20 13:55:18">2023-07-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/07/20/%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3/" title="抽象类与接口"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(1).png" onerror="this.onerror=null;this.src='/null'" alt="抽象类与接口"/></a><div class="content"><a class="title" href="/2023/07/20/%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3/" title="抽象类与接口">抽象类与接口</a><time datetime="2023-07-20T02:53:45.000Z" title="发表于 2023-07-20 10:53:45">2023-07-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/07/19/java%E5%90%91%E4%B8%8A%E8%BD%AC%E5%9E%8B%E5%92%8C%E5%90%91%E4%B8%8B%E8%BD%AC%E5%9E%8B/" title="java向上转型和向下转型"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/6-13%20(3).jpg" onerror="this.onerror=null;this.src='/null'" alt="java向上转型和向下转型"/></a><div class="content"><a class="title" href="/2023/07/19/java%E5%90%91%E4%B8%8A%E8%BD%AC%E5%9E%8B%E5%92%8C%E5%90%91%E4%B8%8B%E8%BD%AC%E5%9E%8B/" title="java向上转型和向下转型">java向上转型和向下转型</a><time datetime="2023-07-19T07:51:33.000Z" title="发表于 2023-07-19 15:51:33">2023-07-19</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).png')"><div id="footer-wrap"><div class="copyright">&copy;2023 By beckoningcoco</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">嘘声是给予挑战者的勋章——美浦波旁.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用JsDelivr为静态资源提供CDN加速"></a> &nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Vervel-brightgreen?style=flat&logo=Vercel" title="本站采用双线部署，默认线路托管于Vercel"></a>&nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Coding-0cedbe?style=flat&logo=Codio" title="本站采用双线部署，联通线路托管于Coding"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script defer data-pjax src="/js/readPercent.js"></script><div class="aplayer no-destroy" data-id="8091029090" data-server="netease" data-type="playlist"  data-fixed="true" data-mini="true"  data-listmaxheight="340px" listfolded="true"  data-autoplay="true" data-theme="#3F51B5" > </div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

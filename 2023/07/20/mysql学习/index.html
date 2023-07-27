@@ -1,0 +1,283 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>mysql学习 | 梦落芳华</title><meta name="author" content="beckoningcoco"><meta name="copyright" content="beckoningcoco"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="事务四大隔离级别 原子性：当前事务的操作要么成功，要么失败，原子性由undo log日志来保证。 一致性： 使用事务的最终目的，你业务代码必须正确逻辑。 隔离性：在事务并发执行时，他们的内部操作不能相互干扰。 耦合性：一旦提交了事务，它对数据库的改变应该是永久性的。持久性由redo log日志保证。  Innodb引擎中，定义了四种隔离级别提供我们使用，级别越高，事务隔离性越好，但性能就越低，而隔">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql学习">
+<meta property="og:url" content="http://example.com/2023/07/20/mysql%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="梦落芳华">
+<meta property="og:description" content="事务四大隔离级别 原子性：当前事务的操作要么成功，要么失败，原子性由undo log日志来保证。 一致性： 使用事务的最终目的，你业务代码必须正确逻辑。 隔离性：在事务并发执行时，他们的内部操作不能相互干扰。 耦合性：一旦提交了事务，它对数据库的改变应该是永久性的。持久性由redo log日志保证。  Innodb引擎中，定义了四种隔离级别提供我们使用，级别越高，事务隔离性越好，但性能就越低，而隔">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).jpg">
+<meta property="article:published_time" content="2023-07-20T05:55:18.000Z">
+<meta property="article:modified_time" content="2023-07-20T10:06:29.837Z">
+<meta property="article:author" content="beckoningcoco">
+<meta property="article:tag" content="mySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).jpg"><link rel="shortcut icon" href="/img/%E5%A4%B4%E5%83%8F.png"><link rel="canonical" href="http://example.com/2023/07/20/mysql%E5%AD%A6%E4%B9%A0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'mysql学习',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-20 18:06:29'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/readPercent.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">60</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">36</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">梦落芳华</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 影音</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于作者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">mysql学习</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-20T05:55:18.000Z" title="发表于 2023-07-20 13:55:18">2023-07-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-20T10:06:29.837Z" title="更新于 2023-07-20 18:06:29">2023-07-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8D%9A%E6%96%87/">博文</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="mysql学习"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="事务四大隔离级别"><a href="#事务四大隔离级别" class="headerlink" title="事务四大隔离级别"></a>事务四大隔离级别</h1><ul>
+<li><strong>原子性：</strong>当前事务的操作要么成功，要么失败，原子性由<strong>undo log日志</strong>来保证。</li>
+<li><strong>一致性：</strong> 使用事务的最终目的，你业务代码必须正确逻辑。</li>
+<li><strong>隔离性：</strong>在事务并发执行时，他们的内部操作不能相互干扰。</li>
+<li><strong>耦合性：</strong>一旦提交了事务，它对数据库的改变应该是永久性的。持久性由<strong>redo log日志</strong>保证。</li>
+</ul>
+<p>Innodb引擎中，定义了四种隔离级别提供我们使用，级别越高，事务隔离性越好，但性能就越低，而隔离性是由mysql的各种锁机制及mvvc机制来实现的。</p>
+<ul>
+<li>Read Uncommit（读未提交）：脏读  （可能出现的问题）</li>
+<li>Read Commit（读已提交）：不可重复读</li>
+<li>Repeatable Read(可重复度)：脏写</li>
+<li>serializable（串行）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql 8.0 适用命令</span><br><span class="line"></span><br><span class="line">select @@transaction_isolation;</span><br><span class="line">-- 查看当前数据库的隔离级别</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> set session transaction isolation level read uncommitted;</span><br><span class="line">-- 设置数据库的隔离级别为读未提交</span><br><span class="line"></span><br><span class="line"> set session transaction isolation level read committed; </span><br><span class="line">-- 设置数据库隔离级别为 读已提交 </span><br><span class="line"></span><br><span class="line"> set session transaction isolation level repeatable read ;</span><br><span class="line">-- 设置数据库的隔离级别为 可重复读</span><br><span class="line"></span><br><span class="line">  set session transaction isolation level Serializable;</span><br><span class="line">-- 设置数据库隔离级别为串行序列化 </span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="读未提交"><a href="#读未提交" class="headerlink" title="读未提交"></a>读未提交</h2><p><strong>说明：</strong>两个事务，一个事物能够读到另一个事务中没有提交的数据。 可能产生脏读（读到垃圾数据）</p>
+<ul>
+<li>现将隔离级别设置为 读未提交</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set session transaction isolation level read uncommitted;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询张三的金额</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 现在隔离级别是读未提交</span><br><span class="line">BEGIN</span><br><span class="line"></span><br><span class="line">select * from account </span><br><span class="line">where id = &#x27;1&#x27; ;</span><br><span class="line">-- 张三	1	1000  此时，结果是1000</span><br><span class="line">-- 没有进行commit提交事务，意味着事务并没有结束</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>此时，新建一个查询，在另一个事务中对张三的金额进行更新</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">BEGIN</span><br><span class="line">UPDATE  account set 金额 = 1200 where id = 1</span><br><span class="line">-- 注意，这里也是没有 commit</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>然后在第一个事务再查询一遍</li>
+</ul>
+<p><img src="/2023/07/20/mysql%E5%AD%A6%E4%B9%A0/image-20230720151122290.png" alt="image-20230720151122290"></p>
+<ul>
+<li>读到了未提交的数据</li>
+</ul>
+<h2 id="读已提交"><a href="#读已提交" class="headerlink" title="读已提交"></a>读已提交</h2><p><strong>说明:</strong> 两个事务，一个事务只能读取其他事务中已经提交的数据，未提交的看不到。可能产生的问题：不可重复读，加入你在事务中读了两次同一分数据，在这个期间，有人对数据进行了更改并提交，那么你这两次读的数据就不一样。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set session transaction isolation level read committed;</span><br><span class="line">-- 将隔离级别改为 读已提交</span><br><span class="line"></span><br><span class="line">1.查询一下 张三的 id </span><br><span class="line">BEGIN</span><br><span class="line"></span><br><span class="line">select * from account </span><br><span class="line">where id = &#x27;1&#x27; ;</span><br><span class="line">-- 张三	1	1200</span><br><span class="line"></span><br><span class="line">2.另外开启一个事务，修改张三的金额，但是不提交</span><br><span class="line">BEGIN</span><br><span class="line">UPDATE  account set 金额 = 1500 where id = 1</span><br><span class="line">--  金额变更为 1500 但是未提交</span><br><span class="line"></span><br><span class="line">3.在第一个事务中，再次查询张三的金额</span><br><span class="line">select * from account </span><br><span class="line">where id = &#x27;1&#x27; ;</span><br><span class="line">-- 张三	1	1200  此时金额还是 1200 </span><br><span class="line"></span><br><span class="line">4. 再另一个事务中提交一下 执行 commit命令</span><br><span class="line">select * from account </span><br><span class="line">where id = &#x27;1&#x27; ;</span><br><span class="line">-- 张三	1	1500</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="可重复读"><a href="#可重复读" class="headerlink" title="可重复读"></a>可重复读</h2><p><strong>说明：</strong>在事务中，你涉及到的任何记录，都会被锁起来，只要你的事务没结束，无论你读多少次，读到的都是同一个数据。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 将事务的隔离级别设置为可重复读</span></span><br><span class="line"><span class="keyword">set</span> session transaction isolation level Repeatable Read;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 1.开启一个事务，查询一下张三的金额！</span></span><br><span class="line"><span class="keyword">BEGIN</span> ;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> account </span><br><span class="line"><span class="keyword">where</span> id <span class="operator">=</span> <span class="string">&#x27;1&#x27;</span> ;</span><br><span class="line"><span class="comment">-- 张三	1	1500</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 2.在另一个事务中，修改张三的金额</span></span><br><span class="line">？？？</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="串行序列化"><a href="#串行序列化" class="headerlink" title="串行序列化"></a>串行序列化</h2><p><strong>说明：</strong> 事务都是一个一个排队执行的。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>串行序列化是如何实现的呢？</strong></p>
+<p>利用读锁和写锁。</p>
+<ul>
+<li>读锁，允许其他事务一起读，但是不允许写！</li>
+<li>写锁，不允许其他事务读，也不让其他事务写。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 现在隔离级别是读未提交</span><br><span class="line">BEGIN ;</span><br><span class="line">select * from account </span><br><span class="line">where id = &#x27;1&#x27; lock in share mode; -- 加上lock in share mode 代表上读锁</span><br><span class="line"></span><br><span class="line">-- 2.现在在另一个事务中更新一下金额</span><br><span class="line">BEGIN ;</span><br><span class="line">UPDATE  account set 金额 = 1600 where id = 1 ;</span><br><span class="line"></span><br><span class="line">COMMIT;</span><br><span class="line">--  注意，更新操作，删除操作，insert操作，都会默认为数据上写锁。</span><br><span class="line"></span><br><span class="line">-- 3. 此时，事务1 上了读锁，不允许写，且未提交。</span><br><span class="line">--    那么事务二，也无法更新事务1的数据。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/07/20/mysql%E5%AD%A6%E4%B9%A0/image-20230720161532203.png" alt="image-20230720161532203"></p>
+<h2 id="MVCC机制"><a href="#MVCC机制" class="headerlink" title="MVCC机制"></a>MVCC机制</h2><p>MVVC(Multi-Version Concurrency Control) 多版本并发控制，就可以做到读写不阻塞，且避免了类似于脏读这样的问题，主要通过undo日志链来实现。</p>
+<p>read commit（读已提交）语句级快照</p>
+<p>repeatable read（可重复读）事务级快照。</p>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>mysql学习</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="http://example.com/2023/07/20/mysql%E5%AD%A6%E4%B9%A0/">http://example.com/2023/07/20/mysql学习/</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>beckoningcoco</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2023-07-20</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2023-07-20</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/mySQL/">mySQL</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/07/21/%E5%85%AD%E7%A7%8D%E9%9B%86%E5%90%88%E7%9A%84%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F/"><img class="prev-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).png" onerror="onerror=null;src='/null'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">六种集合的遍历方式</div></div></a></div><div class="next-post pull-right"><a href="/2023/07/20/%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3/"><img class="next-cover" src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(1).png" onerror="onerror=null;src='/null'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">抽象类与接口</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/%E5%A4%B4%E5%83%8F.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">beckoningcoco</div><div class="author-info__description">世界好吵，让我帮你捂耳朵吧</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">60</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">36</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/beckoningcoco"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/beckoningcoco" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:995587764@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的blog！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E5%9B%9B%E5%A4%A7%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="toc-number">1.</span> <span class="toc-text">事务四大隔离级别</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E6%9C%AA%E6%8F%90%E4%BA%A4"><span class="toc-number">1.1.</span> <span class="toc-text">读未提交</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%B7%B2%E6%8F%90%E4%BA%A4"><span class="toc-number">1.2.</span> <span class="toc-text">读已提交</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB"><span class="toc-number">1.3.</span> <span class="toc-text">可重复读</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%B2%E8%A1%8C%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">1.4.</span> <span class="toc-text">串行序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MVCC%E6%9C%BA%E5%88%B6"><span class="toc-number">1.5.</span> <span class="toc-text">MVCC机制</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/07/26/2023/7/Sql%E8%AF%AD%E5%8F%A5%E7%BB%83%E4%B9%A0%E9%A2%98/" title="Sql语句练习题"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(3).jpg" onerror="this.onerror=null;this.src='/null'" alt="Sql语句练习题"/></a><div class="content"><a class="title" href="/2023/07/26/2023/7/Sql%E8%AF%AD%E5%8F%A5%E7%BB%83%E4%B9%A0%E9%A2%98/" title="Sql语句练习题">Sql语句练习题</a><time datetime="2023-07-26T03:29:56.000Z" title="发表于 2023-07-26 11:29:56">2023-07-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/07/21/%E5%85%AD%E7%A7%8D%E9%9B%86%E5%90%88%E7%9A%84%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F/" title="六种集合的遍历方式"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).png" onerror="this.onerror=null;this.src='/null'" alt="六种集合的遍历方式"/></a><div class="content"><a class="title" href="/2023/07/21/%E5%85%AD%E7%A7%8D%E9%9B%86%E5%90%88%E7%9A%84%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F/" title="六种集合的遍历方式">六种集合的遍历方式</a><time datetime="2023-07-21T01:45:25.000Z" title="发表于 2023-07-21 09:45:25">2023-07-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/07/20/mysql%E5%AD%A6%E4%B9%A0/" title="mysql学习"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).jpg" onerror="this.onerror=null;this.src='/null'" alt="mysql学习"/></a><div class="content"><a class="title" href="/2023/07/20/mysql%E5%AD%A6%E4%B9%A0/" title="mysql学习">mysql学习</a><time datetime="2023-07-20T05:55:18.000Z" title="发表于 2023-07-20 13:55:18">2023-07-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/07/20/%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3/" title="抽象类与接口"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(1).png" onerror="this.onerror=null;this.src='/null'" alt="抽象类与接口"/></a><div class="content"><a class="title" href="/2023/07/20/%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3/" title="抽象类与接口">抽象类与接口</a><time datetime="2023-07-20T02:53:45.000Z" title="发表于 2023-07-20 10:53:45">2023-07-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/07/19/java%E5%90%91%E4%B8%8A%E8%BD%AC%E5%9E%8B%E5%92%8C%E5%90%91%E4%B8%8B%E8%BD%AC%E5%9E%8B/" title="java向上转型和向下转型"><img src="https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/6-13%20(3).jpg" onerror="this.onerror=null;this.src='/null'" alt="java向上转型和向下转型"/></a><div class="content"><a class="title" href="/2023/07/19/java%E5%90%91%E4%B8%8A%E8%BD%AC%E5%9E%8B%E5%92%8C%E5%90%91%E4%B8%8B%E8%BD%AC%E5%9E%8B/" title="java向上转型和向下转型">java向上转型和向下转型</a><time datetime="2023-07-19T07:51:33.000Z" title="发表于 2023-07-19 15:51:33">2023-07-19</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.staticaly.com/gh/beckoningcoco/PicGo@master/img/cover/7-20%20(2).jpg')"><div id="footer-wrap"><div class="copyright">&copy;2023 By beckoningcoco</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">嘘声是给予挑战者的勋章——美浦波旁.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用JsDelivr为静态资源提供CDN加速"></a> &nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Vervel-brightgreen?style=flat&logo=Vercel" title="本站采用双线部署，默认线路托管于Vercel"></a>&nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Coding-0cedbe?style=flat&logo=Codio" title="本站采用双线部署，联通线路托管于Coding"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script defer data-pjax src="/js/readPercent.js"></script><div class="aplayer no-destroy" data-id="8091029090" data-server="netease" data-type="playlist"  data-fixed="true" data-mini="true"  data-listmaxheight="340px" listfolded="true"  data-autoplay="true" data-theme="#3F51B5" > </div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
